@@ -18,7 +18,6 @@ public class OrdersManagerEM{
 		factory.close();
 	}
 
-
 	//--------------------------------------------------------------------------------------
 	// Retrieve customer's orders of a specific product
 	//--------------------------------------------------------------------------------------
@@ -29,6 +28,14 @@ public class OrdersManagerEM{
 		try{
 
 			entityManager = factory.createEntityManager();
+
+			TypedQuery<Orders> query = entityManager.createQuery(
+				"SELECT " + 
+				"FROM Orders O INNER JOIN ProductStock P ON O.product = P.IDproduct " + 
+				"WHERE O.customer = :customer AND P.productName = :productName" );
+			query.setParameter( "customer", customerID );
+			query.setParameter( "productName", productName );
+			
 			entityManager.getTransaction().begin();
 
 		} catch (Exception exception){
@@ -48,7 +55,9 @@ public class OrdersManagerEM{
 	public int insertOrder( String customer, int productId , int price ){
 
 		Order order = new Order();
-		order.
+		order.setPurchaseDate( new Timestamp(System.currentTimeMillis()) );
+		order.setPrice( price ); 
+		order.setStatus( "Received" );
 
 		try{
 
