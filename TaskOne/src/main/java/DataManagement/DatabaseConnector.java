@@ -52,7 +52,7 @@ public class DatabaseConnector extends DataConnector{
 	//initialize connection and statements
 	static {
 
-		connectionString = "jdbc:mysql://localhost:3306/exercise1?user=root&password=root&useJDBCCompliantTimezoneShift=true&useLegacyDatetimeCode=false&serverTimezone=UTC";
+		connectionString = "jdbc:mysql://localhost:3306/exercise1?user=root&password=root&useJDBCCompliantTimezoneShift=true&useLegacyDatetimeCode=false&serverTimezone=UTC&&sessionVariables=storage_engine=InnoDB";
 		myConnection = null;
 
 		try {

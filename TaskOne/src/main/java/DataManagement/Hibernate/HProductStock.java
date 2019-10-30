@@ -7,8 +7,8 @@ public class HProductStock {
 
 	@Id
 	@GeneratedValue( strategy = GenerationType.IDENTITY )
-	@Column( name = "stockID" , nullable = false )
-	private int stockID;
+	@Column( name = "IDproduct" , nullable = false )
+	private int IDproduct;
 
 	//-------------------------------------------
 	// The @ManyToOne annotation tells us that a Product
@@ -17,8 +17,8 @@ public class HProductStock {
 	// save a ProductStock without specifying the Product
 	//-------------------------------------------
 
-	@ManyToOne(fetch = FetchType.LAZY)
-	@JoinColumn( name = "product", referencedColumnName = "productName" )
+	@ManyToOne
+	@JoinColumn( name = "productName", nullable = false )
 	private HProduct product;
 
 	//----------------------------------------------------------------------------------------------------------
@@ -33,7 +33,7 @@ public class HProductStock {
 
 	public int getStockID(){
 
-		return stockID;
+		return IDproduct;
 	}
 
 	public HProduct getProduct(){
@@ -47,7 +47,7 @@ public class HProductStock {
 
 	public void setIDproduct( int IDproduct){
 
-		this.stockID= IDproduct;
+		this.IDproduct= IDproduct;
 	}
 
 }

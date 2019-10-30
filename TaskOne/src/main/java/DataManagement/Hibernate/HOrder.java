@@ -12,7 +12,7 @@ public class HOrder {
 	// while the @GeneratedValue defines the strategy to obtain
 	// the primary key. 
 	//--------------------------------------------
-		@Id
+	@Id
 	@GeneratedValue( strategy = GenerationType.IDENTITY )
 	@Column( name = "IDorder", nullable = false )
 	private int IDorder;
@@ -30,8 +30,8 @@ public class HOrder {
 	private String customer;
 
 	@OneToOne
-    @JoinColumn( name = "product", referencedColumnName = "stockID")
-    private HProductStock product;
+ @JoinColumn( name = "IDproduct", nullable = false)
+ private HProductStock IDproduct;
 
 	//-----------------------------------------
 	// We need to define a one-to-one asssociation 

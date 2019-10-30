@@ -3,7 +3,7 @@ import javax.persistence.*;
 import java.util.Set;
 
 @Entity
-@Table(name="Team")
+@Table(name="Teams")
 public class HTeam {
 
 	@Id
@@ -16,12 +16,11 @@ public class HTeam {
 
 	@OneToMany( cascade = CascadeType.ALL )
 	@JoinColumn( name="team")
-    private Set<HEmployee> members;
+ private Set<HEmployee> members;
 
 	@OneToMany( cascade = CascadeType.ALL )
-	@JoinColumn( name="productName")
+	@JoinColumn( name="team")
 	private Set<HProduct> products;
-
 
 
 	//----------------------------------------------------------------------------------------------------------

@@ -12,7 +12,7 @@ public class HEmployee extends HUser implements Serializable {
 	@Column( name = "role", length = 45, nullable = false )
 	private String role;
 
-	@Column( name = "team", nullable = false )
+	@Column( name = "team", nullable = true )
 	private int team;
 
 	//----------------------------------------------------------------------------------------------------------
