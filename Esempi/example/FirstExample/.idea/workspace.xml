@@ -1,12 +1,37 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
   <component name="ChangeListManager">
-    <list default="true" id="fb5968da-2813-4d2c-a109-fb1e756eb7a3" name="Default Changelist" comment="" />
+    <list default="true" id="fb5968da-2813-4d2c-a109-fb1e756eb7a3" name="Default Changelist" comment="">
+      <change afterPath="$PROJECT_DIR$/.idea/vcs.xml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/../../../TaskOne/HibernateHelloExample.iml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/misc.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/misc.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../../TaskOne/src/main/java/DataManagement/BookManagerEM.java" beforeDir="false" afterPath="$PROJECT_DIR$/../../../TaskOne/src/main/java/DataManagement/DataTransfer.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../../TaskOne/src/main/java/DataManagement/DatabaseConnector.java" beforeDir="false" afterPath="$PROJECT_DIR$/../../../TaskOne/src/main/java/DataManagement/DatabaseConnector.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../../TaskOne/src/main/java/DataManagement/HConnector.java" beforeDir="false" afterPath="$PROJECT_DIR$/../../../TaskOne/src/main/java/DataManagement/HConnector.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../../TaskOne/src/main/java/DataManagement/Hibernate/HEmployee.java" beforeDir="false" afterPath="$PROJECT_DIR$/../../../TaskOne/src/main/java/DataManagement/Hibernate/HEmployee.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../../TaskOne/src/main/java/DataManagement/Hibernate/HUser.java" beforeDir="false" afterPath="$PROJECT_DIR$/../../../TaskOne/src/main/java/DataManagement/Hibernate/HUser.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../../TaskOne/src/main/java/graphicInterface/GraphicInterface.java" beforeDir="false" afterPath="$PROJECT_DIR$/../../../TaskOne/src/main/java/graphicInterface/GraphicInterface.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../../TaskOne/target/classes/DataManagement/BookManagerEM.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../../TaskOne/target/classes/DataManagement/DataManager.class" beforeDir="false" afterPath="$PROJECT_DIR$/../../../TaskOne/target/classes/DataManagement/DataManager.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../../TaskOne/target/classes/DataManagement/DatabaseConnector.class" beforeDir="false" afterPath="$PROJECT_DIR$/../../../TaskOne/target/classes/DataManagement/DatabaseConnector.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../../TaskOne/target/classes/DataManagement/HConnector.class" beforeDir="false" afterPath="$PROJECT_DIR$/../../../TaskOne/target/classes/DataManagement/HConnector.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../../TaskOne/target/classes/DataManagement/Hibernate/HEmployee.class" beforeDir="false" afterPath="$PROJECT_DIR$/../../../TaskOne/target/classes/DataManagement/Hibernate/HEmployee.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../../TaskOne/target/classes/DataManagement/Hibernate/HUser.class" beforeDir="false" afterPath="$PROJECT_DIR$/../../../TaskOne/target/classes/DataManagement/Hibernate/HUser.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../../TaskOne/target/classes/graphicInterface/AdminController.class" beforeDir="false" afterPath="$PROJECT_DIR$/../../../TaskOne/target/classes/graphicInterface/AdminController.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../../TaskOne/target/classes/graphicInterface/CustomerController.class" beforeDir="false" afterPath="$PROJECT_DIR$/../../../TaskOne/target/classes/graphicInterface/CustomerController.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../../TaskOne/target/classes/graphicInterface/GraphicInterface.class" beforeDir="false" afterPath="$PROJECT_DIR$/../../../TaskOne/target/classes/graphicInterface/GraphicInterface.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../../TaskOne/target/classes/graphicInterface/HeadDepartmentController.class" beforeDir="false" afterPath="$PROJECT_DIR$/../../../TaskOne/target/classes/graphicInterface/HeadDepartmentController.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../../TaskOne/target/classes/graphicInterface/InterfaceController.class" beforeDir="false" afterPath="$PROJECT_DIR$/../../../TaskOne/target/classes/graphicInterface/InterfaceController.class" afterDir="false" />
+    </list>
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
     <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
     <option name="LAST_RESOLUTION" value="IGNORE" />
+  </component>
+  <component name="Git.Settings">
+    <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$/../../.." />
   </component>
   <component name="MavenImportPreferences">
     <option name="importingSettings">
@@ -16,7 +41,9 @@
     </option>
   </component>
   <component name="ProjectId" id="1SWrQpQih3jzGP7ygIywRXnAsea" />
+  <component name="ProjectLevelVcsManager" settingsEditedManually="true" />
   <component name="PropertiesComponent">
+    <property name="SHARE_PROJECT_CONFIGURATION_FILES" value="true" />
     <property name="WebServerToolWindowFactoryState" value="false" />
     <property name="aspect.path.notification.shown" value="true" />
     <property name="last_opened_file_path" value="$PROJECT_DIR$/src/main/resources" />
@@ -73,10 +100,22 @@
       <option name="presentableId" value="Default" />
       <updated>1571690179481</updated>
       <workItem from="1571690183213" duration="2581000" />
+      <workItem from="1572476526002" duration="1778000" />
     </task>
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
     <option name="version" value="1" />
+  </component>
+  <component name="Vcs.Log.Tabs.Properties">
+    <option name="TAB_STATES">
+      <map>
+        <entry key="MAIN">
+          <value>
+            <State />
+          </value>
+        </entry>
+      </map>
+    </option>
   </component>
 </project>

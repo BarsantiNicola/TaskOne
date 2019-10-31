@@ -15,11 +15,11 @@ public class HTeam {
 	private String location;
 
 	@OneToMany( cascade = CascadeType.ALL )
-	@JoinColumn( name="team")
- private Set<HEmployee> members;
+	@JoinColumn( name="employees")
+    private Set<HEmployee> members;
 
 	@OneToMany( cascade = CascadeType.ALL )
-	@JoinColumn( name="team")
+	@JoinColumn( name="products")
 	private Set<HProduct> products;
 
 

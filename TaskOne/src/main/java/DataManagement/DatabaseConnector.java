@@ -1,5 +1,6 @@
 package DataManagement;
 
+import DataManagement.Hibernate.*;
 import beans.Employee;
 import beans.Order;
 import beans.Product;
@@ -9,6 +10,9 @@ import java.sql.*;
 import java.util.ArrayList;
 import java.util.List;
 
+//This class manages the connection with the DB. In particular, the connection is established 
+//into the static block, and statements are prepared there too. The class offers different 
+//functions that execute these statements.
 
 public class DatabaseConnector extends DataConnector{
 
@@ -49,13 +53,19 @@ public class DatabaseConnector extends DataConnector{
 	private static PreparedStatement updateProductAvailability;
 	private static PreparedStatement getProductType;
 
+	//  DATA TRANSFER
+	
+	private static PreparedStatement getHEmployee;
+	private static PreparedStatement getHTeam;
+	
 	//initialize connection and statements
 	static {
 
-		connectionString = "jdbc:mysql://localhost:3306/exercise1?user=root&password=root&useJDBCCompliantTimezoneShift=true&useLegacyDatetimeCode=false&serverTimezone=UTC&&sessionVariables=storage_engine=InnoDB";
+		connectionString = "jdbc:mysql://localhost:3306/exercise1?user=root&password=root&useJDBCCompliantTimezoneShift=true&useLegacyDatetimeCode=false&serverTimezone=UTC";
 		myConnection = null;
 
 		try {
+			System.out.println("ciao mondo!");
 			myConnection = DriverManager.getConnection(connectionString);
 
 			System.out.println("Database Connection Established");
@@ -239,7 +249,20 @@ public class DatabaseConnector extends DataConnector{
 								" WHERE productType = ?;"
 			);
 
+			//  DATA TRANSFER
 			
+			getHEmployee = myConnection.prepareStatement(
+						"SELECT username , name , surname , mail , salary , role , team" + 
+						" FROM user JOIN employee" + 
+						" ON employee.IDemployee = user.username;"
+					
+					);
+			
+			getHTeam = myConnection.prepareStatement(
+						"SELECT location "
+						+ " FROM team;"
+			);
+					
 			System.out.println("Statements Created Correctly");
 
 		} catch (SQLException caughtException) {
@@ -252,6 +275,7 @@ public class DatabaseConnector extends DataConnector{
 	}
 	
 	//OPERATIONS
+	
 	
 	//delete the user having the given username
 	public boolean deleteUser( String username ) {
@@ -864,7 +888,56 @@ public class DatabaseConnector extends DataConnector{
 			return false;
 		}
 	}
+	
+	public List<HEmployee> getHEmployees(){
+		
+		List<HEmployee> employees = new ArrayList<>();
+		ResultSet set;
+		
+		try {
+			
+			getHEmployee.execute();
+			set = getHEmployee.getResultSet();
+			set.next();
+			while( set.next()) 		
+				employees.add( new HEmployee( set.getString("username") , set.getString("name") ,
+						set.getString("surname") , set.getString("mail") ,  
+						set.getInt("salary") , set.getString("role") , new HTeam("prova") ));
+			
+		}catch( SQLException e ) {
+			
+			System.out.println("SQLException: " + e.getMessage());
+			System.out.println("SQLState: " + e.getSQLState());
+			System.out.println("VendorError: " + e.getErrorCode());
+			
+		}
+		
+		return employees;
+		
+	}
+	
+public List<HTeam> getHTeams(){
+		
+		List<HTeam> teams = new ArrayList<>();
+		ResultSet set;
+		
+		try {
+			
+			getHTeam.execute();
+			set = getHTeam.getResultSet();
+			set.next();
+			while( set.next()) 		
+				teams.add( new HTeam( set.getString("location")));
+			
+		}catch( SQLException e ) {
+			
+			System.out.println("SQLException: " + e.getMessage());
+			System.out.println("SQLState: " + e.getSQLState());
+			System.out.println("VendorError: " + e.getErrorCode());
+			
+		}
+		
+		return teams;
+		
+	}
 }
-//This class manages the connection with the DB. In particular, the connection is established 
-//into the static block, and statements are prepared there too. The class offers different 
-//functions that execute these statements.

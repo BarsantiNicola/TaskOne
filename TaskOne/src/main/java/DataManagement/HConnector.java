@@ -18,7 +18,7 @@ public class HConnector extends DataConnector {
 
     public HConnector(){
 
-        factory = Persistence.createEntityManagerFactory("InnovativeSolutionsDB");
+        factory = Persistence.createEntityManagerFactory("taskOne");
 
     }
 

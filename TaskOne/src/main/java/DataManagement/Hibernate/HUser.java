@@ -22,14 +22,9 @@ public class HUser implements Serializable {
 	@Column( name = "surname", length = 45, nullable = false )
 	private String surname;
 
-	@Column( name = "password", length = 45, nullable = false)
-	private String password;
 
 	@Column( name = "mail", length = 45, nullable = false)
 	private String mail;
-
-    @Column( name = "address", length = 45, nullable = false )
-    private String address;
 
 	//----------------------------------------------------------------------------------------------------------
 	//											CONSTRUCTORS
@@ -37,13 +32,13 @@ public class HUser implements Serializable {
 
 	public HUser(){}
 
-	public HUser(String username, String name, String surname, String password, String mail ){
+	public HUser( String username, String name, String surname, String mail ){
 
 		this.username = username;
 		this.name = name;
 		this.surname = surname;
-		this.password = password;
 		this.mail = mail;
+		
 	}
 
 	//----------------------------------------------------------------------------------------------------------

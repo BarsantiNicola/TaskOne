@@ -12,8 +12,9 @@ public class HEmployee extends HUser implements Serializable {
 	@Column( name = "role", length = 45, nullable = false )
 	private String role;
 
-	@Column( name = "team", nullable = true )
-	private int team;
+	@OneToOne( cascade = CascadeType.ALL )
+	@JoinColumn( name="IDteam")
+	private HTeam team;
 
 	//----------------------------------------------------------------------------------------------------------
 	//										CONSTRUCTORS
@@ -21,9 +22,10 @@ public class HEmployee extends HUser implements Serializable {
 
 	public HEmployee(){}
 
-	public HEmployee(String IDemployee, int salary, String role ){
+	public HEmployee( String username, String name, String surname, String mail , int salary , String role , HTeam team ){
 		
-	//	this.IDemployee = IDemployee;
+		super( username , name , surname , mail );
+		this.team = team;
 		this.salary = salary;
 		this.role = role;
 
@@ -46,7 +48,7 @@ public class HEmployee extends HUser implements Serializable {
 
 	}
 
-	public int getTeam(){
+	public HTeam getTeam(){
 
 		return team;
 
@@ -67,7 +69,7 @@ public class HEmployee extends HUser implements Serializable {
 		this.role = role;
 	}
 
-	public void setTeam( int team ){
+	public void setTeam( HTeam team ){
 
 		this.team = team;
 

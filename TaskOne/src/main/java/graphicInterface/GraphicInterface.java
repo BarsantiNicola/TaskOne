@@ -61,6 +61,10 @@ public class GraphicInterface extends Application implements Initializable {
         primaryStage.show();
 
     }
+    
+    public static void main( String[] args ) {
+    	launch(args);
+    }
 
 
     //  MANDATORY FOR LINK THE INTERFACE TO THE CONTROL SOFTWARE
