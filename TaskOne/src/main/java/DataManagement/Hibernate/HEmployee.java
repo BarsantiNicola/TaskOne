@@ -48,9 +48,9 @@ public class HEmployee extends HUser implements Serializable {
 
 	}
 
-	public HTeam getTeam(){
+	public int getIDTeam(){
 
-		return team;
+		return IDteam;
 
 	}
 
@@ -69,9 +69,9 @@ public class HEmployee extends HUser implements Serializable {
 		this.role = role;
 	}
 
-	public void setTeam( HTeam team ){
+	public void setTeam( int team ){
 
-		this.team = team;
+		this.IDteam = team;
 
 	}
 }
