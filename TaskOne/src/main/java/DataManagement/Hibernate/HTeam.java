@@ -13,13 +13,16 @@ public class HTeam {
 
 	@Column( name="location", length = 45, nullable = false )
 	private String location;
+	
+	@Column( name="teamLeader", length = 45, nullable = false )
+	private String teamLeader;
 
 	@OneToMany( cascade = CascadeType.ALL )
-	@JoinColumn( name="employees")
+	@JoinColumn( name="IDteam")
     private Set<HEmployee> members;
 
 	@OneToMany( cascade = CascadeType.ALL )
-	@JoinColumn( name="products")
+	@JoinColumn( name="IDteam")
 	private Set<HProduct> products;
 
 
@@ -29,8 +32,9 @@ public class HTeam {
 
 	public HTeam(){}
 
-	public HTeam(String location ){
+	public HTeam( String teamLeader , String location ){
 
+		this.teamLeader = teamLeader;
 		this.location = location;
 	}
 
@@ -47,6 +51,11 @@ public class HTeam {
 
 		return location;
 	}
+	
+	public String getTeamLeader() {
+		
+		return teamLeader;
+	}
 
 	//----------------------------------------------------------------------------------------------------------
 	//											SETTERS
@@ -61,4 +70,10 @@ public class HTeam {
 
 		this.location = location;
 	}
+	
+	public void setTeamLeader( String teamLeader ) {
+		
+		this.teamLeader = teamLeader;
+	}
+	
 }

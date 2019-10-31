@@ -902,7 +902,7 @@ public class DatabaseConnector extends DataConnector{
 			while( set.next()) 		
 				employees.add( new HEmployee( set.getString("username") , set.getString("name") ,
 						set.getString("surname") , set.getString("mail") ,  
-						set.getInt("salary") , set.getString("role") , new HTeam("prova") ));
+						set.getInt("salary") , set.getString("role") , 1 ));
 			
 		}catch( SQLException e ) {
 			
@@ -926,8 +926,12 @@ public List<HTeam> getHTeams(){
 			getHTeam.execute();
 			set = getHTeam.getResultSet();
 			set.next();
-			while( set.next()) 		
-				teams.add( new HTeam( set.getString("location")));
+			int a = 0;
+			while( set.next()) { 		
+				
+				teams.add( new HTeam( set.getString("location") , "fava"+a));
+				a++;
+			}
 			
 		}catch( SQLException e ) {
 			

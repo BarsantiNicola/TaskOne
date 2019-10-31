@@ -7,8 +7,12 @@ public class HProductStock {
 
 	@Id
 	@GeneratedValue( strategy = GenerationType.IDENTITY )
-	@Column( name = "IDproduct" , nullable = false )
-	private int IDproduct;
+	@Column( name = "IDstock" , nullable = false )
+	private int IDstock;
+	
+	@Column( name = "IDorder" , nullable = true )
+	private int IDorder;
+	
 
 	//-------------------------------------------
 	// The @ManyToOne annotation tells us that a Product
@@ -31,14 +35,19 @@ public class HProductStock {
 	//										        GETTERS
 	//----------------------------------------------------------------------------------------------------------
 
-	public int getStockID(){
+	public int getIDstock(){
 
-		return IDproduct;
+		return IDstock;
 	}
 
 	public HProduct getProduct(){
 
 		return product;
+	}
+	
+	public int getIDorder() {
+		
+		return IDorder;
 	}
 
 	//----------------------------------------------------------------------------------------------------------
@@ -47,7 +56,17 @@ public class HProductStock {
 
 	public void setIDproduct( int IDproduct){
 
-		this.IDproduct= IDproduct;
+		this.IDstock= IDproduct;
+	}
+	
+	public void setProduct( HProduct product ) {
+		
+		this.product = product;
+	}
+	
+	public void setIDorder( int IDorder ) {
+		
+		this.IDorder = IDorder;
 	}
 
 }

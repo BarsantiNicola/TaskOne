@@ -11,10 +11,10 @@ public class HEmployee extends HUser implements Serializable {
 
 	@Column( name = "role", length = 45, nullable = false )
 	private String role;
+	
+	@Column( name = "IDteam",  nullable = true )
+	private int IDteam;
 
-	@OneToOne( cascade = CascadeType.ALL )
-	@JoinColumn( name="IDteam")
-	private HTeam team;
 
 	//----------------------------------------------------------------------------------------------------------
 	//										CONSTRUCTORS
@@ -22,10 +22,10 @@ public class HEmployee extends HUser implements Serializable {
 
 	public HEmployee(){}
 
-	public HEmployee( String username, String name, String surname, String mail , int salary , String role , HTeam team ){
+	public HEmployee( String username, String name, String surname, String mail , int salary , String role , int team ){
 		
 		super( username , name , surname , mail );
-		this.team = team;
+		this.IDteam = team;
 		this.salary = salary;
 		this.role = role;
 

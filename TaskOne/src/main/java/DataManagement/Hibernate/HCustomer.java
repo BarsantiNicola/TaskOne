@@ -6,8 +6,9 @@ import java.util.Set;
 @Table(name="Customers")
 public class HCustomer extends HUser{
 
+
 	@OneToMany(cascade=CascadeType.ALL)
-	@JoinColumn(name="customer")
+	@JoinColumn(name="username")
 	private Set<HOrder> orders;
 
 	//----------------------------------------------------------------------------------------------------------

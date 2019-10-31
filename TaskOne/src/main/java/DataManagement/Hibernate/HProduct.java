@@ -20,8 +20,8 @@ public class HProduct {
 	@Column( name = "productAvailability", nullable = false )
 	private int productAvailability;
 
-	@Column( name ="team" , nullable = false )
-	private int team;
+	@Column( name ="IDteam" , nullable = false )
+	private int IDteam;
 
 	//----------------------------------------------------------------------------------------------------------
 	//											CONSTRUCTORS

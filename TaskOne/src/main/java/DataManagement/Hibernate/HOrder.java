@@ -30,8 +30,8 @@ public class HOrder {
 	private String customer;
 
 	@OneToOne
- @JoinColumn( name = "IDproduct", nullable = false)
- private HProductStock IDproduct;
+	@JoinColumn( name = "IDstock", nullable = false)
+	private HProductStock productStock;
 
 	//-----------------------------------------
 	// We need to define a one-to-one asssociation 
