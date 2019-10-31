@@ -21,6 +21,15 @@ public class Employee {
 
 	}
 	
+	public Employee( HEmployee employee ) {
+		
+		IDemployee = employee.get 
+		name =
+		surname = 
+		mail = 
+		role = 
+	}
+	
 	public String getIDemployee() {
 		
 		return IDemployee.get();

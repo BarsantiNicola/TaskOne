@@ -4,11 +4,15 @@ import beans.*;
 import javax.persistence.*;
 import java.sql.Timestamp;
 import java.util.*;
+import DataManagement.Hibernate.*;
 
 public class HConnector extends DataConnector {
 
     private	EntityManagerFactory factory;
     private EntityManager entityManager;
+    private HUser user;
+    private HEmployee employee;
+    private HCustomer customer;
 
     public HConnector(){
 
@@ -22,10 +26,42 @@ public class HConnector extends DataConnector {
         factory.close();
 
     }
+    
+    //-----------------------------------------------------------------------------------
+    //                 LOGIN
+    //-----------------------------------------------------------------------------------
+    
+    public UserType login( String username, String password ) {
+    	
+    	try{
 
-    //-------------------------------------------------------------------------------------------------------------------------------
+            entityManager = factory.createEntityManager();
+
+            TypedQuery<HUser> query = entityManager.createQuery(
+                 "SELECT U.username, U.name, U.surname, U.password, U.mail , E.salary , E.role, E.team "
+             +   "FROM user U LEFT JOIN employee E ON U.username = E.IDemployee "
+             +   "WHERE username = ?1 OR name = ?2 OR surname = ?3 OR mail = ?4 OR role = ?5", 
+                    HUser.class );
+
+                query.setParameter( 1, username );
+                query.setParameter( 2, password );
+
+                userList = query.getSingleList();
+
+          } catch (Exception exception){
+
+                exception.printStackTrace();
+                System.out.println("An error occurred in searching users");
+
+          } finally{
+
+                entityManager.close();
+          }
+    }
+    
+    //-----------------------------------------------------------------------------------
     //                 SEARCH OPERATIONS
-    //-------------------------------------------------------------------------------------------------------------------------------
+    //------------------------------------------------------------------------------------
 
     // retrieve all the users having a field that matches with SEARCHED_STRING
     public List<User> searchUsers( String SEARCHED_STRING ){ 
@@ -345,7 +381,7 @@ public class HConnector extends DataConnector {
            +  "WHERE team = ?1", 
               Product.class );
            
-           query.setParameter(1, TEAM_ID)
+           query.setParameter(1, TEAM_ID);
 
            productList = query.getResultList();
 
