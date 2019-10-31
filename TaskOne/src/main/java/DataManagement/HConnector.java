@@ -38,15 +38,15 @@ public class HConnector extends DataConnector {
             entityManager = factory.createEntityManager();
 
             TypedQuery<HUser> query = entityManager.createQuery(
-                 "SELECT U.username, U.name, U.surname, U.password, U.mail , E.salary , E.role, E.team "
-             +   "FROM user U LEFT JOIN employee E ON U.username = E.IDemployee "
-             +   "WHERE username = ?1 OR name = ?2 OR surname = ?3 OR mail = ?4 OR role = ?5", 
+                 "SELECT * "
+             +   "FROM user "
+             +   "WHERE username = ?1 AND password = ?2", 
                     HUser.class );
 
                 query.setParameter( 1, username );
                 query.setParameter( 2, password );
 
-                userList = query.getSingleList();
+                HUser user = query.getSingleResult();
 
           } catch (Exception exception){
 
@@ -62,70 +62,51 @@ public class HConnector extends DataConnector {
     //-----------------------------------------------------------------------------------
     //                 SEARCH OPERATIONS
     //------------------------------------------------------------------------------------
-
-    // retrieve all the users having a field that matches with SEARCHED_STRING
-    public List<User> searchUsers( String SEARCHED_STRING ){ 
-            
-        List<User> userList = new ArrayList<>();
-
-        try{
-
-            entityManager = factory.createEntityManager();
-
-            TypedQuery<User> query = entityManager.createQuery(
-                 "SELECT U.username, U.name, U.surname, U.password, U.mail , E.salary , E.role, E.team "
-                +   "FROM user U LEFT JOIN employee E ON U.username = E.IDemployee "
-                +   "WHERE username = ?1 OR name = ?2 OR surname = ?3 OR mail = ?4 OR role = ?5", 
-                    User.class );
-
-                query.setParameter( 1, SEARCHED_STRING );
-                query.setParameter( 2, SEARCHED_STRING );
-                query.setParameter( 3, SEARCHED_STRING );
-                query.setParameter( 4, SEARCHED_STRING );
-                query.setParameter( 5, SEARCHED_STRING );
-
-                userList = query.getResultList();
-
-          } catch (Exception exception){
-
-                exception.printStackTrace();
-                System.out.println("An error occurred in searching users");
-
-          } finally{
-
-                entityManager.close();
-          }
-
-          return userList; 
-     }
-
-     // retrieve all users ( should be renamed  )
-     public List<User> getUsers(){ 
-
+     
+    // retrieve Users; if SEARCHED_STRING is null, retrieve all employees; if not null
+    // retrieve all employees who have a field that match with SEARCHED_STRING
+     public List<User> newsearchUsers( String SEARCHED_STRING ){
+    	 
     	 List<User> userList = new ArrayList<>();
+    	 List<HUser> huserList = new ArrayList<>();
+    	 
+    	 try{
 
-         try{
+             entityManager = factory.createEntityManager();
 
-        	 entityManager = factory.createEntityManager();
+             String queryText = "SELECT U.username, U.name, U.surname, U.password, U.mail , E.salary , E.role, E.team FROM user U LEFT JOIN employee E ON U.username = E.IDemployee ";
+             
+             if( SEARCHED_STRING != null )
+            	 queryText += "WHERE username = ?1 OR name = ?2 OR surname = ?3 OR mail = ?4 OR role = ?5";
+             
+             TypedQuery<HUser> query = entityManager.createQuery(queryText, HUser.class );
 
-             TypedQuery<User> query = entityManager.createQuery(
-                "SELECT U.username, U.name, U.surname, U.password, U.mail , E.salary , E.role, E.team "
-             +  "FROM user U LEFT JOIN employee E ON U.username = E.IDemployee", 
-                User.class);
+             if( SEARCHED_STRING != null ) {
+            	 query.setParameter( 1, SEARCHED_STRING );
+                 query.setParameter( 2, SEARCHED_STRING );
+                 query.setParameter( 3, SEARCHED_STRING );
+                 query.setParameter( 4, SEARCHED_STRING );
+                 query.setParameter( 5, SEARCHED_STRING );
+             }
+             
+             huserList = query.getResultList();
 
-             userList = query.getResultList();
+           } catch (Exception exception){
 
-          } catch (Exception exception){
+                 exception.printStackTrace();
+                 System.out.println("An error occurred in searching users");
 
-              exception.printStackTrace();
-              System.out.println("An error occurred in searching users");
+           } finally{
 
-          } finally{
-
-        	  entityManager.close();
-          }
-
-          return userList; 
+                 entityManager.close();
+           }
+    	 
+    	 //DEVO CONVERTIRE IN USER, HO HUSER
+    	 for( int i=0; i<huserList.size(); i++ ) {
+    		 userList.
+    	 }
+    	 
+    	 return userList;
      }
 
      // retrieve a list of the available products 

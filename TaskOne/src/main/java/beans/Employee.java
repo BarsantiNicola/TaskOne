@@ -2,6 +2,7 @@
 package beans;
 
 import javafx.beans.property.SimpleStringProperty;
+import DataManagement.Hibernate.*;
 
 public class Employee {
 	
@@ -23,11 +24,11 @@ public class Employee {
 	
 	public Employee( HEmployee employee ) {
 		
-		IDemployee = employee.get 
-		name =
-		surname = 
-		mail = 
-		role = 
+		IDemployee = employee.getIDemployee()
+		name = employee.getName();
+		surname = employee.getSurname();
+		mail = employee.getMail();
+		role = employee.getRole();
 	}
 	
 	public String getIDemployee() {
