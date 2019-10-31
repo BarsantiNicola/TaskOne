@@ -57,6 +57,7 @@ public class DatabaseConnector extends DataConnector{
 	
 	private static PreparedStatement getHEmployee;
 	private static PreparedStatement getHTeam;
+	private static PreparedStatement getHHeadDepartment;
 	
 	//initialize connection and statements
 	static {
@@ -259,8 +260,13 @@ public class DatabaseConnector extends DataConnector{
 					);
 			
 			getHTeam = myConnection.prepareStatement(
-						"SELECT location "
+						"SELECT IDteam , location , teamLeader"
 						+ " FROM team;"
+			);
+			
+			getHHeadDepartment = myConnection.prepareStatement(
+					    "SELECT * FROM employee JOIN team ON employee.IDemployee = team.teamLeader "
+					    + " JOIN user ON employee.IDemployee = user.username;"
 			);
 					
 			System.out.println("Statements Created Correctly");
@@ -925,13 +931,10 @@ public List<HTeam> getHTeams(){
 			
 			getHTeam.execute();
 			set = getHTeam.getResultSet();
-			set.next();
-			int a = 0;
-			while( set.next()) { 		
-				
-				teams.add( new HTeam( set.getString("location") , "fava"+a));
-				a++;
-			}
+
+			while( set.next()) 				
+				teams.add( new HTeam( set.getInt("IDteam" ) , set.getString("teamLeader") , set.getString("location")));
+
 			
 		}catch( SQLException e ) {
 			
@@ -943,5 +946,30 @@ public List<HTeam> getHTeams(){
 		
 		return teams;
 		
+	}
+
+	public List<HHeadDepartment> getHHeadDepartment(){
+		
+		List<HHeadDepartment> managers = new ArrayList<>();
+		ResultSet set;
+		
+		try {
+			
+			getHHeadDepartment.execute();
+			set = getHHeadDepartment.getResultSet();
+			set.next();
+			while( set.next()) 		
+				
+				managers.add( new HHeadDepartment( set.getString("username") , set.getString("name") , set.getString("surname") , set.getString("mail") , set.getInt("salary") , set.getString("role" ) , new HTeam( set.getInt("IDteam") , set.getString("teamLeader") , set.getString("location"))));
+			
+		}catch( SQLException e ) {
+			
+			System.out.println("SQLException: " + e.getMessage());
+			System.out.println("SQLState: " + e.getSQLState());
+			System.out.println("VendorError: " + e.getErrorCode());
+			
+		}
+		
+		return managers;
 	}
 }

@@ -7,7 +7,7 @@ import java.util.Set;
 public class HTeam {
 
 	@Id
-	@GeneratedValue( strategy = GenerationType.IDENTITY ) //GenerationType.IDENTITY relies on an auto-incremented database column to generate the primary key
+	
 	@Column( name="IDteam", nullable = false )
 	private int IDteam;
 
@@ -32,8 +32,9 @@ public class HTeam {
 
 	public HTeam(){}
 
-	public HTeam( String teamLeader , String location ){
+	public HTeam( int IDteam , String teamLeader , String location ){
 
+		this.IDteam = IDteam;
 		this.teamLeader = teamLeader;
 		this.location = location;
 	}

@@ -12,8 +12,11 @@ public class HEmployee extends HUser implements Serializable {
 	@Column( name = "role", length = 45, nullable = false )
 	private String role;
 	
-	@Column( name = "IDteam",  nullable = true )
+	@Column( name ="IDteam" , nullable = true)
 	private int IDteam;
+	
+
+
 
 
 	//----------------------------------------------------------------------------------------------------------
@@ -69,7 +72,7 @@ public class HEmployee extends HUser implements Serializable {
 		this.role = role;
 	}
 
-	public void setTeam( int team ){
+	public void setIDTeam( int team ){
 
 		this.IDteam = team;
 
