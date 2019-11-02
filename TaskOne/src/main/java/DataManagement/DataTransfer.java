@@ -1,5 +1,6 @@
 package DataManagement;
 
+import DataManagement.Hibernate.HAdministrator;
 import DataManagement.Hibernate.HCustomer;
 import DataManagement.Hibernate.HEmployee;
 import DataManagement.Hibernate.HHeadDepartment;
@@ -129,27 +130,30 @@ public class DataTransfer {
 
         DataTransfer manager = new DataTransfer();         
         DatabaseConnector conn = new DatabaseConnector();  
-        HHeadDepartment x = new HHeadDepartment();
-        HTeam t = new HTeam();
-        t.setLocation("manchester");
-        t.setTeamLeader("nicola");
-        x.setName("nicola");
-        x.setSurname("barsanti");
-        x.setUsername("nico");
-        x.setRole("Engineer");
-        x.setMail("barsa@gmail.com");
-        x.setMyTeam(t);
-       // manager.entityManager.persist(x);
-/*
+       /* HAdministrator x = new HAdministrator("admin" , "nicola" , "barsanti" , "barsa@gmail.com" , 2000 );
+
+        System.out.println("\t\t-------TEST VERIFICA DATABASE-------");
+        System.out.println("INSERIMENTO UTENTI")
+        
+        System.out.println("	--INSERIMENTO ADMINISTRATOR");
+        manager.entityManager.persist(x);
+        x = null;
+        System.out.println("estrazione");
+        HEmployee y = manager.entityManager.find( HEmployee.class , "admin" );
+        System.out.println("admin: " + y.getUsername() );
+        
+      */ 
+
         manager.saveHTeams( conn.getHTeams());
-        manager.saveHEmployees(conn.getHEmployees());
+        manager.saveHProduct(conn.getHProduct());
+        //manager.saveHEmployees(conn.getHEmployees());
 
         
-        manager.saveHHeadDepartment(conn.getHHeadDepartment());
-        manager.saveHProduct(conn.getHProduct());
-        manager.saveHProductStock(conn.getHProductStock());
-        manager.saveHOrder( conn.getHOrder());
-        manager.saveHCustomer( conn.getHCustomer());*/
+        //manager.saveHHeadDepartment(conn.getHHeadDepartment());
+
+        //manager.saveHProductStock(conn.getHProductStock());
+        //manager.saveHOrder( conn.getHOrder());
+        //manager.saveHCustomer( conn.getHCustomer());
 
         System.out.println("Finished");
 

@@ -1,19 +1,22 @@
 package DataManagement.Hibernate;
-import javax.persistence.*;
-import java.io.Serializable;
+
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.Inheritance;
+import javax.persistence.InheritanceType;
+import javax.persistence.Table;
 
 @Entity
-@Table(name="Employees")
-public class HEmployee extends HUser implements Serializable {
-
+@Inheritance(strategy = InheritanceType.SINGLE_TABLE)
+public class HEmployee extends HUser{
+	
 	@Column( name = "salary", nullable = false )
 	private int salary;
 
 	@Column( name = "role", length = 45, nullable = false )
 	private String role;
 	
-	@Column( name ="IDteam" , nullable = true)
-	private int IDteam;
+
 
 	//----------------------------------------------------------------------------------------------------------
 	//										CONSTRUCTORS
@@ -62,6 +65,5 @@ public class HEmployee extends HUser implements Serializable {
 
 		this.role = role;
 	}
-
 
 }

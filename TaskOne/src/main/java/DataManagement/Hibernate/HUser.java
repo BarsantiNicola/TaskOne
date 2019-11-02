@@ -1,16 +1,14 @@
 package DataManagement.Hibernate;
 
-import org.hibernate.annotations.Cache;
-import org.hibernate.annotations.CacheConcurrencyStrategy;
-import org.hibernate.annotations.NaturalIdCache;
-
 import javax.persistence.*;
-import java.io.Serializable;
 
 
-@MappedSuperclass
+
+//@MappedSuperclass
+@Entity
+@Inheritance(strategy = InheritanceType.SINGLE_TABLE)
 @Table(name="Users")
-public class HUser implements Serializable {
+public class HUser {
 
 	@Id 
 	@Column( name = "username", length = 45, nullable = false )

@@ -30,7 +30,7 @@ public class HOrder {
 	
 	
 	@OneToOne
-	@JoinTable(name = "productStock",joinColumns = {@JoinColumn(name = "IDorder")},
+	@JoinTable(name = "orderstock",joinColumns = {@JoinColumn(name = "IDorder")},
             inverseJoinColumns = {@JoinColumn(name = "IDstock")})
 	HProductStock productStock;
 
@@ -128,16 +128,6 @@ public class HOrder {
 	public void setStatus( String status ){
 
 		this.status = status;
-	}
-	
-	public void setCustomer( String customer ) {
-		
-//		this.customer = customer;
-	}
-	
-	public void setIDstock( int IDstock ) {
-		
-	//	this.IDstock = IDstock;
 	}
 
 	public void setProductStock( HProductStock product ){

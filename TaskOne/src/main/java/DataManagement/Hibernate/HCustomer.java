@@ -5,7 +5,6 @@ import java.util.List;
 import java.util.Set;
 
 @Entity
-@Table(name="Customers")
 public class HCustomer extends HUser{
 	
 	@OneToMany

@@ -18,7 +18,7 @@ public class HTeam {
 	@OneToMany(cascade = CascadeType.ALL)
 	@JoinTable(name = "members",joinColumns = {@JoinColumn(name = "teamLeader")},
             inverseJoinColumns = {@JoinColumn(name = "IDemployee")})
-	List<HEmployee> members;
+	List<HTeamedEmployee> members;
 	
 	@OneToMany(cascade = CascadeType.ALL)
 	@JoinTable(name = "teamProducts",joinColumns = {@JoinColumn(name = "teamLeader")},
@@ -62,7 +62,7 @@ public class HTeam {
 	      .getResultList();*/
 	}
 	
-	public List<HEmployee> getMembers(){
+	public List<HTeamedEmployee> getMembers(){
 		
 		return members;
 	}
@@ -88,7 +88,7 @@ public class HTeam {
 		this.teamProducts = products;
 	}
 	
-	public void setMembers( List<HEmployee> members ) {
+	public void setMembers( List<HTeamedEmployee> members ) {
 		
 		this.members = members;
 	}
