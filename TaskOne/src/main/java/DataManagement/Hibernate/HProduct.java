@@ -1,15 +1,16 @@
 package DataManagement.Hibernate;
 import javax.persistence.*;
 
+import org.hibernate.annotations.NaturalId;
+
 
 @Entity
 @Table( name = "Products" )
 public class HProduct {
 
 	@Id
-	@Column( name="productName", length = 45, nullable = false )
+	@Column( name="productName", length = 45, nullable = false , insertable = false , updatable  = false)
 	private String productName;
-
 
 	@Column( name = "productPrice", nullable = false )
 	private int productPrice;
@@ -20,6 +21,9 @@ public class HProduct {
 	@Column( name = "productAvailability", nullable = false )
 	private int productAvailability;
 
+	@Column( name = "productType" , nullable = false )
+	private int productType;
+	
 	@Column( name ="IDteam" , nullable = false )
 	private int IDteam;
 
@@ -29,12 +33,15 @@ public class HProduct {
 
 	public HProduct(){}
 
-	public HProduct(String name, int price, String description, int availability ){
+	public HProduct(String name, int price, String description, int availability , int productType , int teamID ){
 
 		this.productName = name;
 		this.productPrice = price;
 		this.productDescription = description;
 		this.productAvailability = availability;
+		this.productType = productType;
+		this.IDteam = teamID;
+		
 	}
 
 	//----------------------------------------------------------------------------------------------------------
@@ -60,11 +67,12 @@ public class HProduct {
 
 		return productAvailability;
 	}
+	
+	public int getProductType() {
+		
+		return productType;
+	}
 
-	/*public HTeam getTeam(){
-
-		return team;
-	}*/
 
 	//----------------------------------------------------------------------------------------------------------
 	//											SETTERS
@@ -89,10 +97,11 @@ public class HProduct {
 
 		this.productAvailability = productAvailability;
 	}
-
-	/*public void setTeam( HTeam team ){
-
-		this.team = team;
-	}*/
+	
+	public void setProductType( int productType ) {
+		
+		this.productType = productType;
+	}
+	
 
 }

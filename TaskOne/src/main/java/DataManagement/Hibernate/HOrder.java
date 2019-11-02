@@ -1,6 +1,7 @@
 package DataManagement.Hibernate;
 import javax.persistence.*;
 import java.sql.Timestamp;
+import java.util.List;
 import java.util.Set;
 
 @Entity
@@ -13,7 +14,7 @@ public class HOrder {
 	// the primary key. 
 	//--------------------------------------------
 	@Id
-	@GeneratedValue( strategy = GenerationType.IDENTITY )
+	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	@Column( name = "IDorder", nullable = false )
 	private int IDorder;
 
@@ -28,10 +29,14 @@ public class HOrder {
 
 	@Column( name = "customer" , length = 45 , nullable = false)
 	private String customer;
-
+	
+	@Column( name = "IDstock", nullable = false , insertable = false , updatable = false)
+	private int IDstock;
+	
 	@OneToOne
-	@JoinColumn( name = "IDstock", nullable = false)
-	private HProductStock productStock;
+	@JoinTable(name = "productStock",joinColumns = {@JoinColumn(name = "IDstock")},
+            inverseJoinColumns = {@JoinColumn(name = "IDstock")})
+	HProductStock productStock;
 
 	//-----------------------------------------
 	// We need to define a one-to-one asssociation 
@@ -45,9 +50,6 @@ public class HOrder {
 	// annotations in the ProductStock entity.
 	// Optional = false means that the relation is mandatory
 	//-----------------------------------------
-//	@OneToOne( cascade = CascadeType.ALL, optional = false )
-  //
-   // private HProduct product;
 
 	//----------------------------------------------------------------------------------------------------------
 	//										          CONSTRUCTORS
@@ -60,11 +62,13 @@ public class HOrder {
     // Note that the constructor doesn't need the generatedValue as
     // parameter
     //------------------------------------------
-	public HOrder(Timestamp purchaseDate, int price, String status ){
+	public HOrder( Timestamp purchaseDate, int price, String status , String customer , int IDstock ){
 
 		this.purchaseDate = purchaseDate;
 		this.price = price;
 		this.status = status;
+		this.customer = customer;
+		this.IDstock = IDstock;
 	}
 
 	//----------------------------------------------------------------------------------------------------------
@@ -90,11 +94,21 @@ public class HOrder {
 
 		return status;
 	}
+	
+	public String getCustomer() {
+		
+		return customer;
+	}
+	
+	public int getIDstock() {
+		
+		return IDstock;
+	}
 
-	//public HProduct getProduct(){
+	public HProductStock getProductStock(){
 
-	//	return product;
-	//}
+		return null;
+	}
 
 	//----------------------------------------------------------------------------------------------------------
 	//										             SETTERS
@@ -119,11 +133,21 @@ public class HOrder {
 
 		this.status = status;
 	}
+	
+	public void setCustomer( String customer ) {
+		
+		this.customer = customer;
+	}
+	
+	public void setIDstock( int IDstock ) {
+		
+		this.IDstock = IDstock;
+	}
 
-	/*public void setProduct( HProduct product ){
+	public void setProductStock( HProductStock product ){
 
-		this.product = product;
-	}*/
+		this.productStock = product;
+	}
 
 	
 }

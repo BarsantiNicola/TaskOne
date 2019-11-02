@@ -15,20 +15,15 @@ public class HEmployee extends HUser implements Serializable {
 	@Column( name ="IDteam" , nullable = true)
 	private int IDteam;
 	
-
-
-
-
 	//----------------------------------------------------------------------------------------------------------
 	//										CONSTRUCTORS
 	//----------------------------------------------------------------------------------------------------------
 
 	public HEmployee(){}
 
-	public HEmployee( String username, String name, String surname, String mail , int salary , String role , int team ){
+	public HEmployee( String username, String name, String surname, String mail , int salary , String role  ){
 		
 		super( username , name , surname , mail );
-		this.IDteam = team;
 		this.salary = salary;
 		this.role = role;
 
@@ -51,11 +46,7 @@ public class HEmployee extends HUser implements Serializable {
 
 	}
 
-	public int getIDTeam(){
 
-		return IDteam;
-
-	}
 
 	//----------------------------------------------------------------------------------------------------------
 	//										SETTERS
@@ -72,9 +63,5 @@ public class HEmployee extends HUser implements Serializable {
 		this.role = role;
 	}
 
-	public void setIDTeam( int team ){
 
-		this.IDteam = team;
-
-	}
 }

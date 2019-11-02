@@ -1,4 +1,6 @@
 package DataManagement.Hibernate;
+import java.util.List;
+
 import javax.persistence.*;
 
 @Entity
@@ -6,12 +8,16 @@ import javax.persistence.*;
 public class HProductStock {
 
 	@Id
-	@GeneratedValue( strategy = GenerationType.IDENTITY )
-	@Column( name = "IDstock" , nullable = false )
+	//@GeneratedValue( strategy = GenerationType.IDENTITY )
+	@Column( name = "IDstock" , nullable = false , insertable = false , updatable = false)
 	private int IDstock;
 	
-	@Column( name = "IDorder" , nullable = true )
-	private int IDorder;
+	@Column( name = "productName", nullable = true , insertable = false , updatable = false)
+	private String productName;
+	
+	@OneToOne
+	@JoinTable(name = "product",joinColumns = {@JoinColumn(name = "productName")})
+	HProduct product;
 	
 
 	//-------------------------------------------
@@ -21,15 +27,19 @@ public class HProductStock {
 	// save a ProductStock without specifying the Product
 	//-------------------------------------------
 
-	@ManyToOne
-	@JoinColumn( name = "productName", nullable = false )
-	private HProduct product;
+
 
 	//----------------------------------------------------------------------------------------------------------
 	//										        CONSTRUCTORS
 	//----------------------------------------------------------------------------------------------------------
 
-	public HProductStock(){}
+	public HProductStock() {}
+	
+	public HProductStock( int IDstock , String productName ){
+		
+		this.IDstock = IDstock;
+		this.productName = productName;
+	}
 
 	//----------------------------------------------------------------------------------------------------------
 	//										        GETTERS
@@ -39,15 +49,10 @@ public class HProductStock {
 
 		return IDstock;
 	}
-
-	public HProduct getProduct(){
-
-		return product;
-	}
 	
-	public int getIDorder() {
+	public String getProductName() {
 		
-		return IDorder;
+		return productName;
 	}
 
 	//----------------------------------------------------------------------------------------------------------
@@ -59,14 +64,9 @@ public class HProductStock {
 		this.IDstock= IDproduct;
 	}
 	
-	public void setProduct( HProduct product ) {
+	public void setProductName( String productName ) {
 		
-		this.product = product;
-	}
-	
-	public void setIDorder( int IDorder ) {
-		
-		this.IDorder = IDorder;
+		this.productName = productName;
 	}
 
 }

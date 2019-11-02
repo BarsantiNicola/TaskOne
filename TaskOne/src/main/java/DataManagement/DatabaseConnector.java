@@ -58,6 +58,10 @@ public class DatabaseConnector extends DataConnector{
 	private static PreparedStatement getHEmployee;
 	private static PreparedStatement getHTeam;
 	private static PreparedStatement getHHeadDepartment;
+	private static PreparedStatement getHProduct;
+	private static PreparedStatement getHOrder;
+	private static PreparedStatement getHProductStock;
+	private static PreparedStatement getHCustomer;
 	
 	//initialize connection and statements
 	static {
@@ -260,14 +264,32 @@ public class DatabaseConnector extends DataConnector{
 					);
 			
 			getHTeam = myConnection.prepareStatement(
-						"SELECT IDteam , location , teamLeader"
-						+ " FROM team;"
+						"SELECT * FROM team;"
 			);
 			
 			getHHeadDepartment = myConnection.prepareStatement(
 					    "SELECT * FROM employee JOIN team ON employee.IDemployee = team.teamLeader "
 					    + " JOIN user ON employee.IDemployee = user.username;"
 			);
+			
+			getHProduct = myConnection.prepareStatement(
+						"SELECT productType , productName, productPrice, productDescription, productType , productAvailability , team "
+						+ " FROM product JOIN assembles ON producttype = product;"
+			);
+			
+			getHOrder = myConnection.prepareStatement(
+						"SELECT * FROM orders JOIN product_stock ON orders.product = product_stock.IDproduct;"
+					);
+			
+			getHProductStock = myConnection.prepareStatement(
+					
+						"select IDproduct , productName FROM product_stock join product on product_stock.productType = product.productType;"
+					);
+			
+			getHCustomer = myConnection.prepareStatement(
+					
+						"SELECT * FROM USER WHERE username NOT IN ( SELECT IDemployee from employee );"
+					);
 					
 			System.out.println("Statements Created Correctly");
 
@@ -908,7 +930,7 @@ public class DatabaseConnector extends DataConnector{
 			while( set.next()) 		
 				employees.add( new HEmployee( set.getString("username") , set.getString("name") ,
 						set.getString("surname") , set.getString("mail") ,  
-						set.getInt("salary") , set.getString("role") , 1 ));
+						set.getInt("salary") , set.getString("role")  ));
 			
 		}catch( SQLException e ) {
 			
@@ -933,7 +955,7 @@ public List<HTeam> getHTeams(){
 			set = getHTeam.getResultSet();
 
 			while( set.next()) 				
-				teams.add( new HTeam( set.getInt("IDteam" ) , set.getString("teamLeader") , set.getString("location")));
+				teams.add( new HTeam( set.getString("teamLeader") , set.getString("location")));
 
 			
 		}catch( SQLException e ) {
@@ -960,7 +982,7 @@ public List<HTeam> getHTeams(){
 			set.next();
 			while( set.next()) 		
 				
-				managers.add( new HHeadDepartment( set.getString("username") , set.getString("name") , set.getString("surname") , set.getString("mail") , set.getInt("salary") , set.getString("role" ) , new HTeam( set.getInt("IDteam") , set.getString("teamLeader") , set.getString("location"))));
+				managers.add( new HHeadDepartment( set.getString("username") , set.getString("name") , set.getString("surname") , set.getString("mail") , set.getInt("salary") , set.getString("role" ) ));
 			
 		}catch( SQLException e ) {
 			
@@ -971,5 +993,106 @@ public List<HTeam> getHTeams(){
 		}
 		
 		return managers;
+	}
+	
+	public List<HProduct> getHProduct(){
+		
+		List<HProduct> products = new ArrayList<>();
+		ResultSet set;
+		
+		try {
+			
+			getHProduct.execute();
+			set = getHProduct.getResultSet();
+			set.next();
+			while( set.next()) 		
+				
+				products.add( new HProduct( set.getString("productName") , set.getInt("productPrice") , set.getString("productDescription") , set.getInt("productAvailability") , set.getInt("productType") , set.getInt("team")));
+			
+		}catch( SQLException e ) {
+			
+			System.out.println("SQLException: " + e.getMessage());
+			System.out.println("SQLState: " + e.getSQLState());
+			System.out.println("VendorError: " + e.getErrorCode());
+			
+		}
+		
+		return products;
+	}
+	
+	public List<HOrder> getHOrder(){
+		
+		List<HOrder> orders = new ArrayList<>();
+		ResultSet set;
+		
+		try {
+			
+			getHOrder.execute();
+			set = getHOrder.getResultSet();
+			set.next();
+			while( set.next()) 		
+				
+				orders.add( new HOrder( set.getTimestamp("purchaseDate") , set.getInt("price") , set.getString("status") , set.getString("customer") , set.getInt("product")));
+		
+		}catch( SQLException e ) {
+			
+			System.out.println("SQLException: " + e.getMessage());
+			System.out.println("SQLState: " + e.getSQLState());
+			System.out.println("VendorError: " + e.getErrorCode());
+			
+		}
+		
+		return orders;
+	}
+	
+	public List<HProductStock> getHProductStock(){
+		
+		List<HProductStock> stocks = new ArrayList<>();
+		ResultSet set;
+		
+		try {
+			
+			getHProductStock.execute();
+			set = getHProductStock.getResultSet();
+			set.next();
+			while( set.next()) 		
+				
+				stocks.add( new HProductStock( set.getInt("IDproduct") , set.getString("productName")));
+		
+		}catch( SQLException e ) {
+			
+			System.out.println("SQLException: " + e.getMessage());
+			System.out.println("SQLState: " + e.getSQLState());
+			System.out.println("VendorError: " + e.getErrorCode());
+			
+		}
+		
+		return stocks;
+	}
+	
+	public List<HCustomer> getHCustomer(){
+		
+		List<HCustomer> stocks = new ArrayList<>();
+		ResultSet set;
+		
+		try {
+			
+			getHCustomer.execute();
+			set = getHCustomer.getResultSet();
+			set.next();
+			while( set.next()) 		
+				
+				stocks.add( new HCustomer( set.getString("username") , set.getString("name") ,
+						set.getString("surname") , set.getString("mail") ));
+			
+		}catch( SQLException e ) {
+			
+			System.out.println("SQLException: " + e.getMessage());
+			System.out.println("SQLState: " + e.getSQLState());
+			System.out.println("VendorError: " + e.getErrorCode());
+			
+		}
+		
+		return stocks;
 	}
 }
