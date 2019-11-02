@@ -9,9 +9,9 @@ import java.util.Set;
 public class HCustomer extends HUser{
 	
 	@OneToMany
-	@JoinTable(name = "orders",joinColumns = {@JoinColumn(name = "username")},
-            inverseJoinColumns = {@JoinColumn(name = "customer")})
-	List<HOrder> orders;
+	@JoinTable(name = "myOrders",joinColumns = {@JoinColumn(name = "username")},
+            inverseJoinColumns = {@JoinColumn(name = "IDorder")})
+	List<HOrder> myOrders;
 
 
 	//----------------------------------------------------------------------------------------------------------
@@ -26,14 +26,14 @@ public class HCustomer extends HUser{
 	
 	}
 	
-	public List<HOrder> getOrders(){
+	public List<HOrder> getMyOrders(){
 		
-		return orders;
+		return myOrders;
 	}
 	
-	public void setOrders( List<HOrder> orders ) {
+	public void setMyOrders( List<HOrder> orders ) {
 		
-		this.orders = orders;
+		this.myOrders = orders;
 	}
 
 

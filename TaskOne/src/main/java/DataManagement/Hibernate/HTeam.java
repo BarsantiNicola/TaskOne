@@ -17,13 +17,13 @@ public class HTeam {
 	
 	@OneToMany(cascade = CascadeType.ALL)
 	@JoinTable(name = "members",joinColumns = {@JoinColumn(name = "teamLeader")},
-            inverseJoinColumns = {@JoinColumn(name = "IDteam")})
+            inverseJoinColumns = {@JoinColumn(name = "IDemployee")})
 	List<HEmployee> members;
 	
 	@OneToMany(cascade = CascadeType.ALL)
-	@JoinTable(name = "products",joinColumns = {@JoinColumn(name = "teamLeader")},
-            inverseJoinColumns = {@JoinColumn(name = "IDteam")})
-	List<HProduct> products;
+	@JoinTable(name = "teamProducts",joinColumns = {@JoinColumn(name = "teamLeader")},
+            inverseJoinColumns = {@JoinColumn(name = "productName")})
+	List<HProduct> teamProducts;
 
 
 
@@ -55,9 +55,9 @@ public class HTeam {
 	}
 	
 
-	public List<HProduct> getProducts() {
+	public List<HProduct> getTeamProducts() {
 
-	    return products;/*HConnector.MANAGER.createQuery("SELECT movie product from Products product where product.IDteam = ?1")
+	    return teamProducts;/*HConnector.MANAGER.createQuery("SELECT movie product from Products product where product.IDteam = ?1")
 	      .setParameter(1, teamLeader )
 	      .getResultList();*/
 	}
@@ -83,9 +83,9 @@ public class HTeam {
 		this.teamLeader = teamLeader;
 	}
 	
-	public void setProducts( List<HProduct> products) {
+	public void setTeamProducts( List<HProduct> products) {
 		
-		this.products = products;
+		this.teamProducts = products;
 	}
 	
 	public void setMembers( List<HEmployee> members ) {

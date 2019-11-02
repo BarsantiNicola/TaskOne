@@ -139,7 +139,7 @@ public class DataTransfer {
         x.setRole("Engineer");
         x.setMail("barsa@gmail.com");
         x.setMyTeam(t);
-        manager.entityManager.persist(x);
+       // manager.entityManager.persist(x);
 /*
         manager.saveHTeams( conn.getHTeams());
         manager.saveHEmployees(conn.getHEmployees());

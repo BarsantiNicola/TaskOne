@@ -13,8 +13,8 @@ public class HOrder {
 	// while the @GeneratedValue defines the strategy to obtain
 	// the primary key. 
 	//--------------------------------------------
+	//@GeneratedValue(strategy = GenerationType.IDENTITY)
 	@Id
-	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	@Column( name = "IDorder", nullable = false )
 	private int IDorder;
 
@@ -27,14 +27,10 @@ public class HOrder {
 	@Column( name = "status", length = 45, nullable = false )
 	private String status;
 
-	@Column( name = "customer" , length = 45 , nullable = false)
-	private String customer;
 	
-	@Column( name = "IDstock", nullable = false , insertable = false , updatable = false)
-	private int IDstock;
 	
 	@OneToOne
-	@JoinTable(name = "productStock",joinColumns = {@JoinColumn(name = "IDstock")},
+	@JoinTable(name = "productStock",joinColumns = {@JoinColumn(name = "IDorder")},
             inverseJoinColumns = {@JoinColumn(name = "IDstock")})
 	HProductStock productStock;
 
@@ -67,8 +63,8 @@ public class HOrder {
 		this.purchaseDate = purchaseDate;
 		this.price = price;
 		this.status = status;
-		this.customer = customer;
-		this.IDstock = IDstock;
+		//this.customer = customer;
+	//	this.IDstock = IDstock;
 	}
 
 	//----------------------------------------------------------------------------------------------------------
@@ -97,12 +93,12 @@ public class HOrder {
 	
 	public String getCustomer() {
 		
-		return customer;
+		return null;//customer;
 	}
 	
 	public int getIDstock() {
 		
-		return IDstock;
+		return 0;//IDstock;
 	}
 
 	public HProductStock getProductStock(){
@@ -136,12 +132,12 @@ public class HOrder {
 	
 	public void setCustomer( String customer ) {
 		
-		this.customer = customer;
+//		this.customer = customer;
 	}
 	
 	public void setIDstock( int IDstock ) {
 		
-		this.IDstock = IDstock;
+	//	this.IDstock = IDstock;
 	}
 
 	public void setProductStock( HProductStock product ){

@@ -9,7 +9,7 @@ import org.hibernate.annotations.NaturalId;
 public class HProduct {
 
 	@Id
-	@Column( name="productName", length = 45, nullable = false , insertable = false , updatable  = false)
+	@Column( name="productName", length = 45, nullable = false )
 	private String productName;
 
 	@Column( name = "productPrice", nullable = false )

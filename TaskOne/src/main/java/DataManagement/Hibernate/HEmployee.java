@@ -14,11 +14,7 @@ public class HEmployee extends HUser implements Serializable {
 	
 	@Column( name ="IDteam" , nullable = true)
 	private int IDteam;
-<<<<<<< HEAD
-	
-=======
 
->>>>>>> facd9cedb3d6ac7ed6c5b03ea938d4d1728fc959
 	//----------------------------------------------------------------------------------------------------------
 	//										CONSTRUCTORS
 	//----------------------------------------------------------------------------------------------------------

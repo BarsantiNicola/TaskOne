@@ -9,14 +9,13 @@ public class HProductStock {
 
 	@Id
 	//@GeneratedValue( strategy = GenerationType.IDENTITY )
-	@Column( name = "IDstock" , nullable = false , insertable = false , updatable = false)
+	@Column( name = "IDstock" , nullable = false )
 	private int IDstock;
 	
-	@Column( name = "productName", nullable = true , insertable = false , updatable = false)
-	private String productName;
 	
 	@OneToOne
-	@JoinTable(name = "product",joinColumns = {@JoinColumn(name = "productName")})
+	@JoinTable(name = "product",joinColumns = {@JoinColumn(name = "IDstock")},
+            inverseJoinColumns = {@JoinColumn(name = "productName")})
 	HProduct product;
 	
 
@@ -35,10 +34,11 @@ public class HProductStock {
 
 	public HProductStock() {}
 	
-	public HProductStock( int IDstock , String productName ){
+	public HProductStock( int IDstock , HProduct product ){
 		
 		this.IDstock = IDstock;
-		this.productName = productName;
+		this.product = product;
+
 	}
 
 	//----------------------------------------------------------------------------------------------------------
@@ -50,10 +50,6 @@ public class HProductStock {
 		return IDstock;
 	}
 	
-	public String getProductName() {
-		
-		return productName;
-	}
 
 	//----------------------------------------------------------------------------------------------------------
 	//										        SETTERS
@@ -64,9 +60,5 @@ public class HProductStock {
 		this.IDstock= IDproduct;
 	}
 	
-	public void setProductName( String productName ) {
-		
-		this.productName = productName;
-	}
 
 }
