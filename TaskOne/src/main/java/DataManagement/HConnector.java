@@ -4,11 +4,15 @@ import beans.*;
 import javax.persistence.*;
 import java.sql.Timestamp;
 import java.util.*;
+import DataManagement.Hibernate.*;
 
 public class HConnector extends DataConnector {
 
     private	EntityManagerFactory factory;
     private EntityManager entityManager;
+    private HUser user;
+    private HEmployee employee;
+    private HCustomer customer;
 
     public HConnector(){
 
@@ -22,33 +26,27 @@ public class HConnector extends DataConnector {
         factory.close();
 
     }
-
-    //-------------------------------------------------------------------------------------------------------------------------------
-    //                 SEARCH OPERATIONS
-    //-------------------------------------------------------------------------------------------------------------------------------
-
-    // retrieve all the users having a field that matches with SEARCHED_STRING
-    public List<User> searchUsers( String SEARCHED_STRING ){ 
-            
-        List<User> userList = new ArrayList<>();
-
-        try{
+    
+    //-----------------------------------------------------------------------------------
+    //                 LOGIN
+    //-----------------------------------------------------------------------------------
+    
+    public UserType login( String username, String password ) {
+    	
+    	try{
 
             entityManager = factory.createEntityManager();
 
-            TypedQuery<User> query = entityManager.createQuery(
-                 "SELECT U.username, U.name, U.surname, U.password, U.mail , E.salary , E.role, E.team "
-                +   "FROM user U LEFT JOIN employee E ON U.username = E.IDemployee "
-                +   "WHERE username = ?1 OR name = ?2 OR surname = ?3 OR mail = ?4 OR role = ?5", 
-                    User.class );
+            TypedQuery<HUser> query = entityManager.createQuery(
+                 "SELECT * "
+             +   "FROM user "
+             +   "WHERE username = ?1 AND password = ?2", 
+                    HUser.class );
 
-                query.setParameter( 1, SEARCHED_STRING );
-                query.setParameter( 2, SEARCHED_STRING );
-                query.setParameter( 3, SEARCHED_STRING );
-                query.setParameter( 4, SEARCHED_STRING );
-                query.setParameter( 5, SEARCHED_STRING );
+                query.setParameter( 1, username );
+                query.setParameter( 2, password );
 
-                userList = query.getResultList();
+                HUser user = query.getSingleResult();
 
           } catch (Exception exception){
 
@@ -59,37 +57,56 @@ public class HConnector extends DataConnector {
 
                 entityManager.close();
           }
-
-          return userList; 
-     }
-
-     // retrieve all users ( should be renamed  )
-     public List<User> getUsers(){ 
-
+    }
+    
+    //-----------------------------------------------------------------------------------
+    //                 SEARCH OPERATIONS
+    //------------------------------------------------------------------------------------
+     
+    // retrieve Users; if SEARCHED_STRING is null, retrieve all employees; if not null
+    // retrieve all employees who have a field that match with SEARCHED_STRING
+     public List<User> newsearchUsers( String SEARCHED_STRING ){
+    	 
     	 List<User> userList = new ArrayList<>();
+    	 List<HUser> huserList = new ArrayList<>();
+    	 
+    	 try{
 
-         try{
+             entityManager = factory.createEntityManager();
 
-        	 entityManager = factory.createEntityManager();
+             String queryText = "SELECT U.username, U.name, U.surname, U.password, U.mail , E.salary , E.role, E.team FROM user U LEFT JOIN employee E ON U.username = E.IDemployee ";
+             
+             if( SEARCHED_STRING != null )
+            	 queryText += "WHERE username = ?1 OR name = ?2 OR surname = ?3 OR mail = ?4 OR role = ?5";
+             
+             TypedQuery<HUser> query = entityManager.createQuery(queryText, HUser.class );
 
-             TypedQuery<User> query = entityManager.createQuery(
-                "SELECT U.username, U.name, U.surname, U.password, U.mail , E.salary , E.role, E.team "
-             +  "FROM user U LEFT JOIN employee E ON U.username = E.IDemployee", 
-                User.class);
+             if( SEARCHED_STRING != null ) {
+            	 query.setParameter( 1, SEARCHED_STRING );
+                 query.setParameter( 2, SEARCHED_STRING );
+                 query.setParameter( 3, SEARCHED_STRING );
+                 query.setParameter( 4, SEARCHED_STRING );
+                 query.setParameter( 5, SEARCHED_STRING );
+             }
+             
+             huserList = query.getResultList();
 
-             userList = query.getResultList();
+           } catch (Exception exception){
 
-          } catch (Exception exception){
+                 exception.printStackTrace();
+                 System.out.println("An error occurred in searching users");
 
-              exception.printStackTrace();
-              System.out.println("An error occurred in searching users");
+           } finally{
 
-          } finally{
-
-        	  entityManager.close();
-          }
-
-          return userList; 
+                 entityManager.close();
+           }
+    	 
+    	 //DEVO CONVERTIRE IN USER, HO HUSER
+    	 for( int i=0; i<huserList.size(); i++ ) {
+    		 userList.
+    	 }
+    	 
+    	 return userList;
      }
 
      // retrieve a list of the available products 
@@ -345,7 +362,7 @@ public class HConnector extends DataConnector {
            +  "WHERE team = ?1", 
               Product.class );
            
-           query.setParameter(1, TEAM_ID)
+           query.setParameter(1, TEAM_ID);
 
            productList = query.getResultList();
 
