@@ -22,14 +22,14 @@ public class Employee {
 
 	}
 	
-	public Employee( HEmployee employee ) {
+	/*public Employee( HEmployee employee ) {
 		
 		IDemployee = employee.getIDemployee()
 		name = employee.getName();
 		surname = employee.getSurname();
 		mail = employee.getMail();
 		role = employee.getRole();
-	}
+	}*/
 	
 	public String getIDemployee() {
 		

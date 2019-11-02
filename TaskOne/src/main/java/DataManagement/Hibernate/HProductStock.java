@@ -14,8 +14,7 @@ public class HProductStock {
 	
 	
 	@OneToOne
-	@JoinTable(name = "product",joinColumns = {@JoinColumn(name = "IDstock")},
-            inverseJoinColumns = {@JoinColumn(name = "productName")})
+	@JoinColumn(name = "product")
 	HProduct product;
 	
 

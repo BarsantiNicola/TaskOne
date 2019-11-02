@@ -30,8 +30,7 @@ public class HOrder {
 	
 	
 	@OneToOne
-	@JoinTable(name = "orderstock",joinColumns = {@JoinColumn(name = "IDorder")},
-            inverseJoinColumns = {@JoinColumn(name = "IDstock")})
+	@JoinColumn(name = "productStock")
 	HProductStock productStock;
 
 	//-----------------------------------------

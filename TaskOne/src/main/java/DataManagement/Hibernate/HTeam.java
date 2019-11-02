@@ -33,10 +33,12 @@ public class HTeam {
 
 	public HTeam(){}
 
-	public HTeam( String teamLeader , String location ){
+	public HTeam( String teamLeader , String location , List<HTeamedEmployee> members , List<HProduct> teamProducts ){
 
 		this.teamLeader = teamLeader;
 		this.location = location;
+		this.members = members;
+		this.teamProducts = teamProducts;
 
 	}
 
@@ -57,9 +59,7 @@ public class HTeam {
 
 	public List<HProduct> getTeamProducts() {
 
-	    return teamProducts;/*HConnector.MANAGER.createQuery("SELECT movie product from Products product where product.IDteam = ?1")
-	      .setParameter(1, teamLeader )
-	      .getResultList();*/
+	    return teamProducts;
 	}
 	
 	public List<HTeamedEmployee> getMembers(){

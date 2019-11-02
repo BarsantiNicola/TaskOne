@@ -6,23 +6,23 @@ import java.io.Serializable;
 public class HTeamedEmployee extends HEmployee implements Serializable {
 
 	@Column( name ="IDteam" , nullable = true)
-	private int IDteam;
+	private String IDteam;
 	
 	HTeamedEmployee(){}
 	
-	HTeamedEmployee(String username, String name, String surname, String mail , int salary , String role  , int team ){
+	public HTeamedEmployee(String username, String name, String surname, String mail , int salary , String role  , String team ){
 		
 		super( username , name , surname , mail , salary , role );
 		this.IDteam = team;
 
 	}
 	
-	public int getIDTeam() {
+	public String getIDTeam() {
 		
 		return IDteam;
 	}
 	
-	public void setIDTeam( int IDteam ) {
+	public void setIDTeam( String IDteam ) {
 		
 		this.IDteam = IDteam;
 	}

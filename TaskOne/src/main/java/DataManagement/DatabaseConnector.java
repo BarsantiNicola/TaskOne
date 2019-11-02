@@ -62,6 +62,9 @@ public class DatabaseConnector extends DataConnector{
 	private static PreparedStatement getHOrder;
 	private static PreparedStatement getHProductStock;
 	private static PreparedStatement getHCustomer;
+	private static PreparedStatement getHTeamedEmployee;
+	private static PreparedStatement getUnteamedHEmployee;
+	private static PreparedStatement getHAdministrator;
 	
 	//initialize connection and statements
 	static {
@@ -269,7 +272,7 @@ public class DatabaseConnector extends DataConnector{
 			
 			getHHeadDepartment = myConnection.prepareStatement(
 					    "SELECT * FROM employee JOIN team ON employee.IDemployee = team.teamLeader "
-					    + " JOIN user ON employee.IDemployee = user.username;"
+					    + " JOIN user ON employee.IDemployee = user.username WHERE role <> 'Administrator';"
 			);
 			
 			getHProduct = myConnection.prepareStatement(
@@ -279,7 +282,7 @@ public class DatabaseConnector extends DataConnector{
 			
 			getHOrder = myConnection.prepareStatement(
 						"SELECT * FROM orders JOIN product_stock ON orders.product = product_stock.IDproduct;"
-					);
+			);
 			
 			getHProductStock = myConnection.prepareStatement(
 					
@@ -289,6 +292,23 @@ public class DatabaseConnector extends DataConnector{
 			getHCustomer = myConnection.prepareStatement(
 					
 						"SELECT * FROM USER WHERE username NOT IN ( SELECT IDemployee from employee );"
+					);
+			
+			getHTeamedEmployee = myConnection.prepareStatement(
+			
+						"select * from employee join team on employee.team = team.IDteam join user on employee.IDemployee = user.username AND employee.IDemployee NOT IN (" + 
+								" SELECT IDemployee FROM employee JOIN team ON employee.IDemployee = team.teamLeader JOIN user ON employee.IDemployee = user.username);"
+					);
+			
+			getUnteamedHEmployee = myConnection.prepareStatement(
+					
+						"SELECT * FROM employee JOIN user ON employee.IDemployee = user.username WHERE team IS NULL AND role <> 'Administrator' AND employee.IDemployee NOT IN ("
+						+ " SELECT IDemployee FROM employee JOIN team ON employee.IDemployee = team.teamLeader JOIN user ON employee.IDemployee = user.username);"
+					);
+			
+			getHAdministrator = myConnection.prepareStatement(
+					
+						"SELECT * FROM employee JOIN user ON employee.IDemployee = user.username WHERE role = 'Administrator';"
 					);
 					
 			System.out.println("Statements Created Correctly");
@@ -926,7 +946,7 @@ public class DatabaseConnector extends DataConnector{
 			
 			getHEmployee.execute();
 			set = getHEmployee.getResultSet();
-			set.next();
+
 			while( set.next()) 		
 				employees.add( new HEmployee( set.getString("username") , set.getString("name") ,
 						set.getString("surname") , set.getString("mail") ,  
@@ -944,18 +964,47 @@ public class DatabaseConnector extends DataConnector{
 		
 	}
 	
-public List<HTeam> getHTeams(){
+public List<HTeamedEmployee> getHTeamedEmployees(){
 		
-		List<HTeam> teams = new ArrayList<>();
+		List<HTeamedEmployee> employees = new ArrayList<>();
 		ResultSet set;
 		
 		try {
 			
-			getHTeam.execute();
-			set = getHTeam.getResultSet();
+			getHTeamedEmployee.execute();
+			set = getHTeamedEmployee.getResultSet();
 
-			while( set.next()) 				
-				teams.add( new HTeam( set.getString("teamLeader") , set.getString("location")));
+			while( set.next()) 		
+				employees.add( new HTeamedEmployee( set.getString("IDemployee") , set.getString("name") ,
+						set.getString("surname") , set.getString("mail") ,  
+						set.getInt("salary") , set.getString("role")  , set.getString("teamLeader")));
+			
+		}catch( SQLException e ) {
+			
+			System.out.println("SQLException: " + e.getMessage());
+			System.out.println("SQLState: " + e.getSQLState());
+			System.out.println("VendorError: " + e.getErrorCode());
+			
+		}
+		
+		return employees;
+		
+	}
+	
+public List<HTeam> getHTeams(){
+		
+		List<HTeam> teams = new ArrayList<>();
+		ResultSet team;
+		
+		try {
+			
+			getHTeam.execute();
+			team = getHTeam.getResultSet();
+
+			while( team.next()) { 			
+				
+				teams.add( new HTeam( team.getString("teamLeader") , team.getString("location") , null , null ));
+			}
 
 			
 		}catch( SQLException e ) {
@@ -979,10 +1028,9 @@ public List<HTeam> getHTeams(){
 			
 			getHHeadDepartment.execute();
 			set = getHHeadDepartment.getResultSet();
-			set.next();
+
 			while( set.next()) 		
-				
-				managers.add( new HHeadDepartment( set.getString("username") , set.getString("name") , set.getString("surname") , set.getString("mail") , set.getInt("salary") , set.getString("role" ) ));
+				managers.add( new HHeadDepartment( set.getString("username") , set.getString("name") , set.getString("surname") , set.getString("mail") , set.getInt("salary") , set.getString("role" ) , null));
 			
 		}catch( SQLException e ) {
 			
@@ -1004,7 +1052,7 @@ public List<HTeam> getHTeams(){
 			
 			getHProduct.execute();
 			set = getHProduct.getResultSet();
-			set.next();
+
 			while( set.next()) 		
 				
 				products.add( new HProduct( set.getString("productName") , set.getInt("productPrice") , set.getString("productDescription") , set.getInt("productAvailability") , set.getInt("productType") , set.getInt("team")));
@@ -1029,7 +1077,7 @@ public List<HTeam> getHTeams(){
 			
 			getHOrder.execute();
 			set = getHOrder.getResultSet();
-			set.next();
+
 			while( set.next()) 		
 				
 				orders.add( new HOrder( set.getTimestamp("purchaseDate") , set.getInt("price") , set.getString("status") , set.getString("customer") , set.getInt("product")));
@@ -1054,7 +1102,7 @@ public List<HTeam> getHTeams(){
 			
 			getHProductStock.execute();
 			set = getHProductStock.getResultSet();
-			set.next();
+
 			while( set.next()) 		
 				
 				stocks.add( new HProductStock( set.getInt("IDproduct") , set.getString("productName")));
@@ -1079,7 +1127,7 @@ public List<HTeam> getHTeams(){
 			
 			getHCustomer.execute();
 			set = getHCustomer.getResultSet();
-			set.next();
+
 			while( set.next()) 		
 				
 				stocks.add( new HCustomer( set.getString("username") , set.getString("name") ,
@@ -1095,4 +1143,54 @@ public List<HTeam> getHTeams(){
 		
 		return stocks;
 	}
+	
+public List<HEmployee> getUnteamedHEmployees(){
+		
+		List<HEmployee> managers = new ArrayList<>();
+		ResultSet set;
+		
+		try {
+			
+			getUnteamedHEmployee.execute();
+			set = getUnteamedHEmployee.getResultSet();
+
+			while( set.next()) 		
+				
+				managers.add( new HEmployee( set.getString("username") , set.getString("name") , set.getString("surname") , set.getString("mail") , set.getInt("salary") , set.getString("role" ) ));
+			
+		}catch( SQLException e ) {
+			
+			System.out.println("SQLException: " + e.getMessage());
+			System.out.println("SQLState: " + e.getSQLState());
+			System.out.println("VendorError: " + e.getErrorCode());
+			
+		}
+		
+		return managers;
+	}
+
+	public List<HAdministrator> getHAdministrator(){
+	
+		List<HAdministrator> administrators = new ArrayList<>();
+		ResultSet set;
+	
+		try {
+		
+			getHAdministrator.execute();
+			set = getHAdministrator.getResultSet();
+			
+			while( set.next()) 		
+			
+			administrators.add( new HAdministrator( set.getString("username") , set.getString("name") , set.getString("surname") , set.getString("mail") , set.getInt("salary")  ));
+		
+	}catch( SQLException e ) {
+		
+		System.out.println("SQLException: " + e.getMessage());
+		System.out.println("SQLState: " + e.getSQLState());
+		System.out.println("VendorError: " + e.getErrorCode());
+		
+	}
+	
+	return administrators;
+}
 }
