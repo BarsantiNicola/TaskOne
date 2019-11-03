@@ -39,7 +39,7 @@ public class HConnector extends DataConnector {
 
             TypedQuery<HUser> query = entityManager.createQuery(
                  "SELECT * "
-             +   "FROM user "
+             +   "FROM HUser "
              +   "WHERE username = ?1 AND password = ?2", 
                     HUser.class );
 
@@ -225,88 +225,6 @@ public class HConnector extends DataConnector {
             return true; 
         }
 
-        //-------------------------------------------------------------------------------------------------------------------------------
-        //                                          UPDATE OPERATIONS
-        //-------------------------------------------------------------------------------------------------------------------------------
-
-        // update the salary of a specified user 
-        public boolean updateSalary(int SALARY , String USER_ID  ){ 
-
-            Employee employee = new Employee();
-            employee.setIDemployee( USER_ID );
-            employee.setSalary(SALARY);
-
-            try{
-                entityManager = factory.createEntityManager();
-                entityManager.getTransaction.begin();
-                entityManager.merge(employee);
-                entityManager.getTransaction().commit();
-
-            } catch (Exception exception){
-
-                exception.printStackTrace();
-                System.out.println("An error occurred in updating a salary");
-
-            } finally{
-
-                entityManager.close();
-            }
-
-            return true; 
-        }
-
-        // update the availability of a specific product ( productType should be productName )
-        public boolean updateProductAvailability( String PRODUCT_TYPE , int ADDED_AVAILABILITY ){ 
-
-            Employee product = new Product();
-            product.setProductName( PRODUCT_TYPE );
-            product.setProductAvailability( ADDED_AVAILABILITY );
-
-            try{
-                entityManager = factory.createEntityManager();
-                entityManager.getTransaction.begin();
-                entityManager.merge(product);
-                entityManager.getTransaction().commit();
-
-            } catch (Exception exception){
-
-                exception.printStackTrace();
-                System.out.println("An error occurred in updating the availability of a product");
-
-            } finally{
-
-                entityManager.close();
-            }
-
-            return true; 
-        }
-
-        //-------------------------------------------------------------------------------------------------------------------------------
-        //                                          DELETE OPERATIONS
-        //-------------------------------------------------------------------------------------------------------------------------------
-
-        // delete a user 
-        public boolean deleteUser( String USER_NAME ){ 
-
-            try{
-                entityManager = factory.createEntityManager();
-                entityManager.getTransaction.begin();
-                huser user = entityManager.getReference(huser.class,USER_NAME);
-                entityManager.remove(user);
-                entityManager.getTransaction().commit();
-
-            } catch (Exception exception){
-
-                exception.printStackTrace();
-                System.out.println("An error occurred in removing a user");
-
-            } finally{
-
-                entityManager.close();
-            }
-
-            return true; 
-        }
 
         //-------------------------------------------------------------------------------------------------------------------------------
         //                                          OTHER OPERATIONS
@@ -347,106 +265,6 @@ public class HConnector extends DataConnector {
             return minID; 
         }
 
-    // retrieve the list of products made by a specific team
-    public List<Product> getTeamProducts( int TEAM_ID ){ 
-
-    	List<Product> productList = new ArrayList<>();
-
-        try{
-
-           entityManager = factory.createEntityManager();
-
-           TypedQuery<Product> query = entityManager.createQuery(
-              "SELECT productName, productPrice, productDescription, productAvailability "
-           +  "FROM product "
-           +  "WHERE team = ?1", 
-              Product.class );
-           
-           query.setParameter(1, TEAM_ID);
-
-           productList = query.getResultList();
-
-         } catch (Exception exception){
-
-        	  exception.printStackTrace();
-              System.out.println("An error occurred in searching team products");
-
-         } finally{
-
-              entityManager.close();
-         }
-
-         return productList; 
-    }
-
-    // retrieve the list of employees of a specific team
-    public List<Employee> getTeamEmployees(int TEAM_ID ){ 
-
-        return null; 
-    }
-
-    // retrieve 
-    public List<Employee> searchTeamEmployees( int TEAM_ID , String SEARCHED_VALUE ){ 
-
-    	List<Employee> employeeList = new ArrayList<>();
-
-        try{
-
-           entityManager = factory.createEntityManager();
-
-           TypedQuery<Employee> query = entityManager.createQuery(
-              "SELECT * "
-           +  "FROM employee "
-           +  "WHERE team = ?1 AND ( role = ?2 OR productDescription = ?3 )", 
-              Employee.class );
-
-           employeeList = query.getResultList();
-
-         } catch (Exception exception){
-
-        	  exception.printStackTrace();
-              System.out.println("An error occurred in searching team products");
-
-         } finally{
-
-              entityManager.close();
-         }
-
-         return employeeList; 
-    }
-
-    // retrieve products of a specific team that match with SEARCHED_VALUE
-    public List<Product> searchTeamProducts( int TEAM_ID , String SEARCHED_VALUE ){ 
-
-     	List<Product> productList = new ArrayList<>();
-
-        try{
-
-           entityManager = factory.createEntityManager();
-
-           TypedQuery<Product> query = entityManager.createQuery(
-              "SELECT productName, productPrice, productDescription, productAvailability "
-           +  "FROM product "
-           +  "WHERE team = ?1 AND ( productName = ?2 OR productDescription = ?3 )", 
-              Product.class );
-           
-           query.setParameter(1, TEAM_ID);
-           query.setParameter(1, TEAM_ID);
-           query.setParameter(1, TEAM_ID);
-
-           productList = query.getResultList();
-
-         } catch (Exception exception){
-
-        	  exception.printStackTrace();
-              System.out.println("An error occurred in searching team products");
-
-         } finally{
-
-              entityManager.close();
-         }
-
-         return productList; 
-     }
+    
 
 }

@@ -3,7 +3,6 @@ package DataManagement.Hibernate;
 import java.util.List;
 import javax.persistence.*;
 
-
 //----------------------------------------------------------------------------------------------------------
 //												HUser
 //
@@ -105,10 +104,20 @@ public class HUser {
 
 	@SuppressWarnings("unchecked")
 	public static List<HUser> getAllUsers(){
-		EntityManager em = HConnector.FACTORY.createEntityManager();
-		return (List<HUser>)em.createQuery("SELECT p FROM HUser p").getResultList();
-
-			  
+		EntityManager manager = HConnector.FACTORY.createEntityManager();
+		return (List<HUser>)manager.createQuery("SELECT p FROM HUser p").getResultList();
+	  
+	}
+	
+	public boolean deleteUser() {
+		
+		EntityManager manager = HConnector.FACTORY.createEntityManager();
+		manager.getTransaction().begin();
+        manager.remove(this);
+        manager.getTransaction().commit();
+        manager.close();
+		
+		return true;
 	}
 	
 	@Override

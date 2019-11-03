@@ -6,6 +6,8 @@ import javax.persistence.EntityManager;
 import javax.persistence.Inheritance;
 import javax.persistence.InheritanceType;
 
+import beans.Employee;
+
 //----------------------------------------------------------------------------------------------------------
 //												HEmployee
 //
@@ -89,6 +91,21 @@ public class HEmployee extends HUser{
 		manager.getTransaction().commit();
 		manager.close();
 		
+	}
+	
+	public boolean updateSalary( int SALARY ) {
+		
+		System.out.println("Updating Salary: user ");
+		EntityManager manager = HConnector.FACTORY.createEntityManager();
+		
+		this.setSalary(SALARY);
+        
+		manager.getTransaction().begin();
+		manager.merge(this);
+		manager.getTransaction().commit();
+		manager.close();
+		
+		return true;
 	}
 	
 	@Override

@@ -1,6 +1,11 @@
 package DataManagement.Hibernate;
 
 import javax.persistence.*;
+
+import beans.Employee;
+import beans.Product;
+
+import java.util.ArrayList;
 import java.util.List;
 
 //----------------------------------------------------------------------------------------------------------
@@ -63,13 +68,7 @@ public class HTeam {
 		
 		return teamLeader;
 	}
-	
-
-	public List<HProduct> getTeamProducts() {
-
-	    return teamProducts;
-	}
-	
+		
 	public List<HTeamedEmployee> getMembers(){
 		
 		return members;
@@ -104,7 +103,50 @@ public class HTeam {
 	//----------------------------------------------------------------------------------------------------------
 	//										FUNCTIONS
 	//----------------------------------------------------------------------------------------------------------
-
+	
+	public List<Product> searchTeamProducts(String SEARCHED_VALUE){
+		
+		List<Product> productList = new ArrayList<>();
+		
+		for( int i=0; i<teamProducts.size(); i++ ) {
+			
+			HProduct HPRODUCT = teamProducts.get(i);
+			
+			if( SEARCHED_VALUE == null || ( SEARCHED_VALUE != null && 
+				(HPRODUCT.getProductDescription().contains(SEARCHED_VALUE) ||
+			     HPRODUCT.getProductName().contains(SEARCHED_VALUE))) ) {
+				
+				productList.add(new Product(HPRODUCT));
+				
+			} 
+		}
+		
+		return productList;
+	}
+	
+	public List<Employee> searchTeamEmployees(String SEARCHED_VALUE){
+		
+		List<Employee> employeeList = new ArrayList<>();
+		
+		for( int i=0; i<teamProducts.size(); i++ ) {
+			
+			HEmployee HEMPLOYEE = members.get(i);
+			
+			if( SEARCHED_VALUE == null || ( SEARCHED_VALUE != null && 
+				(HEMPLOYEE.getUsername().contains(SEARCHED_VALUE) ||
+				 HEMPLOYEE.getName().contains(SEARCHED_VALUE) ||
+				 HEMPLOYEE.getSurname().contains(SEARCHED_VALUE) ||
+				 HEMPLOYEE.getMail().contains(SEARCHED_VALUE) ||
+				 HEMPLOYEE.getRole().contains(SEARCHED_VALUE))) ) {
+				
+				employeeList.add(new Employee(HEMPLOYEE));
+				
+			} 
+		}
+		
+		return employeeList;
+	}
+	
 	@Override
 	public String toString() {
 		
@@ -117,5 +159,6 @@ public class HTeam {
 		return ret;
 		
 	}
+	
 }
 

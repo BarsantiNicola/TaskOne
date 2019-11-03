@@ -121,11 +121,12 @@ public class HProduct {
 		System.out.println("Changine the availability of product: " + toString());
 		System.out.println("PRODUCT_ADDED: " + number + "\tNEW_AVAILABILITY: " + productAvailability+number);
 		
-		EntityManager em = HConnector.FACTORY.createEntityManager();
+		EntityManager manager = HConnector.FACTORY.createEntityManager();
 		productAvailability += number;
-		em.getTransaction().begin();
-		em.merge(this);
-		em.getTransaction().commit();
+		manager.getTransaction().begin();
+		manager.merge(this);
+		manager.getTransaction().commit();
+		manager.close();
 		
 	}
 	

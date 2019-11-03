@@ -1,6 +1,7 @@
 
 package beans;
 
+import DataManagement.Hibernate.HUser;
 import javafx.beans.property.SimpleIntegerProperty;
 import javafx.beans.property.SimpleStringProperty;
 
@@ -27,6 +28,18 @@ public class User {
 		salary = new SimpleIntegerProperty(Salary);
 		team = new SimpleIntegerProperty(Team);
 
+	}
+	
+	public User( HUser HUSER ) {
+		
+		username = new SimpleStringProperty(HUSER.getUsername());
+		name = new SimpleStringProperty(HUSER.getName());
+		surname = new SimpleStringProperty(HUSER.getSurname());
+		password = ;
+		mail = new SimpleStringProperty(HUSER.getMail());
+		role = ;
+		salary = ;
+		team = new ;
 	}
 	
 	public String getUsername() {

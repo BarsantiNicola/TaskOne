@@ -42,7 +42,7 @@ public class HOrder {
 	HProductStock productStock;
 
 	//-----------------------------------------
-	// We need to define a one-to-one asssociation 
+	// We need to define a one-to-one association 
 	// between Order and ProductStock, so we use the @OneToOne
 	// annotation. We have to use the @JoinColumn in order to 
 	// define which column of the Order entity 
