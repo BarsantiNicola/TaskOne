@@ -417,7 +417,7 @@ public class DatabaseConnector extends DataConnector{
 
 			while(getTeamProductsResult.next()) {
 
-				teamProductList.add(new Product( 0, getTeamProductsResult.getInt("productType"),
+				teamProductList.add(new Product( getTeamProductsResult.getInt("productType"),
 						getTeamProductsResult.getString("productName"),
 						getTeamProductsResult.getInt("productPrice"),
 						getTeamProductsResult.getString("productDescription"),
@@ -478,7 +478,7 @@ public class DatabaseConnector extends DataConnector{
 
 			while (availableProductsResult.next()) {
 
-				productList.add( new Product( 0 ,
+				productList.add( new Product( 
 								availableProductsResult.getInt( "productType"),
 								availableProductsResult.getString("productName"),
 								availableProductsResult.getInt("productPrice"),
@@ -611,7 +611,7 @@ public class DatabaseConnector extends DataConnector{
 
 			while ( teamProductResult.next() ) {
 
-				teamProducts.add(new Product( 0 , teamProductResult.getInt( "productType"),
+				teamProducts.add(new Product( teamProductResult.getInt( "productType"),
 								teamProductResult.getString("productName"),
 								teamProductResult.getInt("productPrice"),
 								teamProductResult.getString( "productDescription" ),
@@ -721,7 +721,7 @@ public class DatabaseConnector extends DataConnector{
 			ResultSet products = searchProducts.getResultSet();
 
 			while (products.next())
-				list.add(new Product(0 , products.getInt("productType"), products.getString("productName"), products.getInt("productPrice"), products.getString("productDescription"), products.getInt("productAvailability")));
+				list.add(new Product(products.getInt("productType"), products.getString("productName"), products.getInt("productPrice"), products.getString("productDescription"), products.getInt("productAvailability")));
 
 		} catch (SQLException caughtException) {
 
@@ -897,7 +897,7 @@ public class DatabaseConnector extends DataConnector{
 
 			if( newUser.getRole()!= null && newUser.getRole().length() > 0 ) {              //If the user is an employee
 
-				if( newUser.getSalary() <= 0 || newUser.getTeam() <= 0 ){
+				if( newUser.getSalary() <= 0 || Integer.parseInt(newUser.getTeam()) <= 0 ){
 					rollback.execute();
 					return false;
 				}
@@ -905,7 +905,7 @@ public class DatabaseConnector extends DataConnector{
 				insertEmployee.setString(1, newUser.getUsername());
 				insertEmployee.setInt(2, newUser.getSalary());
 				insertEmployee.setString(3, newUser.getRole());
-				insertEmployee.setInt(4, newUser.getTeam());
+				insertEmployee.setString(4, newUser.getTeam());
 				insertEmployee.execute();
 			}
             else {                                                                         //Otherwise, if it's a customer
@@ -949,7 +949,7 @@ public class DatabaseConnector extends DataConnector{
 
 			while( set.next()) 		
 				employees.add( new HEmployee( set.getString("username") , set.getString("name") ,
-						set.getString("surname") , set.getString("mail") ,  
+						set.getString("surname") , set.getString("password") , set.getString("mail") ,  
 						set.getInt("salary") , set.getString("role")  ));
 			
 		}catch( SQLException e ) {
@@ -976,7 +976,7 @@ public List<HTeamedEmployee> getHTeamedEmployees(){
 
 			while( set.next()) 		
 				employees.add( new HTeamedEmployee( set.getString("IDemployee") , set.getString("name") ,
-						set.getString("surname") , set.getString("mail") ,  
+						set.getString("surname") , set.getString("password") , set.getString("mail") ,  
 						set.getInt("salary") , set.getString("role")  , set.getString("teamLeader")));
 			
 		}catch( SQLException e ) {
@@ -1030,7 +1030,7 @@ public List<HTeam> getHTeams(){
 			set = getHHeadDepartment.getResultSet();
 
 			while( set.next()) 		
-				managers.add( new HHeadDepartment( set.getString("username") , set.getString("name") , set.getString("surname") , set.getString("mail") , set.getInt("salary") , set.getString("role" ) , null));
+				managers.add( new HHeadDepartment( set.getString("username") , set.getString("name") , set.getString("surname") , set.getString("password") , set.getString("mail") , set.getInt("salary") , set.getString("role" ) , null));
 			
 		}catch( SQLException e ) {
 			
@@ -1145,7 +1145,7 @@ public List<HEmployee> getUnteamedHEmployees(){
 
 			while( set.next()) 		
 				
-				managers.add( new HEmployee( set.getString("username") , set.getString("name") , set.getString("surname") , set.getString("mail") , set.getInt("salary") , set.getString("role" ) ));
+				managers.add( new HEmployee( set.getString("username") , set.getString("name") , set.getString("surname") , set.getString("password") , set.getString("mail") , set.getInt("salary") , set.getString("role" ) ));
 			
 		}catch( SQLException e ) {
 			
@@ -1170,7 +1170,7 @@ public List<HEmployee> getUnteamedHEmployees(){
 			
 			while( set.next()) 		
 			
-			administrators.add( new HAdministrator( set.getString("username") , set.getString("name") , set.getString("surname") , set.getString("mail") , set.getInt("salary")  ));
+			administrators.add( new HAdministrator( set.getString("username") , set.getString("name") , set.getString("surname") , set.getString("password") , set.getString("mail") , set.getInt("salary")  ));
 		
 	}catch( SQLException e ) {
 		

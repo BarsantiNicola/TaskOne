@@ -35,9 +35,9 @@ public class HEmployee extends HUser{
 
 	public HEmployee(){}
 
-	public HEmployee( String username, String name, String surname, String mail , int salary , String role  ){
+	public HEmployee( String username, String name, String surname, String password , String mail , int salary , String role  ){
 		
-		super( username , name , surname , mail );
+		super( username , name , surname , password , mail );
 		this.salary = salary;
 		this.role = role;
 

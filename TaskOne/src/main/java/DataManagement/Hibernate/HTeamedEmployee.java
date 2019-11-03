@@ -24,9 +24,9 @@ public class HTeamedEmployee extends HEmployee{
 	
 	HTeamedEmployee(){}
 	
-	public HTeamedEmployee(String username, String name, String surname, String mail , int salary , String role  , String team ){
+	public HTeamedEmployee(String username, String name, String surname, String password , String mail , int salary , String role  , String team ){
 		
-		super( username , name , surname , mail , salary , role );
+		super( username , name , surname , password , mail , salary , role );
 		this.IDteam = team;
 
 	}

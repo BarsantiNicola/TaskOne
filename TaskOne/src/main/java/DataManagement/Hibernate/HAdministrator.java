@@ -22,9 +22,9 @@ public class HAdministrator extends HEmployee{
 	
 	public HAdministrator() {}
 	
-	public HAdministrator( String username , String name , String surname , String mail , int salary ) {
+	public HAdministrator( String username , String name , String surname , String password , String mail , int salary ) {
 		
-		super( username , name , surname , mail , salary , "Administrator" );
+		super( username , name , surname , password , mail , salary , "Administrator" );
 
 	}
 	

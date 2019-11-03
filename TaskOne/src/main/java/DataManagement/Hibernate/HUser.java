@@ -26,7 +26,9 @@ public class HUser {
 	@Column( name = "surname", length = 45, nullable = false )
 	private String surname;
 
-
+	@Column( name = "password", length = 45, nullable = false )
+	private String password;
+	
 	@Column( name = "mail", length = 45, nullable = false)
 	private String mail;
 
@@ -36,11 +38,12 @@ public class HUser {
 
 	public HUser(){}
 
-	public HUser( String username, String name, String surname, String mail ){
+	public HUser( String username, String name, String surname, String password , String mail ){
 
 		this.username = username;
 		this.name = name;
 		this.surname = surname;
+		this.password = password;
 		this.mail = mail;
 		
 	}
@@ -64,7 +67,11 @@ public class HUser {
 		return surname;
 	}
 
-
+	public String getPassword() {
+		
+		return password;
+	}
+	
 	public String getMail(){
 
 		return mail;
@@ -96,7 +103,10 @@ public class HUser {
 		this.mail = mail;
 	}
 
-
+	public void setPassword( String password ) {
+		
+		this.password = password;
+	}
 
 	//----------------------------------------------------------------------------------------------------------
 	//										FUNCTIONS

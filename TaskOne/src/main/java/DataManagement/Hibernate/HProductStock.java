@@ -55,6 +55,11 @@ public class HProductStock {
 		return IDstock;
 	}
 	
+	public HProduct getProduct() {
+		
+		return product;
+	}
+	
 
 	//----------------------------------------------------------------------------------------------------------
 	//										        SETTERS
@@ -65,7 +70,10 @@ public class HProductStock {
 		this.IDstock= IDproduct;
 	}
 	
-	
+	public void setProduct( HProduct product ) {
+		
+		this.product = product;
+	}
 
 	//----------------------------------------------------------------------------------------------------------
 	//										       FUNCTIONS

@@ -29,9 +29,9 @@ public class HCustomer extends HUser{
 
 	public HCustomer(){ myOrders = new ArrayList<>(); }
 
-	public HCustomer( String username, String name, String surname, String mail , List<HOrder> myOrders ){
+	public HCustomer( String username, String name, String surname, String password , String mail , List<HOrder> myOrders ){
 		
-		super( username , name , surname , mail );
+		super( username , name , surname , password , mail );
 		this.myOrders = myOrders;
 	
 	}

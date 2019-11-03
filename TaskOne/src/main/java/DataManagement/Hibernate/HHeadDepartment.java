@@ -35,9 +35,9 @@ public class HHeadDepartment extends HEmployee{
 	
 	public HHeadDepartment() {}
 	
-	public HHeadDepartment( String username , String name , String surname , String mail , int salary , String role , HTeam myTeam ) {
+	public HHeadDepartment( String username , String name , String surname , String password , String mail , int salary , String role , HTeam myTeam ) {
 		
-		super( username , name , surname , mail , salary , role );
+		super( username , name , surname , password ,  mail , salary , role );
 		this.myTeam = myTeam;
 
 	}

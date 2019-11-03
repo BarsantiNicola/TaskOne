@@ -7,6 +7,9 @@ import javafx.beans.property.SimpleStringProperty;
 
 import java.sql.Timestamp;
 
+import DataManagement.Hibernate.HOrder;
+import DataManagement.Hibernate.HProduct;
+
 public class Order{
 
 	private final SimpleIntegerProperty productId;
@@ -25,6 +28,18 @@ public class Order{
 		purchasedPrice = new SimpleIntegerProperty( cost );
 		orderStatus = new SimpleStringProperty( status );
 
+	}
+	
+	public Order( HOrder order ) {
+		
+		HProduct product = order.getProductStock().getProduct();
+		productId = new SimpleIntegerProperty(order.getIDorder());
+		productName = new SimpleStringProperty( product.getProductName());
+		productPrice = new SimpleIntegerProperty( product.getProductPrice() );
+		purchaseDate = new SimpleObjectProperty( order.getPurchaseDate());
+		purchasedPrice = new SimpleIntegerProperty( order.getPrice() );
+		orderStatus = new SimpleStringProperty( order.getStatus() );
+		
 	}
 
 	public int getProductId(){
