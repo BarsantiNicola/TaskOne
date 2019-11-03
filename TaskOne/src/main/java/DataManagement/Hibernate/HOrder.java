@@ -13,10 +13,11 @@ public class HOrder {
 	// while the @GeneratedValue defines the strategy to obtain
 	// the primary key. 
 	//--------------------------------------------
-	//@GeneratedValue(strategy = GenerationType.IDENTITY)
+
 	@Id
+	@GeneratedValue( strategy = GenerationType.AUTO )
 	@Column( name = "IDorder", nullable = false )
-	private int IDorder;
+	private int IDorder = 0;
 
 	@Column( name = "purchaseDate", nullable = false )
 	private Timestamp purchaseDate;
@@ -27,8 +28,6 @@ public class HOrder {
 	@Column( name = "status", length = 45, nullable = false )
 	private String status;
 
-	
-	
 	@OneToOne
 	@JoinColumn(name = "productStock")
 	HProductStock productStock;
@@ -50,20 +49,19 @@ public class HOrder {
 	//										          CONSTRUCTORS
 	//----------------------------------------------------------------------------------------------------------
 
-    public HOrder(){
-	}
+    public HOrder(){}
 
     //------------------------------------------
     // Note that the constructor doesn't need the generatedValue as
     // parameter
     //------------------------------------------
-	public HOrder( Timestamp purchaseDate, int price, String status , String customer , int IDstock ){
+	public HOrder( Timestamp purchaseDate, int price, String status , String customer , HProductStock stock ){
 
 		this.purchaseDate = purchaseDate;
 		this.price = price;
 		this.status = status;
-		//this.customer = customer;
-	//	this.IDstock = IDstock;
+		this.productStock = stock;
+
 	}
 
 	//----------------------------------------------------------------------------------------------------------
@@ -89,20 +87,10 @@ public class HOrder {
 
 		return status;
 	}
-	
-	public String getCustomer() {
-		
-		return null;//customer;
-	}
-	
-	public int getIDstock() {
-		
-		return 0;//IDstock;
-	}
 
 	public HProductStock getProductStock(){
 
-		return null;
+		return productStock;
 	}
 
 	//----------------------------------------------------------------------------------------------------------

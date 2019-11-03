@@ -286,12 +286,12 @@ public class DatabaseConnector extends DataConnector{
 			
 			getHProductStock = myConnection.prepareStatement(
 					
-						"select IDproduct , productName FROM product_stock join product on product_stock.productType = product.productType;"
+						"select IDproduct , productName from product_stock join product on product_stock.productType = product.productType;"
 					);
 			
 			getHCustomer = myConnection.prepareStatement(
 					
-						"SELECT * FROM USER WHERE username NOT IN ( SELECT IDemployee from employee );"
+						"SELECT username , name , surname , mail from user WHERE username NOT IN ( SELECT IDemployee from employee );"
 					);
 			
 			getHTeamedEmployee = myConnection.prepareStatement(
@@ -1068,20 +1068,17 @@ public List<HTeam> getHTeams(){
 		return products;
 	}
 	
-	public List<HOrder> getHOrder(){
+	public ResultSet getHOrder(){
 		
-		List<HOrder> orders = new ArrayList<>();
 		ResultSet set;
 		
 		try {
 			
 			getHOrder.execute();
 			set = getHOrder.getResultSet();
-
-			while( set.next()) 		
-				
-				orders.add( new HOrder( set.getTimestamp("purchaseDate") , set.getInt("price") , set.getString("status") , set.getString("customer") , set.getInt("product")));
-		
+			return set;
+			
+			
 		}catch( SQLException e ) {
 			
 			System.out.println("SQLException: " + e.getMessage());
@@ -1090,22 +1087,16 @@ public List<HTeam> getHTeams(){
 			
 		}
 		
-		return orders;
+		return null;
 	}
 	
-	public List<HProductStock> getHProductStock(){
-		
-		List<HProductStock> stocks = new ArrayList<>();
-		ResultSet set;
+	public ResultSet getHProductStock(){
 		
 		try {
 			
 			getHProductStock.execute();
-			set = getHProductStock.getResultSet();
+			return getHProductStock.getResultSet();
 
-			while( set.next()) 		
-				
-				stocks.add( new HProductStock( set.getInt("IDproduct") , set.getString("productName")));
 		
 		}catch( SQLException e ) {
 			
@@ -1115,23 +1106,21 @@ public List<HTeam> getHTeams(){
 			
 		}
 		
-		return stocks;
+		return null;
 	}
 	
-	public List<HCustomer> getHCustomer(){
+	public ResultSet getHCustomer(){
 		
-		List<HCustomer> stocks = new ArrayList<>();
+		List<HCustomer> customers = new ArrayList<>();
 		ResultSet set;
 		
 		try {
 			
 			getHCustomer.execute();
 			set = getHCustomer.getResultSet();
+			return set;
+			
 
-			while( set.next()) 		
-				
-				stocks.add( new HCustomer( set.getString("username") , set.getString("name") ,
-						set.getString("surname") , set.getString("mail") ));
 			
 		}catch( SQLException e ) {
 			
@@ -1141,7 +1130,7 @@ public List<HTeam> getHTeams(){
 			
 		}
 		
-		return stocks;
+		return null;
 	}
 	
 public List<HEmployee> getUnteamedHEmployees(){
@@ -1193,4 +1182,5 @@ public List<HEmployee> getUnteamedHEmployees(){
 	
 	return administrators;
 }
+	
 }

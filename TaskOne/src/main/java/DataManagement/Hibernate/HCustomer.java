@@ -19,9 +19,10 @@ public class HCustomer extends HUser{
 
 	public HCustomer(){}
 
-	public HCustomer( String username, String name, String surname, String mail ){
+	public HCustomer( String username, String name, String surname, String mail , List<HOrder> myOrders ){
 		
 		super( username , name , surname , mail );
+		this.myOrders = myOrders;
 	
 	}
 	

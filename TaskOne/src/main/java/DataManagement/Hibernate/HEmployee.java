@@ -10,10 +10,10 @@ import javax.persistence.Table;
 @Inheritance(strategy = InheritanceType.SINGLE_TABLE)
 public class HEmployee extends HUser{
 	
-	@Column( name = "salary", nullable = false )
+	@Column( name = "salary", nullable = true )
 	private int salary;
 
-	@Column( name = "role", length = 45, nullable = false )
+	@Column( name = "role", length = 45, nullable = true )
 	private String role;
 	
 

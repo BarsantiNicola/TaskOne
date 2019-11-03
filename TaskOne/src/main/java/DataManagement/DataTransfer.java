@@ -11,6 +11,7 @@ import DataManagement.Hibernate.HTeam;
 import DataManagement.Hibernate.HTeamedEmployee;
 import DataManagement.Hibernate.HUser;
 import beans.Employee;
+import beans.Order;
 import beans.Product;
 
 import javax.persistence.EntityManager;
@@ -20,9 +21,14 @@ import javax.persistence.Persistence;
 import org.hibernate.Session;
 import org.hibernate.cfg.Configuration;
 
+import java.io.IOException;
+import java.io.InputStreamReader;
+import java.sql.ResultSet;
+import java.sql.SQLException;
 import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Scanner;
 
 public class DataTransfer {
 
@@ -34,7 +40,7 @@ public class DataTransfer {
         //  THE MODULE DEFINE HOW TO CONTACT A SERVER, THE TYPE OF SERVER AND HOW TO HANDLE THE COMMUNICATION AND THE HIBERNATE PROTOCOL
         factory = Persistence.createEntityManagerFactory("taskOne");
 
-        entityManager = factory.createEntityManager();        
+        entityManager = null;       
 
     }
 
@@ -45,13 +51,17 @@ public class DataTransfer {
 
     public void saveHEmployees( List<HEmployee> employees ) {
     	System.out.println("Starting saving Hemployees...");
-      	entityManager.getTransaction().begin();
+    	entityManager = factory.createEntityManager(); 
+    	
       	for( HEmployee e : employees ) {
       		System.out.println("Saving :" + e.getUsername());
       	
+          	entityManager.getTransaction().begin();
       		entityManager.persist(e);
+          	entityManager.getTransaction().commit();
       	}
-      		entityManager.getTransaction().commit();
+
+      	entityManager.close();
       	System.out.println("Save HEmployees complete");
     	
     }
@@ -64,165 +74,220 @@ public class DataTransfer {
     	List<HTeamedEmployee> teamed;
     	List<HProduct> prod;
         DatabaseConnector conn = new DatabaseConnector();   
-        
-      	entityManager.getTransaction().begin();
+    	entityManager = factory.createEntityManager(); 
 
-      	for( HTeam team : teams ) {
+        entityManager.getTransaction().begin();
+    	for( HTeam team : teams ) {
       		
       		teamEmployees = conn.getTeamEmployees(conn.getTeam(team.getTeamLeader()));
       		teamProducts = conn.getTeamProducts(conn.getTeam(team.getTeamLeader()));
       		teamed = new ArrayList<>();
       		prod = new ArrayList<>();
-      		
+
+            System.out.println("Gettin employee");
       		for( Employee employee : teamEmployees )
       			teamed.add( entityManager.find( HTeamedEmployee.class, employee.getIDemployee()));
-      				
-      		for( Product product : teamProducts )
-      			prod.add( entityManager.find(HProduct.class, product.getProductName()));
+      		System.out.println("Gettin product");
+      		for( Product product : teamProducts ) {
+      			System.out.println("prod:" + product.getProductName());
+      			HProduct p = entityManager.find( HProduct.class, product.getProductName());
+      			System.out.println("HProduct " + p.getProductName());
+      			prod.add(p );
+      		}
       		team.setMembers(teamed);
       		team.setTeamProducts(prod);
       		
-      		if( entityManager.contains(team)) {
-      			System.out.println("I aready have the entity " + team.getTeamLeader());
-      			entityManager.merge(team);
-      		}else {
-      			System.out.println("I don't have the entity: " + team.getTeamLeader());
+            entityManager.persist(team);
+
       		
-      			entityManager.persist(team);
-      		}
       	}
-      	
-      	entityManager.getTransaction().commit();
+        entityManager.getTransaction().commit();
+      	entityManager.close();
       	System.out.println("Save HTeam complete");
     	
     }
     
     public void saveHHeadDepartment( List<HHeadDepartment> managers ) {
     	System.out.println("Starting saving HHeadDepartment...");
+    	entityManager = factory.createEntityManager(); 
 
-      	entityManager.getTransaction().begin();
       	for( HHeadDepartment e : managers ) {
       		System.out.println("Saving Manager: " + e.getSurname());
       		e.setMyTeam( entityManager.find( HTeam.class, e.getUsername()));
+          	entityManager.getTransaction().begin();
       		entityManager.persist(e);
+          	entityManager.getTransaction().commit();
       	}
-      	entityManager.getTransaction().commit();
+
       	System.out.println("Save HHeadDepartment complete");
     }
     
     public void saveHProduct( List<HProduct> products ) {
     	System.out.println("Starting saving HProduct...");
-      	entityManager.getTransaction().begin();
+    	entityManager = factory.createEntityManager(); 
+    	
       	for( HProduct e : products ) {
       		System.out.println("Saving Product: " + e.getProductName());
+          	entityManager.getTransaction().begin();
       		entityManager.persist(e);
+          	entityManager.getTransaction().commit();
       	}
-      	entityManager.getTransaction().commit();
+
+      	entityManager.close();
       	System.out.println("Save HProduct complete");
     }
     
-    public void saveHOrder( List<HOrder> orders ) {
+    public void saveHOrder( ResultSet pOrders ) {
     	System.out.println("Starting saving HOrder...");
+      	List<HOrder> orders = new ArrayList<>();
+    	entityManager = factory.createEntityManager(); 
+    	try {
+
+    		while( pOrders.next()) 
+    					
+    			orders.add( new HOrder( pOrders.getTimestamp("purchaseDate") , pOrders.getInt("price") , pOrders.getString("status") , pOrders.getString("customer") , entityManager.find(HProductStock.class, pOrders.getInt("IDproduct"))));	
+				
+    	}catch( SQLException e ) {
+    		System.out.println("Errore inserimento productStock");
+    	}
+    	
       	entityManager.getTransaction().begin();
       	for( HOrder e : orders ) {
-      		System.out.println("Saving Product: " + e.getIDorder());
+      		System.out.println("Saving Order: " + e.getIDorder());
+
       		entityManager.persist(e);
+
       	}
-      	entityManager.getTransaction().commit();
+      	entityManager.getTransaction().commit();      	
+      	entityManager.close();
       	System.out.println("Save HOrder complete");
     }
     
-    public void saveHProductStock( List<HProductStock> stocks ) {
+    public void saveHProductStock( ResultSet pStock ) {
     	System.out.println("Starting saving HProductStock...");
-      	entityManager.getTransaction().begin();
+    	List<HProductStock> stocks = new ArrayList<>();
+    	entityManager = factory.createEntityManager(); 
+    	
+    	try {
+
+      	
+    		while( pStock.next()) 				
+    			stocks.add( new HProductStock( pStock.getInt("IDproduct") , entityManager.find( HProduct.class , pStock.getString("productName")) ));
+    		
+    	}catch( SQLException e ) {
+    		System.out.println("Errore inserimento productStock");
+    	}
+    	
       	for( HProductStock e : stocks ) {
       		System.out.println("Saving Product: " + e.getIDstock());
+          	entityManager.getTransaction().begin();
       		entityManager.persist(e);
+          	entityManager.getTransaction().commit();
       	}
-      	entityManager.getTransaction().commit();
+      	entityManager.close();
       	System.out.println("Save HProductStock complete");
     }
     
-    public void saveHCustomer( List<HCustomer> customers ) {
+    public void saveHCustomer( ResultSet pCustomers ) {
     	System.out.println("Starting saving HCustomer...");
-      	entityManager.getTransaction().begin();
-      	for( HCustomer e : customers ) {
-      		System.out.println("Saving Customer: " + e.getUsername());
-      		entityManager.persist(e);
-      	}
-      	entityManager.getTransaction().commit();
+
+
+       	List<HOrder> orders;
+    	entityManager = factory.createEntityManager(); 
+    	int a = 1;
+    	try {
+
+         	entityManager.getTransaction().begin();
+    		while( pCustomers.next()) {
+    			orders = new ArrayList<>();
+    			if( a<21)
+    				for( int b = 0; b<3;b++)
+        				orders.add( entityManager.find( HOrder.class, a++));
+    			else
+    				for( int b = 0; b<2;b++) {
+    					orders.add( entityManager.find( HOrder.class, a++));
+    				
+    			}
+    			System.out.println("ORDERS: " + orders );
+
+    			entityManager.persist(new HCustomer( pCustomers.getString("username") , pCustomers.getString("name") , pCustomers.getString("surname") , pCustomers.getString("mail") , orders ));
+    			
+    		}
+          	entityManager.getTransaction().commit();
+    	}catch( SQLException e ) {
+    		System.out.println("Errore inserimento productStock");
+    	}
+    	
+
+      	entityManager.close();
       	System.out.println("Save HCustomer complete");
     }
     
     public void saveHTeamedEmployee( List<HTeamedEmployee> employees ) {
     	System.out.println("Starting saving HTeamedEmployee...");
-      	entityManager.getTransaction().begin();
+    	entityManager = factory.createEntityManager(); 
       	for( HTeamedEmployee e : employees ) {
       		System.out.println("Saving Customer: " + e.getUsername());
+          	entityManager.getTransaction().begin();
       		entityManager.persist(e);
+          	entityManager.getTransaction().commit();
       	}
-      	entityManager.getTransaction().commit();
+      	entityManager.close();
       	System.out.println("Save HTeamedEmployee complete");
     }
     
     public void saveUnteamedHEmployee( List<HEmployee> employees ) {
-    	System.out.println("Starting saving HTeamedEmployee...");
-      	entityManager.getTransaction().begin();
+    	System.out.println("Starting saving HUnTeamedEmployee...");
+    	entityManager = factory.createEntityManager(); 
       	for( HEmployee e : employees ) {
-      		System.out.println("Saving Customer: " + e.getUsername());
+      		System.out.println("Saving employee: " + e.getUsername());
+          	entityManager.getTransaction().begin();
       		entityManager.persist(e);
+          	entityManager.getTransaction().commit();
       	}
-      	entityManager.getTransaction().commit();
-      	System.out.println("Save HTeamedEmployee complete");
+      	entityManager.close();
+      	System.out.println("Save HUnteamedEmployee complete");
     }
     
     public void saveHAdministrator( List<HAdministrator> administrators ) {
     	System.out.println("Starting saving HAdministrators...");
-      	entityManager.getTransaction().begin();
+    	entityManager = factory.createEntityManager(); 
       	for( HAdministrator e : administrators ) {
       		System.out.println("Saving Administrator: " + e.getUsername());
+          	entityManager.getTransaction().begin();
       		entityManager.persist(e);
+          	entityManager.getTransaction().commit();
       	}
-      	entityManager.getTransaction().commit();
+
       	System.out.println("Save HTeamedEmployee complete");
+      	entityManager.close();
     }
     
     public static void main(String[] args) {
 
         DataTransfer manager = new DataTransfer();         
         DatabaseConnector conn = new DatabaseConnector();  
-       /* HAdministrator x = new HAdministrator("admin" , "nicola" , "barsanti" , "barsa@gmail.com" , 2000 );
-
-        System.out.println("\t\t-------TEST VERIFICA DATABASE-------");
-        System.out.println("INSERIMENTO UTENTI");
-        
-        System.out.println("	--INSERIMENTO ADMINISTRATOR");
-        manager.entityManager.persist(x);
-        x = null;
-        System.out.println("estrazione");
-        HEmployee y = manager.entityManager.find( HEmployee.class , "admin" );
-        System.out.println("admin: " + y.getUsername() );*/
-        
         
 
-        //manager.saveHTeamedEmployee( conn.getHTeamedEmployees());
-        //manager.saveUnteamedHEmployee(conn.getUnteamedHEmployees());
-        //manager.saveHAdministrator(conn.getHAdministrator());
-        //manager.saveHProduct(conn.getHProduct());
-        //manager.saveHTeams( conn.getHTeams());
-          manager.saveHHeadDepartment(conn.getHHeadDepartment());
-       // manager.saveHCustomer(conn.getHCustomer());
+        manager.saveHTeamedEmployee( conn.getHTeamedEmployees());
 
+        manager.saveUnteamedHEmployee(conn.getUnteamedHEmployees());
 
-        
-        //manager.saveHHeadDepartment(conn.getHHeadDepartment());
+        manager.saveHAdministrator(conn.getHAdministrator());
 
-        //manager.saveHProductStock(conn.getHProductStock());
-        //manager.saveHOrder( conn.getHOrder());
-        //manager.saveHCustomer( conn.getHCustomer());
+        manager.saveHProduct(conn.getHProduct());
+
+        manager.saveHTeams( conn.getHTeams());
+
+        manager.saveHHeadDepartment(conn.getHHeadDepartment());
+    
+        manager.saveHProductStock(conn.getHProductStock());
+
+        manager.saveHOrder(conn.getHOrder());
+
+        manager.saveHCustomer(conn.getHCustomer());
 
         System.out.println("Finished");
-
 
     }
 }
