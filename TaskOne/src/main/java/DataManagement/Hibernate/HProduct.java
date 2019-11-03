@@ -1,7 +1,14 @@
 package DataManagement.Hibernate;
+
 import javax.persistence.*;
 
-import org.hibernate.annotations.NaturalId;
+
+//----------------------------------------------------------------------------------------------------------
+//												HProduct
+//
+//	The class define a product and all of its informations.
+//
+//----------------------------------------------------------------------------------------------------------
 
 
 @Entity
@@ -102,6 +109,16 @@ public class HProduct {
 		
 		this.productType = productType;
 	}
-	
+
+	//----------------------------------------------------------------------------------------------------------
+	//										 FUNCTIONS
+	//----------------------------------------------------------------------------------------------------------
+
+	@Override
+	public String toString() {
+		
+		return "productName: " + productName + "\tproductPrice: " + productPrice + "\tproductAvailability: " 
+				+ productAvailability + "\tproductType: " + productType +"\n\tproductDescription: " + productDescription;
+	}
 
 }

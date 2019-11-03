@@ -2,9 +2,18 @@ package DataManagement.Hibernate;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.EntityManager;
 import javax.persistence.Inheritance;
 import javax.persistence.InheritanceType;
-import javax.persistence.Table;
+
+//----------------------------------------------------------------------------------------------------------
+//												HEmployee
+//
+//	Define the user' type Employee. In particular employees who haven't join a team 
+//  The class permit to access their informations and to add new employees.
+//
+//----------------------------------------------------------------------------------------------------------
+
 
 @Entity
 @Inheritance(strategy = InheritanceType.SINGLE_TABLE)
@@ -33,7 +42,7 @@ public class HEmployee extends HUser{
 	}
 
 	//----------------------------------------------------------------------------------------------------------
-	//										GETTERS
+	//										 GETTERS
 	//----------------------------------------------------------------------------------------------------------
 
 
@@ -52,7 +61,7 @@ public class HEmployee extends HUser{
 
 
 	//----------------------------------------------------------------------------------------------------------
-	//										SETTERS
+	//										 SETTERS
 	//----------------------------------------------------------------------------------------------------------
 
 
@@ -65,5 +74,24 @@ public class HEmployee extends HUser{
 
 		this.role = role;
 	}
+	
 
+	//----------------------------------------------------------------------------------------------------------
+	//										 FUNCTIONS
+	//----------------------------------------------------------------------------------------------------------
+
+	public static void addEmployee( HCustomer employee ) {
+		
+		System.out.println("Adding Employee: " + employee.toString());
+		EntityManager manager = HConnector.FACTORY.createEntityManager();
+		manager.getTransaction().begin();
+		manager.persist( employee );
+		manager.getTransaction().commit();
+		manager.close();
+		
+	}
+	
+	@Override
+	public String toString() { return super.toString() + "\tSalary: " + salary + "\tRole: " + role; }
+	
 }

@@ -1,20 +1,26 @@
 package DataManagement.Hibernate;
-import java.util.List;
 
 import javax.persistence.*;
+
+//----------------------------------------------------------------------------------------------------------
+//											HProductStock
+//
+//	It creates an association between products and orders. For every product the database manteins
+//	a stock of sell-available devices. Any of them could be added to a customer' order.
+//----------------------------------------------------------------------------------------------------------
+
 
 @Entity
 @Table(name="ProductStock")
 public class HProductStock {
 
 	@Id
-	//@GeneratedValue( strategy = GenerationType.IDENTITY )
 	@Column( name = "IDstock" , nullable = false )
 	private int IDstock;
 	
 	
 	@OneToOne
-	@JoinColumn(name = "product")
+	@JoinColumn(name = "product" , nullable = false )
 	HProduct product;
 	
 
@@ -58,6 +64,27 @@ public class HProductStock {
 
 		this.IDstock= IDproduct;
 	}
+	
+	
+
+	//----------------------------------------------------------------------------------------------------------
+	//										       FUNCTIONS
+	//----------------------------------------------------------------------------------------------------------
+
+	// add a new available stock to the product
+	public static void addProductStock( HProductStock stock ) {
+		
+		System.out.println("Adding ProductStock: " + stock.toString());
+		EntityManager manager = HConnector.FACTORY.createEntityManager();
+		manager.getTransaction().begin();
+		manager.persist( stock );
+		manager.getTransaction().commit();
+		manager.close();
+		
+	}
+	
+	@Override
+	public String toString() { return "IDstock: " + IDstock + "\nPRODUCT: " + product.toString(); }
 	
 
 }

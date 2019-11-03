@@ -30,15 +30,16 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Scanner;
 
+
+
 public class DataTransfer {
 
     private EntityManagerFactory factory;
     private EntityManager entityManager;
 
     DataTransfer() {
-        //  EVERY FACTORY CAN MANTEIN A CONNECTION TO A PERSISTENCE MODULE IN PERSISTENCE.XML
-        //  THE MODULE DEFINE HOW TO CONTACT A SERVER, THE TYPE OF SERVER AND HOW TO HANDLE THE COMMUNICATION AND THE HIBERNATE PROTOCOL
-        factory = Persistence.createEntityManagerFactory("taskOne");
+        
+    	factory = Persistence.createEntityManagerFactory("taskOne");
 
         entityManager = null;       
 
@@ -266,7 +267,7 @@ public class DataTransfer {
     public static void main(String[] args) {
 
         DataTransfer manager = new DataTransfer();         
-        DatabaseConnector conn = new DatabaseConnector();  
+    /*    DatabaseConnector conn = new DatabaseConnector();  
         
 
         manager.saveHTeamedEmployee( conn.getHTeamedEmployees());
@@ -285,7 +286,7 @@ public class DataTransfer {
 
         manager.saveHOrder(conn.getHOrder());
 
-        manager.saveHCustomer(conn.getHCustomer());
+        manager.saveHCustomer(conn.getHCustomer());*/
 
         System.out.println("Finished");
 

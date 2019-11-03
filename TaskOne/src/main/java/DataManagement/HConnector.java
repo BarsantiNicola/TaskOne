@@ -61,7 +61,7 @@ public class HConnector extends DataConnector {
     
     //-----------------------------------------------------------------------------------
     //                 SEARCH OPERATIONS
-    //------------------------------------------------------------------------------------
+    //-----------------------------------------------------------------------------------
      
     // retrieve Users; if SEARCHED_STRING is null, retrieve all employees; if not null
     // retrieve all employees who have a field that match with SEARCHED_STRING
@@ -103,7 +103,7 @@ public class HConnector extends DataConnector {
     	 
     	 //DEVO CONVERTIRE IN USER, HO HUSER
     	 for( int i=0; i<huserList.size(); i++ ) {
-    		 userList.
+    		// userList.
     	 }
     	 
     	 return userList;

@@ -1,8 +1,18 @@
 package DataManagement.Hibernate;
+
 import javax.persistence.*;
 import java.sql.Timestamp;
-import java.util.List;
-import java.util.Set;
+
+
+
+//----------------------------------------------------------------------------------------------------------
+//												HOrder
+//
+//	Define a customer'order. The class collect all the information of the order and permits to access
+//  to the product information from object productStock
+//
+//----------------------------------------------------------------------------------------------------------
+
 
 @Entity
 @Table(name="orders")
@@ -122,5 +132,15 @@ public class HOrder {
 		this.productStock = product;
 	}
 
+	//----------------------------------------------------------------------------------------------------------
+	//										 FUNCTIONS
+	//----------------------------------------------------------------------------------------------------------
+
+	@Override
+	public String toString() {
+		
+		return "IDorder: " + IDorder + "\tPurchaseDate: " + purchaseDate + "\tPrice: " + price 
+				+ "\tstatus: " + status + "\n\tPRODUCTSTOCK: " + productStock.toString();
 	
+	}
 }

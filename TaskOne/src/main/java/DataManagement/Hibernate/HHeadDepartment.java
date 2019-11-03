@@ -1,19 +1,28 @@
 package DataManagement.Hibernate;
 
-import javax.persistence.CascadeType;
-import javax.persistence.Column;
+
 import javax.persistence.Entity;
+import javax.persistence.EntityManager;
 import javax.persistence.JoinColumn;
 import javax.persistence.JoinTable;
 import javax.persistence.OneToOne;
-import javax.persistence.Table;
+
+
+//----------------------------------------------------------------------------------------------------------
+//												HHeadDepartment
+//
+//	Define the employee' type HeadDepartment and permits to obtain its managed team and all the associated
+//  informations.
+//
+//----------------------------------------------------------------------------------------------------------
+
 
 @Entity
 public class HHeadDepartment extends HEmployee{
 	
 	
 
-	@OneToOne(cascade = CascadeType.ALL)
+	@OneToOne
 	@JoinTable(name = "myTeam",joinColumns = {@JoinColumn(name = "username")})
 	HTeam myTeam;
 	
@@ -58,5 +67,22 @@ public class HHeadDepartment extends HEmployee{
 	}
 	
 	
+	//----------------------------------------------------------------------------------------------------------
+	//										FUNCTIONS
+	//----------------------------------------------------------------------------------------------------------
+
 	
+	public static void addHeadDepartment( HHeadDepartment headManager ) {
+		
+		EntityManager manager = HConnector.FACTORY.createEntityManager();
+		manager.getTransaction().begin();
+		manager.persist( headManager );
+		manager.getTransaction().commit();
+		manager.close();
+		
+	}
+	
+	@Override
+	public String toString() { return super.toString() + "\nTEAM: " + myTeam.toString(); }
+
 }
