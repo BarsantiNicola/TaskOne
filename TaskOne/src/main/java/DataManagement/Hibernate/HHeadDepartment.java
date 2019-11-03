@@ -12,7 +12,8 @@ import javax.persistence.OneToOne;
 //												HHeadDepartment
 //
 //	Define the employee' type HeadDepartment and permits to obtain its managed team and all the associated
-//  informations.
+//  informations. The class is mandatory due to data consistency. Because teams identificator is represented
+//  by the HeadDepartment identificator.
 //
 //----------------------------------------------------------------------------------------------------------
 

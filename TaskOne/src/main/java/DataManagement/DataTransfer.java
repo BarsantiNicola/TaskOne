@@ -287,8 +287,16 @@ public class DataTransfer {
         manager.saveHOrder(conn.getHOrder());
 
         manager.saveHCustomer(conn.getHCustomer());*/
+        manager.entityManager = manager.factory.createEntityManager();
+        
+        HHeadDepartment h = manager.entityManager.find(HHeadDepartment.class, "adrian");
+        System.out.println("DATA: " + h.toString());
 
+        List<HUser> users = HUser.getAllUsers();
+
+        for( HUser user : users )
+        	System.out.println(user.toString());
         System.out.println("Finished");
-
+        System.out.println(users.size());
     }
 }

@@ -1,10 +1,17 @@
 package DataManagement.Hibernate;
 
+import java.util.List;
 import javax.persistence.*;
 
 
+//----------------------------------------------------------------------------------------------------------
+//												HUser
+//
+//	  Parent class of all the base user' types of the database(customer,employee,teamedemployee, 
+//	  headdepartment, administrator).
+//
+//----------------------------------------------------------------------------------------------------------
 
-//@MappedSuperclass
 @Entity
 @Inheritance(strategy = InheritanceType.SINGLE_TABLE)
 @Table(name="Users")
@@ -91,5 +98,20 @@ public class HUser {
 	}
 
 
+
+	//----------------------------------------------------------------------------------------------------------
+	//										FUNCTIONS
+	//----------------------------------------------------------------------------------------------------------
+
+	@SuppressWarnings("unchecked")
+	public static List<HUser> getAllUsers(){
+		EntityManager em = HConnector.FACTORY.createEntityManager();
+		return (List<HUser>)em.createQuery("SELECT p FROM HUser p").getResultList();
+
+			  
+	}
+	
+	@Override
+	public String toString() { return "Username: " + username + "\tName: " + name + "\tSurname: " + surname + "\tMail: " + mail; }
 
 }

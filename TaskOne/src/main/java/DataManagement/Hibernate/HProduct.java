@@ -6,7 +6,8 @@ import javax.persistence.*;
 //----------------------------------------------------------------------------------------------------------
 //												HProduct
 //
-//	The class define a product and all of its informations.
+//	The class define a product and all of its informations. The class permits also to change the availability
+//  of a product
 //
 //----------------------------------------------------------------------------------------------------------
 
@@ -114,6 +115,21 @@ public class HProduct {
 	//										 FUNCTIONS
 	//----------------------------------------------------------------------------------------------------------
 
+	//  the function ADDS the number given to the current availability of the object
+	public void addProductAvailability( int number ) {
+		
+		System.out.println("Changine the availability of product: " + toString());
+		System.out.println("PRODUCT_ADDED: " + number + "\tNEW_AVAILABILITY: " + productAvailability+number);
+		
+		EntityManager em = HConnector.FACTORY.createEntityManager();
+		productAvailability += number;
+		em.getTransaction().begin();
+		em.merge(this);
+		em.getTransaction().commit();
+		
+	}
+	
+	
 	@Override
 	public String toString() {
 		

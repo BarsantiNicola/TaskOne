@@ -1,8 +1,16 @@
 package DataManagement.Hibernate;
-import javax.persistence.*;
 
+import javax.persistence.*;
 import java.util.List;
-import java.util.Set;
+
+//----------------------------------------------------------------------------------------------------------
+//											HTeam
+//
+//	The class define a team and permits to access to all information of its members and products developed.
+//
+//----------------------------------------------------------------------------------------------------------
+
+
 
 @Entity
 @Table(name="Teams")
@@ -15,12 +23,12 @@ public class HTeam {
 	@Column( name="location", length = 45, nullable = false )
 	private String location;
 	
-	@OneToMany(cascade = CascadeType.ALL)
+	@OneToMany
 	@JoinTable(name = "members",joinColumns = {@JoinColumn(name = "teamLeader")},
             inverseJoinColumns = {@JoinColumn(name = "IDemployee")})
 	List<HTeamedEmployee> members;
 	
-	@OneToMany(cascade = CascadeType.ALL)
+	@OneToMany
 	@JoinTable(name = "teamProducts",joinColumns = {@JoinColumn(name = "teamLeader")},
             inverseJoinColumns = {@JoinColumn(name = "productName")})
 	List<HProduct> teamProducts;
@@ -92,4 +100,22 @@ public class HTeam {
 		
 		this.members = members;
 	}
+	
+	//----------------------------------------------------------------------------------------------------------
+	//										FUNCTIONS
+	//----------------------------------------------------------------------------------------------------------
+
+	@Override
+	public String toString() {
+		
+		String ret = "TeamLeader: " + teamLeader + "\tLocation: " + location+"\nMEMBERS:\n";
+		for( HTeamedEmployee e : members)
+			ret += e.toString();
+		ret += "\nPRODUCTS:\n";
+		for( HProduct e : teamProducts )
+			ret += e.toString();
+		return ret;
+		
+	}
 }
+
