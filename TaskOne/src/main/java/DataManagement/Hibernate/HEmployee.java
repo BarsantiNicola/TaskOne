@@ -82,12 +82,12 @@ public class HEmployee extends HUser{
 	//										 FUNCTIONS
 	//----------------------------------------------------------------------------------------------------------
 
-	public static void addEmployee( HCustomer employee ) {
+	public void addEmployee() {
 		
-		System.out.println("Adding Employee: " + employee.toString());
+		System.out.println("Adding Employee: " + this.toString());
 		EntityManager manager = HConnector.FACTORY.createEntityManager();
 		manager.getTransaction().begin();
-		manager.persist( employee );
+		manager.persist( this );
 		manager.getTransaction().commit();
 		manager.close();
 		

@@ -1,6 +1,8 @@
 package DataManagement.Hibernate;
 
 import javax.persistence.*;
+import java.util.*;
+import beans.*;
 
 
 //----------------------------------------------------------------------------------------------------------
@@ -130,6 +132,29 @@ public class HProduct {
 		
 	}
 	
+	public static List<Product> searchProducts( String SEARCHED_VALUE ){
+		
+		List<HProduct> hproductList = new ArrayList<>();
+		
+		EntityManager manager = HConnector.FACTORY.createEntityManager();
+		String queryText = "SELECT p FROM HProduct p WHERE productAvailability > 0";
+		
+		if( SEARCHED_VALUE != null ) {
+			queryText += " AND p.productName = ?1";
+		}
+					
+		TypedQuery<HProduct> query = manager.createQuery(queryText, HProduct.class );
+		
+		if( SEARCHED_VALUE != null ) {
+			query.setParameter(1, SEARCHED_VALUE);
+		}
+		
+		hproductList = query.getResultList();
+		
+		manager.close();		
+				
+		return HProduct.toProductList(hproductList);
+	}
 	
 	@Override
 	public String toString() {
@@ -138,4 +163,15 @@ public class HProduct {
 				+ productAvailability + "\tproductType: " + productType +"\n\tproductDescription: " + productDescription;
 	}
 
+	public static List<Product> toProductList( List<HProduct> HPRODUCTLIST ){
+		
+		List<Product> productList = new ArrayList<>();
+		
+		for( int i=0; i<HPRODUCTLIST.size(); i++ ) {
+			
+			productList.add(new Product(HPRODUCTLIST.get(i)));
+		}
+		
+		return productList;
+	}
 }

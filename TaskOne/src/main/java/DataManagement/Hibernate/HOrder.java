@@ -135,6 +135,17 @@ public class HOrder {
 	//										 FUNCTIONS
 	//----------------------------------------------------------------------------------------------------------
 
+	public boolean insertOrder() {
+		
+		EntityManager manager = HConnector.FACTORY.createEntityManager();
+		manager.getTransaction().begin();
+        manager.persist(this);
+        manager.getTransaction().commit();
+        manager.close();
+		
+		return true;
+	}
+	
 	@Override
 	public String toString() {
 		
