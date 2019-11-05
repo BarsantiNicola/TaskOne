@@ -1,6 +1,7 @@
 package DataManagement;
 
 import DataManagement.Hibernate.HAdministrator;
+import DataManagement.Hibernate.HConnector;
 import DataManagement.Hibernate.HCustomer;
 import DataManagement.Hibernate.HEmployee;
 import DataManagement.Hibernate.HHeadDepartment;
@@ -288,15 +289,7 @@ public class DataTransfer {
 
         manager.saveHCustomer(conn.getHCustomer());*/
         manager.entityManager = manager.factory.createEntityManager();
-        
-        HHeadDepartment h = manager.entityManager.find(HHeadDepartment.class, "adrian");
-        System.out.println("DATA: " + h.toString());
-
-        List<HUser> users = HUser.getAllUsers();
-
-        for( HUser user : users )
-        	System.out.println(user.toString());
-        System.out.println("Finished");
-        System.out.println(users.size());
+        new HConnector();
+        HConnector.getMinIDProduct("ISmartBand");
     }
 }

@@ -7,10 +7,13 @@ import beans.User;
 
 import java.util.List;
 
+import DataManagement.Hibernate.HConnector;
+
 public class DataManager{
 
     private final static DatabaseConnector MYSQL = new DatabaseConnector();
     private final HConnector HIBERNATE = new HConnector();
+    
 
     public static List<User> searchUsers(String SEARCHED_STRING ){ return MYSQL.searchUsers( SEARCHED_STRING); }
 

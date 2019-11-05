@@ -73,7 +73,7 @@ public class HCustomer extends HUser{
 	}
 	
 	//  add a new order and save it in the database
-	public void addOrder( HOrder order ){
+	public boolean addOrder( HOrder order ){
 		
 		List<HOrder> orderList = getMyOrders();
 		orderList.add(order);
@@ -84,6 +84,7 @@ public class HCustomer extends HUser{
 		manager.persist(this);
 		manager.getTransaction().commit();
 		manager.close();
+		return true;
 		
 	}
 	
