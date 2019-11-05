@@ -135,15 +135,15 @@ public class HTeam {
 		
 		for( int i=0; i<teamProducts.size(); i++ ) {
 			
-			HEmployee HEMPLOYEE = members.get(i);
+			HTeamedEmployee HEMPLOYEE = members.get(i);
 			
 			if( SEARCHED_VALUE == null || ( SEARCHED_VALUE != null && 
 				(HEMPLOYEE.getUsername().contains(SEARCHED_VALUE) ||
 				 HEMPLOYEE.getName().contains(SEARCHED_VALUE) ||
 				 HEMPLOYEE.getSurname().contains(SEARCHED_VALUE) ||
 				 HEMPLOYEE.getMail().contains(SEARCHED_VALUE) ||
-				 HEMPLOYEE.getRole().contains(SEARCHED_VALUE))) ) {
-				
+				 HEMPLOYEE.getRole().contains(SEARCHED_VALUE)))  || 
+				 HEMPLOYEE.getIDTeam().contains(SEARCHED_VALUE)){
 				employeeList.add(new Employee(HEMPLOYEE));
 				
 			} 

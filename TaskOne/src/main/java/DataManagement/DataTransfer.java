@@ -1,7 +1,6 @@
 package DataManagement;
 
 import DataManagement.Hibernate.HAdministrator;
-import DataManagement.Hibernate.HConnector;
 import DataManagement.Hibernate.HCustomer;
 import DataManagement.Hibernate.HEmployee;
 import DataManagement.Hibernate.HHeadDepartment;
@@ -10,26 +9,15 @@ import DataManagement.Hibernate.HProduct;
 import DataManagement.Hibernate.HProductStock;
 import DataManagement.Hibernate.HTeam;
 import DataManagement.Hibernate.HTeamedEmployee;
-import DataManagement.Hibernate.HUser;
 import beans.Employee;
-import beans.Order;
 import beans.Product;
-
 import javax.persistence.EntityManager;
 import javax.persistence.EntityManagerFactory;
 import javax.persistence.Persistence;
-
-import org.hibernate.Session;
-import org.hibernate.cfg.Configuration;
-
-import java.io.IOException;
-import java.io.InputStreamReader;
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Scanner;
 
 
 
@@ -290,6 +278,6 @@ public class DataTransfer {
         manager.saveHCustomer(conn.getHCustomer());*/
         manager.entityManager = manager.factory.createEntityManager();
         new HConnector();
-        HConnector.getMinIDProduct("ISmartBand");
+        System.out.println(HConnector.getMinIDProduct("ISmartBand"));
     }
 }

@@ -3,6 +3,8 @@ package DataManagement.Hibernate;
 import javax.persistence.Entity;
 import javax.persistence.EntityManager;
 
+import DataManagement.HConnector;
+
 //----------------------------------------------------------------------------------------------------------
 //										HAdministrator
 //

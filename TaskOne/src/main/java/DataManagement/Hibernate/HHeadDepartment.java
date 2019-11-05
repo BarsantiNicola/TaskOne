@@ -7,6 +7,8 @@ import javax.persistence.JoinColumn;
 import javax.persistence.JoinTable;
 import javax.persistence.OneToOne;
 
+import DataManagement.HConnector;
+
 
 //----------------------------------------------------------------------------------------------------------
 //												HHeadDepartment

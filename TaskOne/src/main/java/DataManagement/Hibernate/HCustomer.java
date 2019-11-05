@@ -1,6 +1,8 @@
 package DataManagement.Hibernate;
 
 import javax.persistence.*;
+
+import DataManagement.HConnector;
 import beans.*;
 import java.util.*;
 

@@ -2,6 +2,8 @@ package DataManagement.Hibernate;
 
 import java.util.*;
 import javax.persistence.*;
+
+import DataManagement.HConnector;
 import beans.*;
 
 //----------------------------------------------------------------------------------------------------------
@@ -108,15 +110,5 @@ public class HEmployee extends HUser{
 	public String toString() { return super.toString() + "\tSalary: " + salary + "\tRole: " + role; }
 
 	
-	public static List<Employee> toEmployeeList( List<HEmployee> HEMPLOYEELIST ){
-		
-		List<Employee> employeeList = new ArrayList<>();
-		
-		for( int i=0; i<HEMPLOYEELIST.size(); i++ ) {
-			
-			employeeList.add(new Employee(HEMPLOYEELIST.get(i)));
-		}
-		
-		return employeeList;
-	}
+
 }

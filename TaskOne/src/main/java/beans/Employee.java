@@ -22,13 +22,14 @@ public class Employee {
 
 	}
 	
-	public Employee( HEmployee HEMPLOYEE ) {
+	public Employee( HTeamedEmployee HEMPLOYEE ) {
 		
 		IDemployee = new SimpleStringProperty(HEMPLOYEE.getUsername());
 		name = new SimpleStringProperty(HEMPLOYEE.getName());;
 		surname = new SimpleStringProperty(HEMPLOYEE.getSurname());
 		mail = new SimpleStringProperty(HEMPLOYEE.getMail());
 		role = new SimpleStringProperty(HEMPLOYEE.getRole());
+		
 	}
 	
 	public String getIDemployee() {

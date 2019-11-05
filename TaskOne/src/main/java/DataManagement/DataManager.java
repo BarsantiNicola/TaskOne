@@ -7,12 +7,11 @@ import beans.User;
 
 import java.util.List;
 
-import DataManagement.Hibernate.HConnector;
 
 public class DataManager{
 
     private final static DatabaseConnector MYSQL = new DatabaseConnector();
-    private final HConnector HIBERNATE = new HConnector();
+    private final static HConnector HIBERNATE = new HConnector();
     
 
     public static List<User> searchUsers(String SEARCHED_STRING ){ return MYSQL.searchUsers( SEARCHED_STRING); }
@@ -37,7 +36,7 @@ public class DataManager{
 
     public static int getTeam( String USERNAME ){ return MYSQL.getTeam( USERNAME ); }
 
-    public static UserType login( String USERNAME , String PASSWORD ){ return MYSQL.login( USERNAME , PASSWORD ); }
+    public static UserType login( String USERNAME , String PASSWORD ){ return HIBERNATE.login( USERNAME , PASSWORD ); }
 
     public static int getMinIDProduct( int PRODUCT_TYPE ){ return MYSQL.getMinIDProduct( PRODUCT_TYPE ); }
 

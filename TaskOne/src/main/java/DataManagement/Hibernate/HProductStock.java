@@ -1,6 +1,7 @@
 package DataManagement.Hibernate;
 
 import javax.persistence.*;
+import DataManagement.HConnector;
 
 //----------------------------------------------------------------------------------------------------------
 //											HProductStock

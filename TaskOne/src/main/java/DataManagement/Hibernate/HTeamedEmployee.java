@@ -1,5 +1,10 @@
 package DataManagement.Hibernate;
+import java.util.ArrayList;
+import java.util.List;
+
 import javax.persistence.*;
+
+import beans.Employee;
 
 
 //----------------------------------------------------------------------------------------------------------
@@ -58,6 +63,18 @@ public class HTeamedEmployee extends HEmployee{
 	//										          FUNCTIONS
 	//----------------------------------------------------------------------------------------------------------
 
+	public static List<Employee> toEmployeeList( List<HTeamedEmployee> HEMPLOYEELIST ){
+		
+		List<Employee> employeeList = new ArrayList<>();
+		
+		for( int i=0; i<HEMPLOYEELIST.size(); i++ ) {
+			
+			employeeList.add(new Employee(HEMPLOYEELIST.get(i)));
+		}
+		
+		return employeeList;
+	}
+	
 	@Override
 	public String toString() { return super.toString() + "\tIdTeam: " + IDteam; }
 	

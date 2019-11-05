@@ -2,6 +2,8 @@ package DataManagement.Hibernate;
 
 import java.util.*;
 import javax.persistence.*;
+
+import DataManagement.HConnector;
 import beans.*;
 
 //----------------------------------------------------------------------------------------------------------
@@ -46,6 +48,16 @@ public class HUser {
 		this.surname = surname;
 		this.password = password;
 		this.mail = mail;
+		
+	}
+	
+	public HUser( User user ) {
+		
+		this.username = user.getUsername();
+		this.name = user.getName();
+		this.surname = user.getSurname();
+		this.password = user.getPassword();
+		this.mail = user.getMail();
 		
 	}
 
