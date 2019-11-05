@@ -1,8 +1,9 @@
 package DataManagement.Hibernate;
 
 import javax.persistence.*;
-import java.util.ArrayList;
-import java.util.List;
+import beans.*;
+import java.util.*;
+
 
 
 //----------------------------------------------------------------------------------------------------------
@@ -41,7 +42,12 @@ public class HCustomer extends HUser{
 	//----------------------------------------------------------------------------------------------------------
 
 	
-	public List<HOrder> getMyOrders(){
+	public List<Order> getMyOrders(){
+		
+		return HOrder.toOrderList(myOrders);
+	}
+	
+	public List<HOrder> getMyHorders(){
 		
 		return myOrders;
 	}
@@ -60,6 +66,26 @@ public class HCustomer extends HUser{
 	//										FUNCTIONS
 	//----------------------------------------------------------------------------------------------------------
 
+	public List<Order> searchOrders( String SEARCHED_VALUE ){
+		
+		List<Order> orderList = new ArrayList<>();
+		
+		for( int i=0; i<myOrders.size(); i++ ) {
+			
+			HOrder HORDER = myOrders.get(i);
+			
+			if( SEARCHED_VALUE == null || ( SEARCHED_VALUE != null && 
+				(HORDER.getStatus().contains(SEARCHED_VALUE) ||
+				HORDER.getProductStock().getProduct().getProductName().contains(SEARCHED_VALUE))) ) {
+				
+				orderList.add(new Order(HORDER));
+				
+			} 
+		}
+		
+		return orderList;
+	}
+	
 	// add a new customer to the database
 	public static void addCustomer( HCustomer customer ){
 		
@@ -75,7 +101,7 @@ public class HCustomer extends HUser{
 	//  add a new order and save it in the database
 	public boolean addOrder( HOrder order ){
 		
-		List<HOrder> orderList = getMyOrders();
+		List<HOrder> orderList = getMyHorders();
 		orderList.add(order);
 		setMyOrders( orderList );
 		

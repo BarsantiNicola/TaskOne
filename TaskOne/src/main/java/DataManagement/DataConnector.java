@@ -1,12 +1,9 @@
 package DataManagement;
 
-import beans.Employee;
-import beans.Product;
-import beans.User;
+import beans.*;
+import java.util.*;
 
-import java.util.List;
-
-abstract class DataConnector {
+public abstract class DataConnector {
 
     abstract List<User> searchUsers( String SEARCHED_STRING );
 
@@ -16,7 +13,7 @@ abstract class DataConnector {
 
     abstract boolean updateSalary(int SALARY , String USER_ID  );
 
-    abstract boolean deleteUser( String USER_NAME );
+    abstract boolean deleteUser(String USER_NAME);
 
     abstract List<Product> getAvailableProducts();
 

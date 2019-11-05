@@ -1,7 +1,9 @@
 package DataManagement.Hibernate;
 
 import javax.persistence.*;
-import java.sql.Timestamp;
+import beans.*;
+import java.sql.*;
+import java.util.*;
 
 
 //----------------------------------------------------------------------------------------------------------
@@ -145,14 +147,24 @@ public class HOrder {
 		
 		return true;
 	}
-	
 
-	
 	@Override
 	public String toString() {
 		
 		return "IDorder: " + IDorder + "\tPurchaseDate: " + purchaseDate + "\tPrice: " + price 
 				+ "\tstatus: " + status + "\n\tPRODUCTSTOCK: " + productStock.toString();
 	
+	}
+	
+	public static List<Order> toOrderList( List<HOrder> HORDERLIST ){
+		
+		List<Order> orderList = new ArrayList<>();
+		
+		for( int i=0; i<HORDERLIST.size(); i++ ) {
+			
+			orderList.add(new Order(HORDERLIST.get(i)));
+		}
+		
+		return orderList;
 	}
 }

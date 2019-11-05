@@ -118,7 +118,7 @@ public class HProduct {
 	//----------------------------------------------------------------------------------------------------------
 
 	//  the function ADDS the number given to the current availability of the object
-	public void addProductAvailability( int number ) {
+	public boolean addProductAvailability( int number ) {
 		
 		System.out.println("Changine the availability of product: " + toString());
 		System.out.println("PRODUCT_ADDED: " + number + "\tNEW_AVAILABILITY: " + productAvailability+number);
@@ -129,6 +129,8 @@ public class HProduct {
 		manager.merge(this);
 		manager.getTransaction().commit();
 		manager.close();
+		
+		return true;
 		
 	}
 	

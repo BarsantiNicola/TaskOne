@@ -1,16 +1,10 @@
 package DataManagement.Hibernate;
 
-import java.sql.Timestamp;
-import java.util.ArrayList;
-import java.util.List;
-
+import java.sql.*;
+import java.util.*;
 import javax.persistence.*;
-import DataManagement.UserType;
-import beans.Employee;
-import beans.Order;
-import beans.Product;
-import beans.User;
-
+import DataManagement.*;
+import beans.*;
 
 //----------------------------------------------------------------------------------------------------------
 //										HConnector
@@ -47,7 +41,7 @@ public class HConnector extends DataConnector{
 	}
 	
 	//RIVEDERE-------------------------------------------------------------------------------
-	static public int getMinIDProduct( String string ){ 
+	static public int getMinIDProduct( String SEARCHED_PRODUCT ){ 
 
         int minID = -1;
     	EntityManager manager = FACTORY.createEntityManager();
@@ -56,14 +50,16 @@ public class HConnector extends DataConnector{
 
 
             Query query = manager.createQuery(
-                "select min(p.IDstock) from HProductStock p WHERE p.product.productName = ?1 AND p.IDstock NOT IN (SELECT PS.IDstock FROM HOrder o inner join ProductStock PS ON o.productStock.IDstock = PS.IDstock WHERE PS.product.productName = ?2)"
-            		);
-            
-          //  WHERE p.product = ?1  "
-            //        + "AND p.IDstock NOT IN(SELECT HProductStock from HOrder WHERE p.product = ?2) ORDER BY IDstock"  
+                "SELECT MIN(p.IDstock) "
+              + "FROM HProductStock p "
+              + "WHERE p.product.productName = ?1 "
+              	+ "AND p.IDstock NOT IN (SELECT ps.IDstock "
+              						  + "FROM HOrder o INNER JOIN ProductStock PS ON o.productStock.IDstock = ps.IDstock "
+              						  + "WHERE ps.product.productName = ?2)"
+            ); 
                     
-            query.setParameter( 1, string );
-            query.setParameter( 2, string );
+            query.setParameter( 1, SEARCHED_PRODUCT );
+            query.setParameter( 2, SEARCHED_PRODUCT );
             
 
             minID = (int) query.getSingleResult();
@@ -90,14 +86,20 @@ public class HConnector extends DataConnector{
     	
     	EntityManager manager = FACTORY.createEntityManager();
     	List<Order> orders = new ArrayList<>();
-    	List<HOrder> horders = manager.find( HCustomer.class , CUSTOMER_ID ).getMyOrders();
+    	List<HOrder> horders = manager.find( HCustomer.class , CUSTOMER_ID ).getMyHorders();
     	for( HOrder o : horders )
     		orders.add( new Order(o));
     	
     	return orders;
     }
 
-    public static List<Order> searchOrders( String SEARCHED_VALUE , String CUSTOMER_ID ){ return MYSQL.searchOrders( SEARCHED_VALUE , CUSTOMER_ID );};
+    public static List<Order> searchOrders( String SEARCHED_VALUE , String CUSTOMER_ID ){ 
+    	EntityManager manager = FACTORY.createEntityManager();
+    	HCustomer customer = manager.getReference(HCustomer.class, CUSTOMER_ID);
+    	
+    	return customer.searchOrders( SEARCHED_VALUE );
+    
+    };
 
     public static boolean insertUser( HUser NEW_USER ){ return NEW_USER.insertUser(); }
 
@@ -114,22 +116,72 @@ public class HConnector extends DataConnector{
     public static int getTeam( HHeadDepartment MANAGER ){ return 0; }
 
     public static boolean insertOrder( String CUSTOMER_ID , String PRODUCT_ID , int PRICE ){ 
-    	EntityManager entityManager = FACTORY.createEntityManager();
     	
-    	HCustomer newCustomer = entityManager.find(HCustomer.class, CUSTOMER_ID);
-    	HOrder newOrder = new HOrder( new Timestamp(System.currentTimeMillis()), PRICE , "ordered" , CUSTOMER_ID , entityManager.find(HProductStock.class, getMinIDProduct(PRODUCT_ID)));
+    	EntityManager manager = FACTORY.createEntityManager();
+    	
+    	HCustomer newCustomer = manager.find(HCustomer.class, CUSTOMER_ID);
+    	HOrder newOrder = new HOrder( new Timestamp(System.currentTimeMillis()), PRICE , "ordered" , CUSTOMER_ID , manager.find(HProductStock.class, getMinIDProduct(PRODUCT_ID)));
 
     	return newCustomer.addOrder( newOrder ); 
     	}
 
-    public static List<Product> getTeamProducts( int TEAM_ID ){ return MYSQL.getTeamProducts( TEAM_ID ); }
+    public static List<Product> getTeamProducts( int TEAM_ID ){ 
+    	
+    	EntityManager manager = FACTORY.createEntityManager();
+    	
+    	HTeam team = manager.getReference(HTeam.class, TEAM_ID);
+    	
+    	return HProduct.toProductList(team.getTeamProducts()); 
+    	
+    }
 
-    public static List<Employee> getTeamEmployees(int TEAM_ID ){ return MYSQL.getTeamEmployees( TEAM_ID ); }
+    public static List<Employee> getTeamEmployees(int TEAM_ID ){ 
+    	
+    	EntityManager manager = FACTORY.createEntityManager();
+    	
+    	HTeam team = manager.getReference(HTeam.class, TEAM_ID);
+    	
+    	return HEmployee.toEmployeeList(team.getMembers());  
+    	
+    }
 
-    public static boolean updateProductAvailability( int PRODUCT_TYPE , int ADDED_AVAILABILITY ){ return MYSQL.updateProductAvailability( PRODUCT_TYPE , ADDED_AVAILABILITY ); }
+    public static boolean updateProductAvailability( String PRODUCT_NAME , int ADDED_AVAILABILITY ){ 
+    	
+    	EntityManager manager = FACTORY.createEntityManager();
+    	
+    	HProduct product = manager.getReference(HProduct.class, PRODUCT_NAME);
+    	
+    	return product.addProductAvailability( ADDED_AVAILABILITY ); 
+    	
+    }
 
-    public static List<Employee> searchTeamEmployees( int TEAM_ID , String SEARCHED_VALUE ){ return MYSQL.searchTeamEmployees( TEAM_ID , SEARCHED_VALUE ); }
+    public static List<Employee> searchTeamEmployees( int TEAM_ID , String SEARCHED_VALUE ){ 
+    	
+    	EntityManager manager = FACTORY.createEntityManager();
+    	
+    	HTeam team = manager.getReference(HTeam.class, TEAM_ID);
+    	
+    	return team.searchTeamEmployees( SEARCHED_VALUE ); 
+    	
+    }
 
-    public static List<Product> searchTeamProducts( int TEAM_ID , String SEARCHED_VALUE ){ return MYSQL.searchTeamProducts( TEAM_ID , SEARCHED_VALUE ); }
+    public static List<Product> searchTeamProducts( int TEAM_ID , String SEARCHED_VALUE ){ 
+    	
+    	EntityManager manager = FACTORY.createEntityManager();
+    	
+    	HTeam team = manager.getReference(HTeam.class, TEAM_ID);
+    	
+    	return team.searchTeamProducts( SEARCHED_VALUE ); 
+    	
+    }
 
+    public static boolean deleteUser( String USER_NAME ) {
+    	
+    	EntityManager manager = FACTORY.createEntityManager();
+    	
+    	HUser user = manager.getReference(HUser.class, USER_NAME);
+    	
+    	return user.deleteUser();    	
+    	
+    }
 }

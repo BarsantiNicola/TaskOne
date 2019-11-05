@@ -74,6 +74,11 @@ public class HTeam {
 		return members;
 	}
 	
+	public List<HProduct> getTeamProducts(){
+		
+		return teamProducts;
+	}
+	
 
 	//----------------------------------------------------------------------------------------------------------
 	//											SETTERS

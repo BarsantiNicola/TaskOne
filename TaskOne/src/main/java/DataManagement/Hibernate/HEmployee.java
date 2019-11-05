@@ -1,12 +1,8 @@
 package DataManagement.Hibernate;
 
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.EntityManager;
-import javax.persistence.Inheritance;
-import javax.persistence.InheritanceType;
-
-import beans.Employee;
+import java.util.*;
+import javax.persistence.*;
+import beans.*;
 
 //----------------------------------------------------------------------------------------------------------
 //												HEmployee
@@ -110,5 +106,17 @@ public class HEmployee extends HUser{
 	
 	@Override
 	public String toString() { return super.toString() + "\tSalary: " + salary + "\tRole: " + role; }
+
 	
+	public static List<Employee> toEmployeeList( List<HEmployee> HEMPLOYEELIST ){
+		
+		List<Employee> employeeList = new ArrayList<>();
+		
+		for( int i=0; i<HEMPLOYEELIST.size(); i++ ) {
+			
+			employeeList.add(new Employee(HEMPLOYEELIST.get(i)));
+		}
+		
+		return employeeList;
+	}
 }
