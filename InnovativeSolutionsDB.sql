@@ -45,11 +45,11 @@ DROP TABLE IF EXISTS `members`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!50503 SET character_set_client = utf8mb4 */;
 CREATE TABLE `members` (
-  `teamLeader` varchar(45) NOT NULL,
+  `IDteam` int(11) NOT NULL,
   `IDemployee` varchar(45) NOT NULL,
   UNIQUE KEY `UK_pds9ags8lp16yus389sgotgqe` (`IDemployee`),
-  KEY `FK2pr4rvwm5mxxfxajaqpckb51p` (`teamLeader`),
-  CONSTRAINT `FK2pr4rvwm5mxxfxajaqpckb51p` FOREIGN KEY (`teamLeader`) REFERENCES `teams` (`teamLeader`),
+  KEY `FKhndo4npk87lxc8y39uqdl73t7` (`IDteam`),
+  CONSTRAINT `FKhndo4npk87lxc8y39uqdl73t7` FOREIGN KEY (`IDteam`) REFERENCES `teams` (`IDteam`),
   CONSTRAINT `FKm7cy4fvdi6pnxqfv378yu79fy` FOREIGN KEY (`IDemployee`) REFERENCES `users` (`username`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
@@ -60,7 +60,7 @@ CREATE TABLE `members` (
 
 LOCK TABLES `members` WRITE;
 /*!40000 ALTER TABLE `members` DISABLE KEYS */;
-INSERT INTO `members` VALUES ('adrian','bob'),('adrian','jacob'),('adrian','lorry'),('james','maria'),('james','matt'),('james','roy'),('laura','michael'),('laura','ruth'),('rob','christopher'),('rob','seli'),('rob','susy');
+INSERT INTO `members` VALUES (1,'bob'),(1,'jacob'),(1,'lorry'),(2,'maria'),(2,'matt'),(2,'roy'),(3,'michael'),(3,'ruth'),(4,'christopher'),(4,'seli'),(4,'susy');
 /*!40000 ALTER TABLE `members` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -87,7 +87,6 @@ CREATE TABLE `myorders` (
 
 LOCK TABLES `myorders` WRITE;
 /*!40000 ALTER TABLE `myorders` DISABLE KEYS */;
-INSERT INTO `myorders` VALUES ('adri',1),('adri',2),('adri',3),('amy',4),('amy',5),('amy',6),('anto83',7),('anto83',8),('anto83',9),('betty',10),('betty',11),('betty',12),('brad',13),('brad',14),('brad',15),('Dani',16),('Dani',17),('Dani',18),('david91',19),('david91',20),('david91',21),('Dia',22),('Dia',23),('donny',24),('donny',25),('eth',26),('eth',27),('Gabriel',28),('Gabriel',29),('imanne',30),('imanne',31),('james96',32),('james96',33),('john72',34),('john72',35),('lisa',36),('lisa',37),('lola',38),('lola',39),('magicBob',40),('magicBob',41),('Marianne',42),('Marianne',43),('matty',44),('matty',45),('PaulPaul',46),('PaulPaul',47),('Philip',48),('Philip',49),('ralph68',50),('ralph68',51),('Sarah',52),('Sarah',53),('soJenny',54),('soJenny',55),('timJ',56),('timJ',57),('Vince',58),('Vince',59);
 /*!40000 ALTER TABLE `myorders` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -99,12 +98,12 @@ DROP TABLE IF EXISTS `myteam`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!50503 SET character_set_client = utf8mb4 */;
 CREATE TABLE `myteam` (
-  `myTeam_teamLeader` varchar(45) DEFAULT NULL,
-  `username` varchar(45) NOT NULL,
-  PRIMARY KEY (`username`),
-  KEY `FKfhrklfle2hw9ws7vpr406rbd3` (`myTeam_teamLeader`),
-  CONSTRAINT `FKfhrklfle2hw9ws7vpr406rbd3` FOREIGN KEY (`myTeam_teamLeader`) REFERENCES `teams` (`teamLeader`),
-  CONSTRAINT `FKgrvxa8qy4l1ao1s1frfivpus6` FOREIGN KEY (`username`) REFERENCES `users` (`username`)
+  `IDteam` int(11) DEFAULT NULL,
+  `teamLeader` varchar(45) NOT NULL,
+  PRIMARY KEY (`teamLeader`),
+  KEY `FKh2l6phcsdcx4cjmpm8u0ubr7u` (`IDteam`),
+  CONSTRAINT `FKh2l6phcsdcx4cjmpm8u0ubr7u` FOREIGN KEY (`IDteam`) REFERENCES `teams` (`IDteam`),
+  CONSTRAINT `FKjt724ax5ywmfryjtt0utqmd39` FOREIGN KEY (`teamLeader`) REFERENCES `users` (`username`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
@@ -114,7 +113,7 @@ CREATE TABLE `myteam` (
 
 LOCK TABLES `myteam` WRITE;
 /*!40000 ALTER TABLE `myteam` DISABLE KEYS */;
-INSERT INTO `myteam` VALUES ('adrian','adrian'),('james','james'),('laura','laura'),('rob','rob');
+INSERT INTO `myteam` VALUES (1,'adrian'),(2,'james'),(3,'laura'),(4,'rob');
 /*!40000 ALTER TABLE `myteam` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -184,7 +183,7 @@ DROP TABLE IF EXISTS `productstock`;
 /*!50503 SET character_set_client = utf8mb4 */;
 CREATE TABLE `productstock` (
   `IDstock` int(11) NOT NULL,
-  `product` varchar(45) DEFAULT NULL,
+  `product` varchar(45) NOT NULL,
   PRIMARY KEY (`IDstock`),
   KEY `FK9bbubko9mp3sjhpfaf1joc08b` (`product`),
   CONSTRAINT `FK9bbubko9mp3sjhpfaf1joc08b` FOREIGN KEY (`product`) REFERENCES `products` (`productName`)
@@ -209,11 +208,11 @@ DROP TABLE IF EXISTS `teamproducts`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!50503 SET character_set_client = utf8mb4 */;
 CREATE TABLE `teamproducts` (
-  `teamLeader` varchar(45) NOT NULL,
+  `IDteam` int(11) NOT NULL,
   `productName` varchar(45) NOT NULL,
   UNIQUE KEY `UK_fbb9yjrm731mqtw76fam2o5hn` (`productName`),
-  KEY `FK3q5ppa767s2g9djsva8mmaycy` (`teamLeader`),
-  CONSTRAINT `FK3q5ppa767s2g9djsva8mmaycy` FOREIGN KEY (`teamLeader`) REFERENCES `teams` (`teamLeader`),
+  KEY `FK4lh6dpsqkol41hann4aue7y8c` (`IDteam`),
+  CONSTRAINT `FK4lh6dpsqkol41hann4aue7y8c` FOREIGN KEY (`IDteam`) REFERENCES `teams` (`IDteam`),
   CONSTRAINT `FK93jsf5itykuajqsa2309fxwj4` FOREIGN KEY (`productName`) REFERENCES `products` (`productName`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
@@ -224,7 +223,7 @@ CREATE TABLE `teamproducts` (
 
 LOCK TABLES `teamproducts` WRITE;
 /*!40000 ALTER TABLE `teamproducts` DISABLE KEYS */;
-INSERT INTO `teamproducts` VALUES ('adrian','ISmartBand'),('adrian','ISmartThermo'),('james','ISmartLock'),('laura','ISmartVideoBell'),('rob','ISmartLight');
+INSERT INTO `teamproducts` VALUES (1,'ISmartBand'),(1,'ISmartThermo'),(2,'ISmartLock'),(3,'ISmartVideoBell'),(4,'ISmartLight');
 /*!40000 ALTER TABLE `teamproducts` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -236,9 +235,9 @@ DROP TABLE IF EXISTS `teams`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!50503 SET character_set_client = utf8mb4 */;
 CREATE TABLE `teams` (
-  `teamLeader` varchar(45) NOT NULL,
+  `IDteam` int(11) NOT NULL,
   `location` varchar(45) NOT NULL,
-  PRIMARY KEY (`teamLeader`)
+  PRIMARY KEY (`IDteam`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
@@ -248,7 +247,7 @@ CREATE TABLE `teams` (
 
 LOCK TABLES `teams` WRITE;
 /*!40000 ALTER TABLE `teams` DISABLE KEYS */;
-INSERT INTO `teams` VALUES ('adrian','Seattle'),('james','Washington'),('laura','New York'),('rob','Boston');
+INSERT INTO `teams` VALUES (1,'Seattle'),(2,'Washington'),(3,'New York'),(4,'Boston');
 /*!40000 ALTER TABLE `teams` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -264,11 +263,11 @@ CREATE TABLE `users` (
   `username` varchar(45) NOT NULL,
   `mail` varchar(45) NOT NULL,
   `name` varchar(45) NOT NULL,
+  `password` varchar(45) NOT NULL,
   `surname` varchar(45) NOT NULL,
   `role` varchar(45) DEFAULT NULL,
   `salary` int(11) DEFAULT NULL,
-  `IDteam` varchar(255) DEFAULT NULL,
-  `password` varchar(45) NOT NULL,
+  `IDteam` int(11) DEFAULT NULL,
   PRIMARY KEY (`username`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
@@ -279,7 +278,7 @@ CREATE TABLE `users` (
 
 LOCK TABLES `users` WRITE;
 /*!40000 ALTER TABLE `users` DISABLE KEYS */;
-INSERT INTO `users` VALUES ('HAdministrator','admin','admin@example.com','admin','admin','Administrator',10000,NULL,'adminPassword'),('HCustomer','adri','adri@example.com','Adrienne','Andrews',NULL,NULL,NULL,'adriPassword'),('HHeadDepartment','adrian','adrian@example.com','Adrian','Robinson','Engineer',3000,NULL,'adrianPassword'),('HEmployee','agatha','agatha@example.com','Agatha','Lane','Janitor',1200,NULL,'agathaPassword'),('HCustomer','amy','amy@example.com','Amy','Lowe',NULL,NULL,NULL,'amyPassword'),('HCustomer','anto83','anto83@example.com','Anthony','Griffin',NULL,NULL,NULL,'anto83Password'),('HCustomer','betty','betty@example.com','Betty','Jordan',NULL,NULL,NULL,'bettyPassword'),('HTeamedEmployee','bob','bob@example.com','Robert','Caldwell','Technician',1800,'adrian','bobPassword'),('HCustomer','brad','brad@example.com','Bradley','Proctor',NULL,NULL,NULL,'bradPassword'),('HTeamedEmployee','christopher','christopher@example.com','Christopher','Austin','Technician',1800,'rob','christopherPassword'),('HCustomer','Dani','Dani@example.com','Danielle','Johnson',NULL,NULL,NULL,'DaniPassword'),('HCustomer','david91','david91@example.com','David','Baldwin',NULL,NULL,NULL,'david91Password'),('HCustomer','Dia','Dia@example.com','Diana','Williams',NULL,NULL,NULL,'DiaPassword'),('HCustomer','donny','donny@example.com','Donny','Hudson',NULL,NULL,NULL,'donnyPassword'),('HCustomer','eth','eth@example.com','Ethan','Rivas',NULL,NULL,NULL,'ethPassword'),('HCustomer','Gabriel','Gabriel@example.com','Gabriel','Foster',NULL,NULL,NULL,'GabrielPassword'),('HCustomer','imanne','anne@example.com','Anne','Taylor',NULL,NULL,NULL,'imannePassword'),('HTeamedEmployee','jacob','jacob@example.com','Jacob','Chan','Technician',1800,'adrian','jacobPassword'),('HHeadDepartment','james','james@example.com','James','Burns','Engineer',3000,NULL,'jamesPassword'),('HCustomer','james96','james@example.com','James','Parker',NULL,NULL,NULL,'james96Password'),('HEmployee','john','john@example.com','John','Carter','CEO',20000,NULL,'johnPassword'),('HCustomer','john72','john72@example.com','John','Branch',NULL,NULL,NULL,'john72Password'),('HHeadDepartment','laura','laura@example.com','Laura','Schmitt','Engineer',3000,NULL,'lauraPassword'),('HCustomer','lisa','lisa@example.com','Lisa','Smith',NULL,NULL,NULL,'lisaPassword'),('HCustomer','lola','lola@example.com','Karola','Leal',NULL,NULL,NULL,'lolaPassword'),('HTeamedEmployee','lorry','lorry@example.com','Lorry','Prenton','Technician',1800,'adrian','lorryPassword'),('HEmployee','madeline','madeline@example.com','Madelaine','Terrel','Technician',1800,NULL,'madelinePassword'),('HCustomer','magicBob','magicbob@example.com','Bob','White',NULL,NULL,NULL,'magicBobPassword'),('HTeamedEmployee','maria','maria@example.com','Maria','Morrison','Technician',1800,'james','mariaPassword'),('HCustomer','Marianne','Marianne@example.com','Marianne','Payne',NULL,NULL,NULL,'MariannePassword'),('HTeamedEmployee','matt','matt@example.com','Matthew','Duncan','Technician',1800,'james','mattPassword'),('HCustomer','matty','matty@example.com','Matthew','Simon',NULL,NULL,NULL,'mattyPassword'),('HTeamedEmployee','michael','michael@example.com','Michael','Woods','Technician',1800,'laura','michaelPassword'),('HCustomer','PaulPaul','paul@example.com','Paul','Scott',NULL,NULL,NULL,'PaulPaulPassword'),('HCustomer','Philip','Philip@example.com','Philip','Sanders',NULL,NULL,NULL,'PhilipPassword'),('HCustomer','ralph68','ralph68@example.com','Ralph','Mayo',NULL,NULL,NULL,'ralph68Password'),('HEmployee','randi','randi@example.com','Randi','Dickson','Janitor',1200,NULL,'randiPassword'),('HEmployee','richard','richard@example.com','Richard','Johnson','CTO',15000,NULL,'richardPassword'),('HHeadDepartment','rob','rob@example.com','Robert','Kelley','Engineer',3000,NULL,'robPassword'),('HTeamedEmployee','roy','roy@example.com','Roy','Smith','Technician',1800,'james','royPassword'),('HTeamedEmployee','ruth','ruth@example.com','Ruth','Spencer','Technician',1800,'laura','ruthPassword'),('HCustomer','Sarah','Sarah@example.com','Sarah','Washington',NULL,NULL,NULL,'SarahPassword'),('HTeamedEmployee','seli','seli@example.com','Selinda','Reyna','Technician',1800,'rob','seliPassword'),('HCustomer','soJenny','jenny@example.com','Jenny','Lingard',NULL,NULL,NULL,'soJennyPassword'),('HTeamedEmployee','susy','susy@example.com','Susan','Parks','Technician',2000,'rob','susyPassword'),('HCustomer','timJ','tim@example.com','Tim','Jones',NULL,NULL,NULL,'timJPassword'),('HCustomer','Vince','Vince@example.com','Vincent','Ross',NULL,NULL,NULL,'VincePassword');
+INSERT INTO `users` VALUES ('HAdministrator','admin','admin@example.com','admin','adminPassword','admin','Administrator',10000,NULL),('HHeadDepartment','adrian','adrian@example.com','Adrian','adrianPassword','Robinson','Engineer',3000,NULL),('HEmployee','agatha','agatha@example.com','Agatha','agathaPassword','Lane','Janitor',1200,NULL),('HTeamedEmployee','bob','bob@example.com','Robert','bobPassword','Caldwell','Technician',1800,1),('HTeamedEmployee','christopher','christopher@example.com','Christopher','christopherPassword','Austin','Technician',1800,4),('HTeamedEmployee','jacob','jacob@example.com','Jacob','jacobPassword','Chan','Technician',1800,1),('HHeadDepartment','james','james@example.com','James','jamesPassword','Burns','Engineer',3000,NULL),('HEmployee','john','john@example.com','John','johnPassword','Carter','CEO',20000,NULL),('HHeadDepartment','laura','laura@example.com','Laura','lauraPassword','Schmitt','Engineer',3000,NULL),('HTeamedEmployee','lorry','lorry@example.com','Lorry','lorryPassword','Prenton','Technician',1800,1),('HEmployee','madeline','madeline@example.com','Madelaine','madelinePassword','Terrel','Technician',3000,NULL),('HTeamedEmployee','maria','maria@example.com','Maria','mariaPassword','Morrison','Technician',1800,2),('HTeamedEmployee','matt','matt@example.com','Matthew','mattPassword','Duncan','Technician',1800,2),('HTeamedEmployee','michael','michael@example.com','Michael','michaelPassword','Woods','Technician',1800,3),('HEmployee','randi','randi@example.com','Randi','randiPassword','Dickson','Janitor',1200,NULL),('HEmployee','richard','richard@example.com','Richard','richardPassword','Johnson','CTO',15000,NULL),('HHeadDepartment','rob','rob@example.com','Robert','robPassword','Kelley','Engineer',3000,NULL),('HTeamedEmployee','roy','roy@example.com','Roy','royPassword','Smith','Technician',1800,2),('HTeamedEmployee','ruth','ruth@example.com','Ruth','ruthPassword','Spencer','Technician',1800,3),('HTeamedEmployee','seli','seli@example.com','Selinda','seliPassword','Reyna','Technician',1800,4),('HTeamedEmployee','susy','susy@example.com','Susan','susyPassword','Parks','Technician',2000,4);
 /*!40000 ALTER TABLE `users` ENABLE KEYS */;
 UNLOCK TABLES;
 /*!40103 SET TIME_ZONE=@OLD_TIME_ZONE */;
@@ -292,4 +291,4 @@ UNLOCK TABLES;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2019-11-04  9:49:07
+-- Dump completed on 2019-11-06 22:43:13
