@@ -36,7 +36,7 @@ public class DataManager{
 
     public static int getProductType( String PRODUCT_NAME ){ return HIBERNATE.getProductType( PRODUCT_NAME ); }
 
-    public static int getTeam( HHeadDepartment MANAGER ){ return HIBERNATE.getTeam( MANAGER ); }
+    public static int getTeam( String MANAGER ){ return HIBERNATE.getTeam( MANAGER ); }
 
     public static UserType login( String USERNAME , String PASSWORD ){ return HIBERNATE.login( USERNAME , PASSWORD ); }
 

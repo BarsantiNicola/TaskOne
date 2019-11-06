@@ -897,7 +897,7 @@ public class DatabaseConnector extends DataConnector{
 
 			if( newUser.getRole()!= null && newUser.getRole().length() > 0 ) {              //If the user is an employee
 
-				if( newUser.getSalary() <= 0 || Integer.parseInt(newUser.getTeam()) <= 0 ){
+				if( newUser.getSalary() <= 0 || newUser.getTeam() <= 0 ){
 					rollback.execute();
 					return false;
 				}
@@ -905,7 +905,7 @@ public class DatabaseConnector extends DataConnector{
 				insertEmployee.setString(1, newUser.getUsername());
 				insertEmployee.setInt(2, newUser.getSalary());
 				insertEmployee.setString(3, newUser.getRole());
-				insertEmployee.setString(4, newUser.getTeam());
+				insertEmployee.setInt(4, newUser.getTeam());
 				insertEmployee.execute();
 			}
             else {                                                                         //Otherwise, if it's a customer
@@ -977,7 +977,7 @@ public List<HTeamedEmployee> getHTeamedEmployees(){
 			while( set.next()) 		
 				employees.add( new HTeamedEmployee( set.getString("IDemployee") , set.getString("name") ,
 						set.getString("surname") , set.getString("password") , set.getString("mail") ,  
-						set.getInt("salary") , set.getString("role")  , set.getString("teamLeader")));
+						set.getInt("salary") , set.getString("role")  , set.getInt("IDteam")));
 			
 		}catch( SQLException e ) {
 			
@@ -1003,7 +1003,7 @@ public List<HTeam> getHTeams(){
 
 			while( team.next()) { 			
 				
-				teams.add( new HTeam( team.getString("teamLeader") , team.getString("location") , null , null ));
+				teams.add( new HTeam( team.getInt("IDteam") , team.getString("location") , null , null ));
 			}
 
 			

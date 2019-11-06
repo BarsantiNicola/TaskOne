@@ -69,8 +69,8 @@ public class DataTransfer {
         entityManager.getTransaction().begin();
     	for( HTeam team : teams ) {
       		
-      		teamEmployees = conn.getTeamEmployees(conn.getTeam(team.getTeamLeader()));
-      		teamProducts = conn.getTeamProducts(conn.getTeam(team.getTeamLeader()));
+      		teamEmployees = conn.getTeamEmployees(team.getIDTeam());
+      		teamProducts = conn.getTeamProducts(team.getIDTeam());
       		teamed = new ArrayList<>();
       		prod = new ArrayList<>();
 
@@ -99,11 +99,12 @@ public class DataTransfer {
     
     public void saveHHeadDepartment( List<HHeadDepartment> managers ) {
     	System.out.println("Starting saving HHeadDepartment...");
+    	DatabaseConnector conn = new DatabaseConnector();
     	entityManager = factory.createEntityManager(); 
 
       	for( HHeadDepartment e : managers ) {
       		System.out.println("Saving Manager: " + e.getSurname());
-      		e.setMyTeam( entityManager.find( HTeam.class, e.getUsername()));
+      		e.setMyTeam( entityManager.find( HTeam.class, conn.getTeam(e.getUsername())));
           	entityManager.getTransaction().begin();
       		entityManager.persist(e);
           	entityManager.getTransaction().commit();
@@ -256,10 +257,10 @@ public class DataTransfer {
     public static void main(String[] args) {
 
         DataTransfer manager = new DataTransfer();         
-    /*    DatabaseConnector conn = new DatabaseConnector();  
+        DatabaseConnector conn = new DatabaseConnector();  
         
 
-        manager.saveHTeamedEmployee( conn.getHTeamedEmployees());
+     /*   manager.saveHTeamedEmployee( conn.getHTeamedEmployees());
 
         manager.saveUnteamedHEmployee(conn.getUnteamedHEmployees());
 
@@ -273,11 +274,14 @@ public class DataTransfer {
     
         manager.saveHProductStock(conn.getHProductStock());
 
-        manager.saveHOrder(conn.getHOrder());
+        manager.saveHOrder(conn.getHOrder());*/
 
-        manager.saveHCustomer(conn.getHCustomer());*/
-        manager.entityManager = manager.factory.createEntityManager();
-        new HConnector();
-        System.out.println(HConnector.getMinIDProduct("ISmartBand"));
+        manager.saveHCustomer(conn.getHCustomer());
+       // manager.entityManager = manager.factory.createEntityManager();
+       // new HConnector();
+       // List<HOrder> customerOrders = manager.entityManager.find(HCustomer.class, "adri").getMyHorders();
+       // for( HOrder order : customerOrders )
+        //	System.out.println("order: " + order.toString());
+       // System.out.println(HConnector.getMinIDProduct("ISmartBand"));
     }
 }

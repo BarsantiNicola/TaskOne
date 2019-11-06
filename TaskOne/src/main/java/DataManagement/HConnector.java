@@ -23,6 +23,7 @@ public class HConnector extends DataConnector{
 		
 		EntityManager manager = FACTORY.createEntityManager();
 		
+		
 		HUser user = manager.find( HUser.class , username );
 		
 		manager.close();
@@ -133,11 +134,11 @@ public class HConnector extends DataConnector{
     	
     }
 
-    public static boolean deleteHUser( HUser USER_NAME ){ 
+/*    public static boolean deleteHUser( HUser USER_NAME ){ 
     	
     	return USER_NAME.deleteUser(); 
     	
-    }
+    }*/
 
     public List<Product> getAvailableProducts(){ 
     	
@@ -153,7 +154,10 @@ public class HConnector extends DataConnector{
 
     public int getProductType( String PRODUCT_NAME ){ return 0; }
 
-    public static int getTeam( HHeadDepartment MANAGER ){ return 0; }
+    public static int getTeam( String MANAGER ){ 
+    	EntityManager manager = FACTORY.createEntityManager();
+    	return manager.find( HHeadDepartment.class , MANAGER).getMyTeam().getIDTeam();
+    }
 
     public boolean insertOrder( String CUSTOMER_ID , String PRODUCT_ID , int PRICE ){ 
     	
@@ -216,12 +220,9 @@ public class HConnector extends DataConnector{
     }
 
     public boolean deleteUser( String USER_NAME ) {
+    
     	
-    	EntityManager manager = FACTORY.createEntityManager();
-    	
-    	HUser user = manager.getReference(HUser.class, USER_NAME);
-    	
-    	return user.deleteUser();    	
+    	return HUser.deleteUser( USER_NAME);    	
     	
     }
 

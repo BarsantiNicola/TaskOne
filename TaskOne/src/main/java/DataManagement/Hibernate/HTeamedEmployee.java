@@ -19,7 +19,7 @@ import beans.Employee;
 public class HTeamedEmployee extends HEmployee{
 
 	@Column( name ="IDteam" , nullable = true)
-	private String IDteam;
+	private int IDteam;
 	
 	
 	//----------------------------------------------------------------------------------------------------------
@@ -29,7 +29,7 @@ public class HTeamedEmployee extends HEmployee{
 	
 	HTeamedEmployee(){}
 	
-	public HTeamedEmployee(String username, String name, String surname, String password , String mail , int salary , String role  , String team ){
+	public HTeamedEmployee(String username, String name, String surname, String password , String mail , int salary , String role  , int team ){
 		
 		super( username , name , surname , password , mail , salary , role );
 		this.IDteam = team;
@@ -42,7 +42,7 @@ public class HTeamedEmployee extends HEmployee{
 	//----------------------------------------------------------------------------------------------------------
 
 	
-	public String getIDTeam() {
+	public int getIDTeam() {
 		
 		return IDteam;
 	}
@@ -53,7 +53,7 @@ public class HTeamedEmployee extends HEmployee{
 	//----------------------------------------------------------------------------------------------------------
 
 	
-	public void setIDTeam( String IDteam ) {
+	public void setIDTeam( int IDteam ) {
 		
 		this.IDteam = IDteam;
 	}

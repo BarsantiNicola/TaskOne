@@ -22,19 +22,19 @@ import java.util.List;
 public class HTeam {
 
 	@Id
-	@Column( name="teamLeader", length = 45, nullable = false )
-	private String teamLeader;
+	@Column( name="IDteam", nullable = false )
+	private int IDteam;
 
 	@Column( name="location", length = 45, nullable = false )
 	private String location;
 	
 	@OneToMany
-	@JoinTable(name = "members",joinColumns = {@JoinColumn(name = "teamLeader")},
+	@JoinTable(name = "members",joinColumns = {@JoinColumn(name = "IDteam")},
             inverseJoinColumns = {@JoinColumn(name = "IDemployee")})
 	List<HTeamedEmployee> members;
 	
 	@OneToMany
-	@JoinTable(name = "teamProducts",joinColumns = {@JoinColumn(name = "teamLeader")},
+	@JoinTable(name = "teamProducts",joinColumns = {@JoinColumn(name = "IDteam")},
             inverseJoinColumns = {@JoinColumn(name = "productName")})
 	List<HProduct> teamProducts;
 
@@ -46,9 +46,9 @@ public class HTeam {
 
 	public HTeam(){}
 
-	public HTeam( String teamLeader , String location , List<HTeamedEmployee> members , List<HProduct> teamProducts ){
+	public HTeam( int teamID , String location , List<HTeamedEmployee> members , List<HProduct> teamProducts ){
 
-		this.teamLeader = teamLeader;
+		this.IDteam = teamID;
 		this.location = location;
 		this.members = members;
 		this.teamProducts = teamProducts;
@@ -64,9 +64,9 @@ public class HTeam {
 		return location;
 	}
 	
-	public String getTeamLeader() {
+	public int getIDTeam() {
 		
-		return teamLeader;
+		return IDteam;
 	}
 		
 	public List<HTeamedEmployee> getMembers(){
@@ -90,9 +90,9 @@ public class HTeam {
 		this.location = location;
 	}
 	
-	public void setTeamLeader( String teamLeader ) {
+	public void setIDTeam( int teamID ) {
 		
-		this.teamLeader = teamLeader;
+		this.IDteam = teamID;
 	}
 	
 	public void setTeamProducts( List<HProduct> products) {
@@ -142,9 +142,8 @@ public class HTeam {
 				 HEMPLOYEE.getName().contains(SEARCHED_VALUE) ||
 				 HEMPLOYEE.getSurname().contains(SEARCHED_VALUE) ||
 				 HEMPLOYEE.getMail().contains(SEARCHED_VALUE) ||
-				 HEMPLOYEE.getRole().contains(SEARCHED_VALUE)))  || 
-				 HEMPLOYEE.getIDTeam().contains(SEARCHED_VALUE)){
-				employeeList.add(new Employee(HEMPLOYEE));
+				 HEMPLOYEE.getRole().contains(SEARCHED_VALUE)))){
+				 employeeList.add(new Employee(HEMPLOYEE));
 				
 			} 
 		}
@@ -155,7 +154,7 @@ public class HTeam {
 	@Override
 	public String toString() {
 		
-		String ret = "TeamLeader: " + teamLeader + "\tLocation: " + location+"\nMEMBERS:\n";
+		String ret = "TeamLeader: " + IDteam + "\tLocation: " + location+"\nMEMBERS:\n";
 		for( HTeamedEmployee e : members)
 			ret += e.toString();
 		ret += "\nPRODUCTS:\n";

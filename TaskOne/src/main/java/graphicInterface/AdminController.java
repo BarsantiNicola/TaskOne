@@ -132,8 +132,12 @@ class AdminController extends InterfaceController{
     //  it insert a user insert by the textFile given in the insert popup
     @Override
     void insertNewElement() {
-
-        Iterator<Node> it = insertPopup.getChildren().iterator();
+        Iterator<Node> it;
+    	if( userForm.isVisible())
+    		it = userForm.getChildren().iterator();
+    	else
+    		it = employeeForm.getChildren().iterator();
+        
         HashMap<String, String> values = new HashMap<>();
         TextField value;
         Node app;
@@ -159,7 +163,8 @@ class AdminController extends InterfaceController{
         System.out.println(values);
         //  parseInt give errors if used on a size 0 string
         User newUser;
-        if( values.get("Team").length() > 0 && values.get("Salary").length() > 0 ) {
+        
+        if( !userForm.isVisible() ) {
         	newUser = new User(values.get("Username"),
                     values.get("Name"), values.get("Surname"),
                     values.get("Password"), values.get("Mail"),
@@ -169,7 +174,7 @@ class AdminController extends InterfaceController{
         	newUser = new User(values.get("Username"),
                     values.get("Name"), values.get("Surname"),
                     values.get("Password"), values.get("Mail"),
-                    values.get("Role"), 0,
+                    "", 0,
                     0);
         }
             

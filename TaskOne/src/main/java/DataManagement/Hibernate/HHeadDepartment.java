@@ -26,7 +26,8 @@ public class HHeadDepartment extends HEmployee{
 	
 
 	@OneToOne
-	@JoinTable(name = "myTeam",joinColumns = {@JoinColumn(name = "username")})
+	@JoinTable(name = "myTeam",joinColumns = {@JoinColumn(name = "teamLeader")},
+    	inverseJoinColumns = {@JoinColumn(name = "IDteam")})
 	HTeam myTeam;
 	
 	

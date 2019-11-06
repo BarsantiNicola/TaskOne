@@ -18,7 +18,7 @@ public class User {
 	private final SimpleStringProperty mail;
 	private final SimpleStringProperty role;       //  CUSTOMER/ADMINISTRATOR/HEAD DEPARTMENT
 	private final SimpleIntegerProperty salary;     //  may be miss(ex. a CUSTOMER)
-	private final SimpleStringProperty team;       //  may be miss
+	private final SimpleIntegerProperty team;       //  may be miss
 
 	public User( String Username, String Name, String Surname, String Password, String Mail , String Role , Integer Salary , Integer Team ) {
 		
@@ -29,7 +29,7 @@ public class User {
 		mail = new SimpleStringProperty(Mail);
 		role = new SimpleStringProperty(Role);
 		salary = new SimpleIntegerProperty(Salary);
-		team = new SimpleStringProperty(Team.toString());
+		team = new SimpleIntegerProperty(Team);
 
 	}
 	
@@ -47,13 +47,13 @@ public class User {
 			role = new SimpleStringProperty(((HEmployee)HUSER).getRole());
 			salary = new SimpleIntegerProperty(((HEmployee)HUSER).getSalary());
 			if( HUSER instanceof HTeamedEmployee )
-				team = new SimpleStringProperty(((HTeamedEmployee)HUSER).getIDTeam());
+				team = new SimpleIntegerProperty(((HTeamedEmployee)HUSER).getIDTeam());
 			else
-				team = new SimpleStringProperty("");
+				team = new SimpleIntegerProperty(-1);
 		}else {
 			role = new SimpleStringProperty("");
 			salary = new SimpleIntegerProperty(0);
-			team = new SimpleStringProperty("");
+			team = new SimpleIntegerProperty(-1);
 		}
 	}
 	
@@ -92,7 +92,7 @@ public class User {
 		return salary.get();
 	}
 
-	public String getTeam() {
+	public int getTeam() {
 
 		return team.get();
 	}

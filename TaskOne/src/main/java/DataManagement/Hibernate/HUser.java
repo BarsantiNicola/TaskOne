@@ -165,11 +165,11 @@ public class HUser {
 	  
 	}
 	
-	public boolean deleteUser() {
+	public static boolean deleteUser( String username) {
 		
 		EntityManager manager = HConnector.FACTORY.createEntityManager();
 		manager.getTransaction().begin();
-        manager.remove(this);
+        manager.remove(manager.find(HUser.class, username));
         manager.getTransaction().commit();
         manager.close();
 		
