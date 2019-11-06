@@ -4,16 +4,7 @@ import java.sql.*;
 import java.util.*;
 import javax.persistence.*;
 import DataManagement.*;
-import DataManagement.Hibernate.HAdministrator;
-import DataManagement.Hibernate.HCustomer;
-import DataManagement.Hibernate.HEmployee;
-import DataManagement.Hibernate.HHeadDepartment;
-import DataManagement.Hibernate.HOrder;
-import DataManagement.Hibernate.HProduct;
-import DataManagement.Hibernate.HProductStock;
-import DataManagement.Hibernate.HTeam;
-import DataManagement.Hibernate.HTeamedEmployee;
-import DataManagement.Hibernate.HUser;
+import DataManagement.Hibernate.*;
 import beans.*;
 
 //----------------------------------------------------------------------------------------------------------
@@ -96,9 +87,17 @@ public class HConnector extends DataConnector{
     }
 	
 	
-    public List<User> searchUsers(String SEARCHED_STRING ){ return HUser.searchUsers( SEARCHED_STRING); }
+    public List<User> searchUsers( String SEARCHED_STRING ){ 
+    	
+    	return HUser.searchUsers( SEARCHED_STRING ); 
+    	
+    }
 
-    public List<User> getUsers(){ return HUser.searchUsers("");  }
+    public List<User> getUsers(){ 
+    	
+    	return HUser.searchUsers(null);  
+    
+    }
 
     public List<Order> getOrder( String CUSTOMER_ID ){ 
     	
@@ -112,6 +111,7 @@ public class HConnector extends DataConnector{
     }
 
     public static List<Order> searchOrders( String SEARCHED_VALUE , String CUSTOMER_ID ){ 
+    	
     	EntityManager manager = FACTORY.createEntityManager();
     	HCustomer customer = manager.getReference(HCustomer.class, CUSTOMER_ID);
     	
@@ -120,6 +120,7 @@ public class HConnector extends DataConnector{
     };
 
     public boolean insertUser( User NEW_USER ){ 
+    	
     	HUser user = new HUser( NEW_USER );
     	return user.insertUser(); 
     }
@@ -132,11 +133,23 @@ public class HConnector extends DataConnector{
     	
     }
 
-    public static boolean deleteHUser( HUser USER_NAME ){ return USER_NAME.deleteUser(); }
+    public static boolean deleteHUser( HUser USER_NAME ){ 
+    	
+    	return USER_NAME.deleteUser(); 
+    	
+    }
 
-    public List<Product> getAvailableProducts(){ return HProduct.searchProducts(null); }
+    public List<Product> getAvailableProducts(){ 
+    	
+    	return HProduct.searchProducts(null); 
+    	
+    }
 
-    public List<Product> searchProducts( String SEARCHED_STRING ){ return HProduct.searchProducts(SEARCHED_STRING); }
+    public List<Product> searchProducts( String SEARCHED_STRING ){ 
+    	
+    	return HProduct.searchProducts(SEARCHED_STRING); 
+    	
+    }
 
     public int getProductType( String PRODUCT_NAME ){ return 0; }
 

@@ -1,21 +1,14 @@
 package graphicInterface;
 
-import DataManagement.DataManager;
-import beans.User;
-import javafx.collections.FXCollections;
-import javafx.collections.ObservableList;
-import javafx.scene.Node;
-import javafx.scene.Scene;
-import javafx.scene.control.TableColumn;
-import javafx.scene.control.TableView;
-import javafx.scene.control.TextField;
-import javafx.scene.control.cell.PropertyValueFactory;
-import javafx.scene.image.ImageView;
-import javafx.scene.layout.AnchorPane;
-
-import java.util.HashMap;
-import java.util.Iterator;
-import java.util.List;
+import DataManagement.*;
+import beans.*;
+import javafx.collections.*;
+import javafx.scene.*;
+import javafx.scene.control.*;
+import javafx.scene.control.cell.*;
+import javafx.scene.image.*;
+import javafx.scene.layout.*;
+import java.util.*;
 
 
 //  class for manage the administrator interface, the interface has one table for show the user
@@ -30,6 +23,8 @@ class AdminController extends InterfaceController{
     private AnchorPane insertPopup, updatePopup, deletePopup, userForm , employeeForm;
     private AnchorPane myInterface;
     private boolean activeForm = false;
+    
+    HConnector hconnector = new HConnector();
 
     //  THE FUNCTION LINKS THE TABLES OF "ADMIN INTERFACE" TO CONTROL APPLICATION
     AdminController( Scene app ){
@@ -145,32 +140,39 @@ class AdminController extends InterfaceController{
 
         //  GETTING ALL THE VALUE INSERTED INTO THE FORM
         while (it.hasNext()){
-
+        	
             app =  it.next();
+            System.out.println(app);
+  
             if( app instanceof TextField ){
 
+            	//IL PROBLEMA è CHE NON ENTRA MAI QUI,GLI OGGETTI NON SONO TEXTFIELD
+            	
                 value = (TextField) app;
+                System.out.println(value.getPromptText() + value.getText() );
                 values.put( value.getPromptText(), value.getText());
                 value.setText("");
 
             }
         }
 
+        System.out.println(values);
         //  parseInt give errors if used on a size 0 string
         User newUser;
-        if( values.get("Team").length() >0 && values.get("Salary").length() > 0 )
-
-            newUser = new User(values.get("Username"),
+        if( values.get("Team").length() > 0 && values.get("Salary").length() > 0 ) {
+        	newUser = new User(values.get("Username"),
                     values.get("Name"), values.get("Surname"),
                     values.get("Password"), values.get("Mail"),
                     values.get("Role"), Integer.parseInt(values.get("Salary")),
                     Integer.parseInt(values.get("Team")));
-        else
-            newUser = new User(values.get("Username"),
+        } else {
+        	newUser = new User(values.get("Username"),
                     values.get("Name"), values.get("Surname"),
                     values.get("Password"), values.get("Mail"),
                     values.get("Role"), 0,
                     0);
+        }
+            
 
         long startTime = System.currentTimeMillis();
         boolean result = DataManager.insertUser( newUser );
