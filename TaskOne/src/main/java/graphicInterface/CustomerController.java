@@ -35,7 +35,8 @@ public class CustomerController extends InterfaceController {
     private AnchorPane myInterface[];
 
 
-    CustomerController( Scene app , String cId ){
+    @SuppressWarnings({ "unchecked", "rawtypes" })
+	CustomerController( Scene app , String cId ){
 
 
         String[][] productFields = { { "Name" , "productName"} , { "Price" , "productPrice" } , { "Description" , "productDescription"} , { "Availability" , "productAvailability"} };

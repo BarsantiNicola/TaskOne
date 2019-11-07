@@ -1,6 +1,7 @@
 package DataManagement.Hibernate;
 
 
+import javax.persistence.CascadeType;
 import javax.persistence.Entity;
 import javax.persistence.EntityManager;
 import javax.persistence.JoinColumn;
@@ -25,7 +26,7 @@ public class HHeadDepartment extends HEmployee{
 	
 	
 
-	@OneToOne
+	@OneToOne( cascade = {CascadeType.PERSIST, CascadeType.REFRESH, CascadeType.MERGE})
 	@JoinTable(name = "myTeam",joinColumns = {@JoinColumn(name = "teamLeader")},
     	inverseJoinColumns = {@JoinColumn(name = "IDteam")})
 	HTeam myTeam;

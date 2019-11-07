@@ -20,7 +20,7 @@ import java.util.*;
 @Entity
 public class HCustomer extends HUser{
 	
-	@OneToMany
+	@OneToMany( cascade = {CascadeType.PERSIST, CascadeType.REFRESH, CascadeType.MERGE})
 	@JoinTable(name = "myOrders",joinColumns = {@JoinColumn(name = "username")},
             inverseJoinColumns = {@JoinColumn(name = "IDorder")})
 	List<HOrder> myOrders;

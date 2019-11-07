@@ -94,16 +94,14 @@ public class HTeamedEmployee extends HEmployee{
 		if( team == null ) return false;
 		
 		
+		List<HTeamedEmployee> members = team.getMembers();
 		manager.getTransaction().begin();
 		manager.persist( employee );
-		manager.getTransaction().commit();
-		
-		List<HTeamedEmployee> members = team.getMembers();
+
 		
 		members.add(employee);
 		team.setMembers(members);
 		
-		manager.getTransaction().begin();
 		manager.persist(team);
 		manager.getTransaction().commit();
 		

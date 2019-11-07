@@ -41,7 +41,7 @@ public class HOrder {
 	@Column( name = "status", length = 45, nullable = false )
 	private String status;
 
-	@OneToOne
+	@OneToOne( cascade = {CascadeType.PERSIST, CascadeType.REFRESH, CascadeType.MERGE})
 	@JoinColumn(name = "productStock")
 	HProductStock productStock;
 

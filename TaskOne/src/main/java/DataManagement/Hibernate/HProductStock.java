@@ -20,7 +20,7 @@ public class HProductStock {
 	private int IDstock;
 	
 	
-	@OneToOne
+	@OneToOne( cascade = {CascadeType.PERSIST, CascadeType.REFRESH, CascadeType.MERGE})
 	@JoinColumn(name = "product" , nullable = false )
 	HProduct product;
 	

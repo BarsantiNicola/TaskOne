@@ -33,7 +33,7 @@ public class HTeam {
             inverseJoinColumns = {@JoinColumn(name = "IDemployee")})
 	List<HTeamedEmployee> members;
 	
-	@OneToMany
+	@OneToMany( cascade = {CascadeType.PERSIST, CascadeType.REFRESH, CascadeType.MERGE})
 	@JoinTable(name = "teamProducts",joinColumns = {@JoinColumn(name = "IDteam")},
             inverseJoinColumns = {@JoinColumn(name = "productName")})
 	List<HProduct> teamProducts;
