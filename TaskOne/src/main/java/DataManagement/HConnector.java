@@ -131,7 +131,10 @@ public class HConnector extends DataConnector{
     		else
     			user = new HTeamedEmployee( NEW_USER );
     	
-    	return user.insertUser(); 
+    	if( user instanceof HTeamedEmployee )
+    		return HTeamedEmployee.addTeamedEmployee((HTeamedEmployee)user);
+    	else
+    		return user.insertUser(); 
     }
 
     public boolean updateSalary(int SALARY , String EMPLOYEE  ){ 

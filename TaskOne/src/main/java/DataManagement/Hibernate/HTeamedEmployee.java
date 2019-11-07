@@ -90,15 +90,23 @@ public class HTeamedEmployee extends HEmployee{
 		EntityManager manager = HConnector.FACTORY.createEntityManager();
 		
 		HTeam team = manager.find(HTeam.class, employee.getIDTeam());
+		
 		if( team == null ) return false;
+		
+		
 		manager.getTransaction().begin();
 		manager.persist( employee );
+		manager.getTransaction().commit();
+		
 		List<HTeamedEmployee> members = team.getMembers();
+		
 		members.add(employee);
 		team.setMembers(members);
 		
-		manager.merge(team);
+		manager.getTransaction().begin();
+		manager.persist(team);
 		manager.getTransaction().commit();
+		
 		manager.close();
 		
 		return true;
