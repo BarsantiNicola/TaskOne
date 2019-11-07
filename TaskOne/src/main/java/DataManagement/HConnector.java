@@ -167,16 +167,19 @@ public class HConnector extends DataConnector{
     	return manager.find( HHeadDepartment.class , MANAGER).getMyTeam().getIDTeam();
     }
 
-    public boolean insertOrder( String CUSTOMER_ID , String PRODUCT_ID , int PRICE ){ 
+    public boolean insertOrder( String CUSTOMER_ID , int PRODUCT_ID , int PRICE ){ 
     	
     	EntityManager manager = FACTORY.createEntityManager();
     	
+    	System.out.println("ID stock: "+ PRODUCT_ID );
+    	
     	HCustomer newCustomer = manager.find(HCustomer.class, CUSTOMER_ID);
-    	HOrder newOrder = new HOrder( new Timestamp(System.currentTimeMillis()), PRICE , "ordered" , CUSTOMER_ID , manager.find(HProductStock.class, getMinIDProduct(PRODUCT_ID)));
+    	HOrder newOrder = new HOrder( new Timestamp(System.currentTimeMillis()), PRICE , "ordered" , CUSTOMER_ID , manager.find(HProductStock.class, PRODUCT_ID));
 
     	return newCustomer.addOrder( newOrder ); 
     	}
 
+    
     public List<Product> getTeamProducts( int TEAM_ID ){ 
     	
     	EntityManager manager = FACTORY.createEntityManager();
@@ -187,6 +190,7 @@ public class HConnector extends DataConnector{
     	
     }
 
+    
     public List<Employee> getTeamEmployees(int TEAM_ID ){ 
     	
     	EntityManager manager = FACTORY.createEntityManager();
@@ -240,11 +244,12 @@ public class HConnector extends DataConnector{
 		return 0;
 	}
 
+	/*
 	@Override
 	boolean insertOrder(String CUSTOMER_ID, int PRODUCT_ID, int PRICE) {
 		// TODO Auto-generated method stub
 		return false;
-	}
+	}*/
 
 	@Override
 	boolean updateProductAvailability(int PRODUCT_TYPE, int ADDED_AVAILABILITY) {

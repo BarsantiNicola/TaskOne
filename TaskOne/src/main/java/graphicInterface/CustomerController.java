@@ -38,7 +38,7 @@ public class CustomerController extends InterfaceController {
     CustomerController( Scene app , String cId ){
 
 
-        String[][] productFields = { { "Name" , "productName"} , { "Price" , "productPrice" } , { "Description" , "productDescription"} };
+        String[][] productFields = { { "Name" , "productName"} , { "Price" , "productPrice" } , { "Description" , "productDescription"} , { "Availability" , "productAvailability"} };
         String[][] orderFields = { { "productID" , "productId" } ,  { "ProductName" , "productName" } , { "ProductPrice" , "productPrice" } , { "Purchase Date" , "purchaseDate" } ,  { "Purchased Price" , "purchasedPrice" }  , { "Status" , "orderStatus" }};
         TableColumn column;
         myInterface = new AnchorPane[2];
@@ -131,25 +131,25 @@ public class CustomerController extends InterfaceController {
                 productName = ((TextField) app).getText();
                 ((TextField) app).setText("");
                 break;
-
             }
         }
 
         long startTime = System.currentTimeMillis();
-        int myProductType = DataManager.getProductType( productName );
+        //int myProductType = DataManager.getProductType( productName );
         LOG.println( "QUERY: getProductType;\t TIME: " + (System.currentTimeMillis() - startTime) + "ms");
         startTime = System.currentTimeMillis();
-        int myProductId = DataManager.getMinIDProduct( myProductType );
+        int myProductId = DataManager.getMinIDProduct( productName );
+        System.out.println( "IDstock " + myProductId);
         LOG.println( "QUERY: getProductId;\t TIME: " + (System.currentTimeMillis() - startTime) + "ms");
 
         while( productList.hasNext() ) {
 
             product = productList.next();
-            if( product.getProductType() == myProductType ){
+            if( product.getProductName() == productName ){
                 newOrder = new Order( myProductId , product.getProductName() , product.getProductPrice() , new Timestamp(System.currentTimeMillis())  , product.getProductPrice() ,"ordered"  );
 
                 startTime = System.currentTimeMillis();
-                boolean result = DataManager.insertOrder( customerId , myProductId , product.getProductPrice() );
+                boolean result = DataManager.insertOrder( customerId , myProductId, product.getProductPrice() );
                 LOG.println( "QUERY: insertNewOrder;\t TIME: " + (System.currentTimeMillis() - startTime) + "ms");
 
                 if( result ){
