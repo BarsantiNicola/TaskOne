@@ -4,7 +4,9 @@ import java.util.List;
 
 import javax.persistence.*;
 
+import DataManagement.HConnector;
 import beans.Employee;
+import beans.User;
 
 
 //----------------------------------------------------------------------------------------------------------
@@ -20,7 +22,7 @@ public class HTeamedEmployee extends HEmployee{
 
 	@Column( name ="IDteam" , nullable = true)
 	private int IDteam;
-	
+
 	
 	//----------------------------------------------------------------------------------------------------------
 	//										          CONSTRUCTORS
@@ -34,6 +36,13 @@ public class HTeamedEmployee extends HEmployee{
 		super( username , name , surname , password , mail , salary , role );
 		this.IDteam = team;
 
+	}
+	
+	public HTeamedEmployee( User user ) {
+		
+		super(user);
+		this.IDteam = user.getTeam();
+		
 	}
 	
 
@@ -73,6 +82,26 @@ public class HTeamedEmployee extends HEmployee{
 		}
 		
 		return employeeList;
+	}
+	
+	public static boolean addTeamedEmployee( HTeamedEmployee employee ){
+		
+		System.out.println("Adding TeamedEmployee: " + employee.toString());
+		EntityManager manager = HConnector.FACTORY.createEntityManager();
+		
+		HTeam team = manager.find(HTeam.class, employee.getIDTeam());
+		if( team == null ) return false;
+		manager.getTransaction().begin();
+		manager.persist( employee );
+		List<HTeamedEmployee> members = team.getMembers();
+		members.add(employee);
+		team.setMembers(members);
+		
+		manager.merge(team);
+		manager.getTransaction().commit();
+		manager.close();
+		
+		return true;
 	}
 	
 	@Override

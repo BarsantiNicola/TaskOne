@@ -40,6 +40,14 @@ public class HEmployee extends HUser{
 		this.role = role;
 
 	}
+	
+	public HEmployee( User user ) {
+		
+		super(user);
+		this.salary = user.getSalary();
+		this.role = user.getRole();
+		
+	}
 
 	//----------------------------------------------------------------------------------------------------------
 	//										 GETTERS

@@ -27,7 +27,8 @@ class AdminController extends InterfaceController{
     HConnector hconnector = new HConnector();
 
     //  THE FUNCTION LINKS THE TABLES OF "ADMIN INTERFACE" TO CONTROL APPLICATION
-    AdminController( Scene app ){
+    @SuppressWarnings({ "rawtypes", "unchecked" })
+	AdminController( Scene app ){
 
         //  it links the fields to the class variable associated
         String[][] userFields = { { "Username" , "username" } , { "Password" ,"password" } , { "Name" , "name" } , { "Surname" ,"surname" } , { "Email" , "mail"} , { "Role" , "role"} , { "Salary" , "salary"} , { "Team" , "team"} };  //  FIELDS OF TABLE EMPLOYEE
@@ -165,12 +166,20 @@ class AdminController extends InterfaceController{
         User newUser;
         
         if( !userForm.isVisible() ) {
-        	newUser = new User(values.get("Username"),
+        	
+            if( values.get("Team").length() > 0 )
+            	newUser = new User(values.get("Username"),
                     values.get("Name"), values.get("Surname"),
                     values.get("Password"), values.get("Mail"),
-                    values.get("Role"), Integer.parseInt(values.get("Salary")),
-                    Integer.parseInt(values.get("Team")));
+                    values.get("Role"), Integer.parseInt(values.get("Salary")), Integer.parseInt(values.get("Team")));
+            else
+            	newUser = new User(values.get("Username"),
+                        values.get("Name"), values.get("Surname"),
+                        values.get("Password"), values.get("Mail"),
+                        values.get("Role"), Integer.parseInt(values.get("Salary")), -1 );
+            
         } else {
+        	
         	newUser = new User(values.get("Username"),
                     values.get("Name"), values.get("Surname"),
                     values.get("Password"), values.get("Mail"),
@@ -208,7 +217,7 @@ class AdminController extends InterfaceController{
                         salary = Integer.parseInt(((TextField) app).getText());
         }
         long startTime = System.currentTimeMillis();
-        boolean result = DataManager.updateSalary(salary, username);
+        DataManager.updateSalary(salary, username);
         LOG.println( "QUERY: updateAnEmployeeSalary;\t TIME: " + (System.currentTimeMillis() - startTime) + "ms");
         userTable.removeAll(userTable);
 

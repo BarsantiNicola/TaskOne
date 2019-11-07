@@ -122,7 +122,15 @@ public class HConnector extends DataConnector{
 
     public boolean insertUser( User NEW_USER ){ 
     	
-    	HUser user = new HUser( NEW_USER );
+    	HUser user;
+    	if( NEW_USER.getRole().length() == 0 )
+    		user = new HCustomer( NEW_USER );
+    	else
+    		if( NEW_USER.getTeam() == -1 )
+    			user = new HEmployee( NEW_USER );
+    		else
+    			user = new HTeamedEmployee( NEW_USER );
+    	
     	return user.insertUser(); 
     }
 
