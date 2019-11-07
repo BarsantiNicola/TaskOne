@@ -291,7 +291,7 @@ public class DatabaseConnector extends DataConnector{
 			
 			getHCustomer = myConnection.prepareStatement(
 					
-						"SELECT username , name , surname , mail from user WHERE username NOT IN ( SELECT IDemployee from employee );"
+						"SELECT username , name , surname , password , mail from user WHERE username NOT IN ( SELECT IDemployee from employee );"
 					);
 			
 			getHTeamedEmployee = myConnection.prepareStatement(

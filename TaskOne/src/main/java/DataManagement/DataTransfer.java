@@ -205,9 +205,13 @@ public class DataTransfer {
     			
     		}
           	entityManager.getTransaction().commit();
-    	}catch( SQLException e ) {
-    		System.out.println("Errore inserimento productStock");
-    	}
+    	}catch( SQLException e ){
+
+			System.out.println("SQLException: " + e.getMessage());
+			System.out.println("SQLState: " + e.getSQLState());
+			System.out.println("VendorError: " + e.getErrorCode());
+
+		}
     	
 
       	entityManager.close();
