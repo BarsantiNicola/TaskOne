@@ -33,7 +33,7 @@ public class Order{
 	public Order( HOrder order ) {
 		
 		HProduct product = order.getProductStock().getProduct();
-		productId = new SimpleIntegerProperty(order.getIDorder());
+		productId = new SimpleIntegerProperty(order.getProductStock().getIDstock());
 		productName = new SimpleStringProperty( product.getProductName());
 		productPrice = new SimpleIntegerProperty( product.getProductPrice() );
 		purchaseDate = new SimpleObjectProperty( order.getPurchaseDate());

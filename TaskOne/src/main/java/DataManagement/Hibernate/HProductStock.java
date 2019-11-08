@@ -20,7 +20,7 @@ public class HProductStock {
 	private int IDstock;
 	
 	
-	@OneToOne( cascade = {CascadeType.PERSIST, CascadeType.REFRESH, CascadeType.MERGE})
+	@OneToOne
 	@JoinColumn(name = "product" , nullable = false )
 	HProduct product;
 	
@@ -90,6 +90,18 @@ public class HProductStock {
 		manager.getTransaction().commit();
 		manager.close();
 		
+	}
+	
+	public static int getLastStockID() {
+		
+		EntityManager manager = HConnector.FACTORY.createEntityManager();
+
+		HProductStock lastStock = (HProductStock)manager.createQuery("SELECT max(p) FROM HProductStock p").getSingleResult();
+		manager.close();
+		
+		System.out.println("STOCK: " + lastStock.IDstock);
+		
+		return lastStock.IDstock;
 	}
 	
 	@Override

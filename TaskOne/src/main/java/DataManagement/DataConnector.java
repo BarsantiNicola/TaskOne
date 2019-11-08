@@ -29,7 +29,7 @@ public abstract class DataConnector {
 
     abstract List<Employee> getTeamEmployees( int TEAM_ID );
 
-    abstract boolean updateProductAvailability( int PRODUCT_TYPE , int ADDED_AVAILABILITY );
+    abstract boolean updateProductAvailability( String PRODUCT_NAME , int ADDED_AVAILABILITY );
 
     abstract List<Employee> searchTeamEmployees( int TEAM_ID , String SEARCHED_VALUE );
 

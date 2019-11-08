@@ -30,7 +30,7 @@ public class HOrder {
 	@Id
 	@GeneratedValue( strategy = GenerationType.AUTO )
 	@Column( name = "IDorder", nullable = false )
-	private int IDorder = 0;
+	private int IDorder;
 
 	@Column( name = "purchaseDate", nullable = false )
 	private Timestamp purchaseDate;
@@ -41,7 +41,7 @@ public class HOrder {
 	@Column( name = "status", length = 45, nullable = false )
 	private String status;
 
-	@OneToOne( cascade = {CascadeType.PERSIST, CascadeType.REFRESH, CascadeType.MERGE})
+	@OneToOne
 	@JoinColumn(name = "productStock")
 	HProductStock productStock;
 

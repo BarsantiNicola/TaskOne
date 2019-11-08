@@ -124,6 +124,7 @@ public class CustomerController extends InterfaceController {
         Product product;
         Order newOrder;
 
+        System.out.println("INSERT NEW ORDER");
         String productName = "";
         while( it.hasNext()){
             app = it.next();
@@ -134,7 +135,7 @@ public class CustomerController extends InterfaceController {
                 break;
             }
         }
-
+        System.out.println("INSERT NEW ORDER");
         long startTime = System.currentTimeMillis();
         //int myProductType = DataManager.getProductType( productName );
         LOG.println( "QUERY: getProductType;\t TIME: " + (System.currentTimeMillis() - startTime) + "ms");
@@ -142,11 +143,11 @@ public class CustomerController extends InterfaceController {
         int myProductId = DataManager.getMinIDProduct( productName );
         System.out.println( "IDstock " + myProductId);
         LOG.println( "QUERY: getProductId;\t TIME: " + (System.currentTimeMillis() - startTime) + "ms");
-
+        System.out.println("INSERT NEW ORDER");
         while( productList.hasNext() ) {
 
             product = productList.next();
-            if( product.getProductName() == productName ){
+            if( product.getProductName().compareTo(productName) == 0 ){
                 newOrder = new Order( myProductId , product.getProductName() , product.getProductPrice() , new Timestamp(System.currentTimeMillis())  , product.getProductPrice() ,"ordered"  );
 
                 startTime = System.currentTimeMillis();
@@ -165,6 +166,7 @@ public class CustomerController extends InterfaceController {
 
             }
         }
+        System.out.println("INSERT NEW ORDER");
         closePopups();
     }
 

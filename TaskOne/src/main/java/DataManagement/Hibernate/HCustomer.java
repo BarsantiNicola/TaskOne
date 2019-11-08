@@ -19,8 +19,8 @@ import java.util.*;
 
 @Entity
 public class HCustomer extends HUser{
-	
-	@OneToMany( cascade = {CascadeType.PERSIST, CascadeType.REFRESH, CascadeType.MERGE})
+
+	@OneToMany( fetch = FetchType.EAGER ,  cascade = {CascadeType.PERSIST, CascadeType.REFRESH, CascadeType.MERGE})
 	@JoinTable(name = "myOrders",joinColumns = {@JoinColumn(name = "username")},
             inverseJoinColumns = {@JoinColumn(name = "IDorder")})
 	List<HOrder> myOrders;
@@ -108,16 +108,22 @@ public class HCustomer extends HUser{
 	
 	//  add a new order and save it in the database
 	public boolean addOrder( HOrder order ){
-		
-		List<HOrder> orderList = getMyHorders();
-		orderList.add(order);
-		setMyOrders( orderList );
-		
+
 		EntityManager manager = HConnector.FACTORY.createEntityManager();
+
+		HCustomer customer = this;
+
+		List<HOrder> orderList = customer.getMyHorders();
 		manager.getTransaction().begin();
-		manager.persist(this);
+		
+		manager.persist(order);
+		orderList.add(order);
+		
+		setMyOrders( orderList );
+		manager.merge(customer);
 		manager.getTransaction().commit();
 		manager.close();
+		
 		return true;
 		
 	}

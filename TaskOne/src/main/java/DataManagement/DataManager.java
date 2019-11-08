@@ -46,7 +46,7 @@ public class DataManager{
 
     public static boolean updateSalary(int SALARY , String USER_ID  ){ return HIBERNATE.updateSalary( SALARY , USER_ID ); }
     
-    public static boolean updateProductAvailability( int PRODUCT_TYPE , int ADDED_AVAILABILITY ){ return HIBERNATE.updateProductAvailability( PRODUCT_TYPE , ADDED_AVAILABILITY ); }
+    public static boolean updateProductAvailability( String PRODUCT_NAME , int ADDED_AVAILABILITY ){ return HIBERNATE.updateProductAvailability( PRODUCT_NAME , ADDED_AVAILABILITY ); }
 
     public static boolean deleteUser( String USER_NAME ){ return HIBERNATE.deleteUser( USER_NAME ); }
 

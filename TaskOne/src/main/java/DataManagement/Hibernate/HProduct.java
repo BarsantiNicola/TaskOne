@@ -127,12 +127,21 @@ public class HProduct {
 		System.out.println("PRODUCT_ADDED: " + number + "\tNEW_AVAILABILITY: " + productAvailability+number);
 		
 		EntityManager manager = HConnector.FACTORY.createEntityManager();
-		productAvailability += number;
+        int availability = productAvailability;
+
+    	HProductStock productStock = new HProductStock( HProductStock.getLastStockID()+1 , this );
+    	HProduct product = this;
+    	
+    	System.out.println( "THE NEW IDSTOCK INSERTED: " + productStock.getIDstock());
 		manager.getTransaction().begin();
-		manager.merge(this);
+		product.setProductAvailability( availability+1);
+		manager.persist(productStock);
+
+		manager.merge(product);
+
+
 		manager.getTransaction().commit();
 		manager.close();
-		
 		return true;
 		
 	}

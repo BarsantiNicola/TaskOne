@@ -145,12 +145,6 @@ public class HConnector extends DataConnector{
     	
     }
 
-/*    public static boolean deleteHUser( HUser USER_NAME ){ 
-    	
-    	return USER_NAME.deleteUser(); 
-    	
-    }*/
-
     public List<Product> getAvailableProducts(){ 
     	
     	return HProduct.searchProducts(null); 
@@ -174,12 +168,14 @@ public class HConnector extends DataConnector{
     	
     	EntityManager manager = FACTORY.createEntityManager();
     	
-    	System.out.println("ID stock: "+ PRODUCT_ID );
-    	
     	HCustomer newCustomer = manager.find(HCustomer.class, CUSTOMER_ID);
+
     	HOrder newOrder = new HOrder( new Timestamp(System.currentTimeMillis()), PRICE , "ordered" , CUSTOMER_ID , manager.find(HProductStock.class, PRODUCT_ID));
 
-    	return newCustomer.addOrder( newOrder ); 
+    	manager.close();
+
+    	return newCustomer.addOrder( newOrder );
+
     	}
 
     
@@ -204,7 +200,7 @@ public class HConnector extends DataConnector{
     	
     }
 
-    public static boolean updateProductAvailability( String PRODUCT_NAME , int ADDED_AVAILABILITY ){ 
+    public boolean updateProductAvailability( String PRODUCT_NAME , int ADDED_AVAILABILITY ){ 
     	
     	EntityManager manager = FACTORY.createEntityManager();
     	
@@ -254,9 +250,5 @@ public class HConnector extends DataConnector{
 		return false;
 	}*/
 
-	@Override
-	boolean updateProductAvailability(int PRODUCT_TYPE, int ADDED_AVAILABILITY) {
-		// TODO Auto-generated method stub
-		return false;
-	}
+
 }
