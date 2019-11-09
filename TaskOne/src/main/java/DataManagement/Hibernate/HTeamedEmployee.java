@@ -88,7 +88,7 @@ public class HTeamedEmployee extends HEmployee{
 		
 		System.out.println("Adding TeamedEmployee: " + employee.toString());
 		EntityManager manager = HConnector.FACTORY.createEntityManager();
-		
+		boolean ret = true;
 		HTeam team = manager.find(HTeam.class, employee.getIDTeam());
 		
 		if( team == null ) return false;
@@ -103,11 +103,20 @@ public class HTeamedEmployee extends HEmployee{
 		team.setMembers(members);
 		
 		manager.persist(team);
-		manager.getTransaction().commit();
+		try {
+			
+			manager.getTransaction().commit();
+			
+		}catch( IllegalStateException | RollbackException e ) {
+			
+			ret = false;
+			
+		}
 		
 		manager.close();
 		
-		return true;
+		return ret;
+		
 	}
 	
 	@Override

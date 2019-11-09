@@ -88,14 +88,27 @@ public class HEmployee extends HUser{
 	//										 FUNCTIONS
 	//----------------------------------------------------------------------------------------------------------
 
-	public void addEmployee() {
+	public boolean addEmployee() {
 		
 		System.out.println("Adding Employee: " + this.toString());
+		boolean ret = true;
 		EntityManager manager = HConnector.FACTORY.createEntityManager();
+		
 		manager.getTransaction().begin();
 		manager.persist( this );
-		manager.getTransaction().commit();
+		try {
+			
+			manager.getTransaction().commit();
+			
+		}catch( IllegalStateException | RollbackException e ) {
+			
+			ret = false;
+			
+		}
+		
 		manager.close();
+		
+		return ret;
 		
 	}
 	
@@ -103,15 +116,25 @@ public class HEmployee extends HUser{
 		
 		System.out.println("Updating Salary: user ");
 		EntityManager manager = HConnector.FACTORY.createEntityManager();
+		boolean ret = true;
 		
 		this.setSalary(SALARY);
         
 		manager.getTransaction().begin();
 		manager.merge(this);
-		manager.getTransaction().commit();
+		try {
+			
+			manager.getTransaction().commit();
+			
+		}catch( IllegalStateException | RollbackException e ) {
+			
+			ret = false;
+			
+		}
+		
 		manager.close();
 		
-		return true;
+		return ret;
 	}
 	
 	@Override

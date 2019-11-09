@@ -7,6 +7,7 @@ import javax.persistence.EntityManager;
 import javax.persistence.JoinColumn;
 import javax.persistence.JoinTable;
 import javax.persistence.OneToOne;
+import javax.persistence.RollbackException;
 
 import DataManagement.HConnector;
 
@@ -77,13 +78,26 @@ public class HHeadDepartment extends HEmployee{
 	//----------------------------------------------------------------------------------------------------------
 
 	
-	public static void addHeadDepartment( HHeadDepartment headManager ) {
+	public static boolean addHeadDepartment( HHeadDepartment headManager ) {
 		
 		EntityManager manager = HConnector.FACTORY.createEntityManager();
+		boolean ret = true;
 		manager.getTransaction().begin();
 		manager.persist( headManager );
-		manager.getTransaction().commit();
+		
+		try {
+			
+			manager.getTransaction().commit();
+			
+		}catch( IllegalStateException | RollbackException e ) {
+			
+			ret = false;
+			
+		}
+		
 		manager.close();
+		
+		return ret;
 		
 	}
 	

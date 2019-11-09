@@ -95,14 +95,27 @@ public class HCustomer extends HUser{
 	}
 	
 	// add a new customer to the database
-	public static void addCustomer( HCustomer customer ){
+	public static boolean addCustomer( HCustomer customer ){
 		
 		System.out.println("Adding Customer: " + customer.toString());
 		EntityManager manager = HConnector.FACTORY.createEntityManager();
+		boolean ret = true;
+		
 		manager.getTransaction().begin();
 		manager.persist( customer );
-		manager.getTransaction().commit();
+		try {
+			
+			manager.getTransaction().commit();
+			
+		}catch( IllegalStateException | RollbackException e ) {
+			
+			ret = false;
+			
+		}
+		
 		manager.close();
+		
+		return ret;
 		
 	}
 	
@@ -112,6 +125,7 @@ public class HCustomer extends HUser{
 		EntityManager manager = HConnector.FACTORY.createEntityManager();
 
 		HCustomer customer = this;
+		boolean ret = true;
 
 		List<HOrder> orderList = customer.getMyHorders();
 		manager.getTransaction().begin();
@@ -121,10 +135,20 @@ public class HCustomer extends HUser{
 		
 		setMyOrders( orderList );
 		manager.merge(customer);
-		manager.getTransaction().commit();
+		
+		try {
+			
+			manager.getTransaction().commit();
+			
+		}catch( IllegalStateException | RollbackException e ) {
+			
+			ret = false;
+			
+		}
+		
 		manager.close();
 		
-		return true;
+		return ret;
 		
 	}
 	

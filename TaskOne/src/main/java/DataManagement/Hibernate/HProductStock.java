@@ -81,14 +81,27 @@ public class HProductStock {
 	//----------------------------------------------------------------------------------------------------------
 
 	// add a new available stock to the product
-	public static void addProductStock( HProductStock stock ) {
+	public static boolean addProductStock( HProductStock stock ) {
 		
 		System.out.println("Adding ProductStock: " + stock.toString());
 		EntityManager manager = HConnector.FACTORY.createEntityManager();
+		boolean ret = true;
+		
 		manager.getTransaction().begin();
 		manager.persist( stock );
-		manager.getTransaction().commit();
+		try {
+			
+			manager.getTransaction().commit();
+			
+		}catch( IllegalStateException | RollbackException e ) {
+			
+			ret = false;
+			
+		}
+		
 		manager.close();
+		
+		return ret;
 		
 	}
 	

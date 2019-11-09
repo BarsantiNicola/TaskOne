@@ -73,7 +73,7 @@ public class DatabaseConnector extends DataConnector{
 		myConnection = null;
 
 		try {
-			System.out.println("ciao mondo!");
+
 			myConnection = DriverManager.getConnection(connectionString);
 
 			System.out.println("Database Connection Established");
@@ -254,7 +254,7 @@ public class DatabaseConnector extends DataConnector{
 			updateProductAvailability = myConnection.prepareStatement(
 						"UPDATE product " +
 								" SET productAvailability = ?" +
-								" WHERE productType = ?;"
+								" WHERE productName = ?;"
 			);
 
 			//  DATA TRANSFER
@@ -865,11 +865,11 @@ public class DatabaseConnector extends DataConnector{
 	}
 
 	//update the availability of a given product
-	public boolean updateProductAvailability( int product , int value ){
+	public boolean updateProductAvailability( String product , int value ){
 
 		try {
 			updateProductAvailability.setInt(1, value);
-			updateProductAvailability.setInt(2, product );
+			updateProductAvailability.setString(2, product );
 			updateProductAvailability.execute();
 			return true;
 		}catch( SQLException e ){
@@ -1111,7 +1111,6 @@ public List<HTeam> getHTeams(){
 	
 	public ResultSet getHCustomer(){
 		
-		List<HCustomer> customers = new ArrayList<>();
 		ResultSet set;
 		
 		try {

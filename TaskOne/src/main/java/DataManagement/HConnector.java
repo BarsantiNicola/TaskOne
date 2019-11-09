@@ -243,12 +243,5 @@ public class HConnector extends DataConnector{
 		return 0;
 	}
 
-	/*
-	@Override
-	boolean insertOrder(String CUSTOMER_ID, int PRODUCT_ID, int PRICE) {
-		// TODO Auto-generated method stub
-		return false;
-	}*/
-
 
 }

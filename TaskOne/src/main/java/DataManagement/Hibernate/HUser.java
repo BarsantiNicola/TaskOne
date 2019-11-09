@@ -168,23 +168,45 @@ public class HUser {
 	public static boolean deleteUser( String username) {
 		
 		EntityManager manager = HConnector.FACTORY.createEntityManager();
+		boolean ret = true;
+		
 		manager.getTransaction().begin();
         manager.remove(manager.find(HUser.class, username));
-        manager.getTransaction().commit();
-        manager.close();
+		try {
+			
+			manager.getTransaction().commit();
+			
+		}catch( IllegalStateException | RollbackException e ) {
+			
+			ret = false;
+			
+		}
 		
-		return true;
+		manager.close();
+		
+		return ret;
 	}
 	
 	public boolean insertUser() {
 		
 		EntityManager manager = HConnector.FACTORY.createEntityManager();
+		boolean ret = true;
+		
 		manager.getTransaction().begin();
         manager.persist(this);
-        manager.getTransaction().commit();
-        manager.close();
+		try {
+			
+			manager.getTransaction().commit();
+			
+		}catch( IllegalStateException | RollbackException e ) {
+			
+			ret = false;
+			
+		}
 		
-		return true;
+		manager.close();
+		
+		return ret;
 	}
 	
 	@Override
