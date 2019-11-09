@@ -88,6 +88,9 @@ public class HEmployee extends HUser{
 	//										 FUNCTIONS
 	//----------------------------------------------------------------------------------------------------------
 
+	
+	//  USED BY ADMINISTRATOR INTERFACE 
+	//  the function saves an entity HEmployee into the database
 	public boolean addEmployee() {
 		
 		System.out.println("Adding Employee: " + this.toString());
@@ -112,6 +115,9 @@ public class HEmployee extends HUser{
 		
 	}
 	
+	
+	//  USED BY ADMINISTRATOR INTERFACE 
+	//  the function updates the salary of the employee and saves it into the database
 	public boolean updateSalary( int SALARY ) {
 		
 		System.out.println("Updating Salary: user ");
@@ -136,6 +142,7 @@ public class HEmployee extends HUser{
 		
 		return ret;
 	}
+	
 	
 	@Override
 	public String toString() { return super.toString() + "\tSalary: " + salary + "\tRole: " + role; }

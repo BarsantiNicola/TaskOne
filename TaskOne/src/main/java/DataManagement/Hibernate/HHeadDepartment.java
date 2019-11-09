@@ -78,6 +78,8 @@ public class HHeadDepartment extends HEmployee{
 	//----------------------------------------------------------------------------------------------------------
 
 	
+	//  USED BY HEADDEPARTMENT INTERFACE 
+	//  the function saves a HHeadDepartment entity into the database.
 	public static boolean addHeadDepartment( HHeadDepartment headManager ) {
 		
 		EntityManager manager = HConnector.FACTORY.createEntityManager();
@@ -100,6 +102,7 @@ public class HHeadDepartment extends HEmployee{
 		return ret;
 		
 	}
+	
 	
 	@Override
 	public String toString() { return super.toString() + "\nTEAM: " + myTeam.toString(); }

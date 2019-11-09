@@ -120,32 +120,9 @@ public class HProduct {
 	//										 FUNCTIONS
 	//----------------------------------------------------------------------------------------------------------
 
-	//  the function ADDS the number given to the current availability of the object
-	public boolean addProductAvailability( int number ) {
-		
-		System.out.println("Changine the availability of product: " + toString());
-		System.out.println("PRODUCT_ADDED: " + number + "\tNEW_AVAILABILITY: " + productAvailability+number);
-		
-		EntityManager manager = HConnector.FACTORY.createEntityManager();
-        int availability = productAvailability;
-
-    	HProductStock productStock = new HProductStock( HProductStock.getLastStockID()+1 , this );
-    	HProduct product = this;
-    	
-    	System.out.println( "THE NEW IDSTOCK INSERTED: " + productStock.getIDstock());
-		manager.getTransaction().begin();
-		product.setProductAvailability( availability+1);
-		manager.persist(productStock);
-
-		manager.merge(product);
-
-
-		manager.getTransaction().commit();
-		manager.close();
-		return true;
-		
-	}
 	
+	//  USED BY CUSTOMER/HEADDEPARTMENT INTERFACE 
+	//  the function gives the products matching the given key.
 	public static List<Product> searchProducts( String SEARCHED_VALUE ){
 		
 		List<HProduct> hproductList = new ArrayList<>();
@@ -170,13 +147,9 @@ public class HProduct {
 		return HProduct.toProductList(hproductList);
 	}
 	
-	@Override
-	public String toString() {
-		
-		return "productName: " + productName + "\tproductPrice: " + productPrice + "\tproductAvailability: " 
-				+ productAvailability + "\tproductType: " + productType +"\n\tproductDescription: " + productDescription;
-	}
-
+	
+	//  USED BY CUSTOMER/HEADDEPARTMENT INTERFACE 
+	//  the function gives a list of graphic interface compatible classes
 	public static List<Product> toProductList( List<HProduct> HPRODUCTLIST ){
 		
 		List<Product> productList = new ArrayList<>();
@@ -188,4 +161,54 @@ public class HProduct {
 		
 		return productList;
 	}
+	
+	
+	//  USED BY HEADDEPARTMENT INTERFACE 
+	//  the function ADDS the number given to the current availability of the object
+	public boolean addProductAvailability( int number ) {
+		
+		System.out.println("Changine the availability of product: " + toString());
+		System.out.println("PRODUCT_ADDED: " + number + "\tNEW_AVAILABILITY: " + productAvailability+number);
+		
+		EntityManager manager = HConnector.FACTORY.createEntityManager();
+        int availability = productAvailability;
+        boolean ret = true;
+
+        //  increasing the availability of a product consist to insert
+        //  new stocks available for users orders.
+    	HProductStock productStock = new HProductStock(  HProductStock.getLastStockID() , this );
+    	HProduct product = this; 
+    	
+    	System.out.println( "THE NEW IDSTOCK INSERTED: " + productStock.getIDstock());
+		manager.getTransaction().begin();
+		
+		//  we update the availability by update the product and save the new stock
+		product.setProductAvailability( availability+1);  
+		manager.persist(productStock);
+		manager.merge(product);
+
+		try {
+			
+			manager.getTransaction().commit();
+			
+		}catch( IllegalStateException | RollbackException e ) {
+			
+			ret = false;
+			
+		}
+		
+		manager.close();
+		
+		return ret;
+		
+	}
+
+	
+	@Override
+	public String toString() {
+		
+		return "productName: " + productName + "\tproductPrice: " + productPrice + "\tproductAvailability: " 
+				+ productAvailability + "\tproductType: " + productType +"\n\tproductDescription: " + productDescription;
+	}
+
 }

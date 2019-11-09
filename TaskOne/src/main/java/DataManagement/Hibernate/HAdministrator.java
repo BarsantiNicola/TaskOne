@@ -34,6 +34,8 @@ public class HAdministrator extends HEmployee{
 	//										 FUNCTIONS
 	//----------------------------------------------------------------------------------------------------------
 
+	
+	//  the function saves an entity Administrator" into the database
 	public static void addAdministrator( HAdministrator administrator ) {
 		
 		System.out.println("Adding Administrator: " + administrator.toString());

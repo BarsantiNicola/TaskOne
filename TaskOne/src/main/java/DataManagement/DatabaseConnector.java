@@ -10,9 +10,16 @@ import java.sql.*;
 import java.util.ArrayList;
 import java.util.List;
 
-//This class manages the connection with the DB. In particular, the connection is established 
-//into the static block, and statements are prepared there too. The class offers different 
-//functions that execute these statements.
+
+//----------------------------------------------------------------------------------------------------------
+//										DatabaseConnector
+//
+//	This class manages the connection with the DB. In particular, the connection is established 
+//	into the static block, and statements are prepared there too. The class offers different 
+//	functions that execute these statements.
+//
+//----------------------------------------------------------------------------------------------------------
+
 
 public class DatabaseConnector extends DataConnector{
 
@@ -26,7 +33,6 @@ public class DatabaseConnector extends DataConnector{
 	private static PreparedStatement updateSalaryStatement;
 	private static PreparedStatement getTeamProductsStatement;
 	private static PreparedStatement getTeamEmployeeStatement;
-	private static PreparedStatement insertProductStatement;
 	private static PreparedStatement getAvailableProductsStatement;
 	private static PreparedStatement insertOrderStatement;
 	
@@ -107,9 +113,6 @@ public class DatabaseConnector extends DataConnector{
 							" on user.username = IDemployee\n" +
 							" where team = ?;");
 			
-			insertProductStatement = myConnection.prepareStatement(
-					"INSERT INTO product VALUES (?,?,?,?,?);"
-			);
 
 			getMinIDProduct = myConnection.prepareStatement(
 					"SELECT IDProduct" +
@@ -496,6 +499,7 @@ public class DatabaseConnector extends DataConnector{
 		return productList;
 	}
 
+	//  it gives the product Type given his name
 	public int getProductType( String productName ){
 
 		ResultSet productType;
@@ -514,6 +518,8 @@ public class DatabaseConnector extends DataConnector{
 			return -1;
 		}
 	}
+	
+	//  it gives the ID of the min stock available for the product
 	public int getMinIDProduct( int productType ){
 
 		ResultSet result;
@@ -535,7 +541,8 @@ public class DatabaseConnector extends DataConnector{
 		}
 
 	}
-	//insert a new order 
+	
+	//insert a new order for a customer
 	public boolean insertOrder( String customer, int productId , int price ) {
 		
 		int insertedRows = 0;
@@ -630,6 +637,7 @@ public class DatabaseConnector extends DataConnector{
 		return teamProducts;
 	}
 	
+	//  retrives the team of an employee by his name
 	public static int getTeam(String name) {
 
 		try {
@@ -653,6 +661,7 @@ public class DatabaseConnector extends DataConnector{
 		return -1;
 	}
 
+	
 	//retrieve a list of all the users
 	public List<User> getUsers() {
 
@@ -678,6 +687,8 @@ public class DatabaseConnector extends DataConnector{
 
 	}
 
+	
+	//  it gives a list of user who match with the given key
 	public List<User> searchUsers(String value) {
 
 		List<User> list = new ArrayList<>();
@@ -708,6 +719,7 @@ public class DatabaseConnector extends DataConnector{
 	}
 
 	
+	//  it gives a list of user who match with the given key
 	public List<Product> searchProducts(String value) {
 
 		List<Product> list = new ArrayList<>();
@@ -735,6 +747,8 @@ public class DatabaseConnector extends DataConnector{
 
 	}
 
+	
+	//  it gives a list of orders of the customer who match with the given key
 	public static List<Order> searchOrders( String value, String customerID ) {
 
 		List<Order> list = new ArrayList<>();
@@ -762,6 +776,7 @@ public class DatabaseConnector extends DataConnector{
 
 	}
 
+	//  it gives a list of employee who match with the given key
 	public List<Employee> searchTeamEmployees( int team , String value ) {
 
 		List<Employee> list = new ArrayList<>();
@@ -796,7 +811,7 @@ public class DatabaseConnector extends DataConnector{
 
 	}
 
-	//login function
+	// login function 
 	public static UserType login(String user, String psw) {
 
 		try {

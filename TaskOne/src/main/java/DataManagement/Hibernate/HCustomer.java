@@ -74,6 +74,10 @@ public class HCustomer extends HUser{
 	//										FUNCTIONS
 	//----------------------------------------------------------------------------------------------------------
 
+	
+	//  USED FROM CUSTOMER INTERFACE
+	//  Gets the user's orders which match with the key from the database. 
+	//  It is used also for get all the user's orders. 
 	public List<Order> searchOrders( String SEARCHED_VALUE ){
 		
 		List<Order> orderList = new ArrayList<>();
@@ -94,6 +98,8 @@ public class HCustomer extends HUser{
 		return orderList;
 	}
 	
+	
+	//  USED BY ADMINISTRATOR INTERFACE 
 	// add a new customer to the database
 	public static boolean addCustomer( HCustomer customer ){
 		
@@ -119,7 +125,9 @@ public class HCustomer extends HUser{
 		
 	}
 	
-	//  add a new order and save it in the database
+	
+	//  USED BY CUSTOMER INTERFACE 
+	//  add a new order to the customer list and save it in the database
 	public boolean addOrder( HOrder order ){
 
 		EntityManager manager = HConnector.FACTORY.createEntityManager();
@@ -151,6 +159,7 @@ public class HCustomer extends HUser{
 		return ret;
 		
 	}
+	
 	
 	@Override
 	public String toString() {

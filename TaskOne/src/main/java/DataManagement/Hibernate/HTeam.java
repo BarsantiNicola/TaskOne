@@ -109,6 +109,10 @@ public class HTeam {
 	//										FUNCTIONS
 	//----------------------------------------------------------------------------------------------------------
 	
+	
+	//  USED BY HEADDEPARTMENT INTERFACE 
+	//  the function gives a list of graphic interface compatible classes Product
+	//  which matches the given key.
 	public List<Product> searchTeamProducts(String SEARCHED_VALUE){
 		
 		List<Product> productList = new ArrayList<>();
@@ -129,6 +133,10 @@ public class HTeam {
 		return productList;
 	}
 	
+	
+	//  USED BY HEADDEPARTMENT INTERFACE 
+	//  the function gives a list of graphic interface compatible classes Employee
+	//  which matches the given key.
 	public List<Employee> searchTeamEmployees(String SEARCHED_VALUE){
 		
 		List<Employee> employeeList = new ArrayList<>();
@@ -150,6 +158,7 @@ public class HTeam {
 		
 		return employeeList;
 	}
+	
 	
 	@Override
 	public String toString() {

@@ -2,7 +2,6 @@ package DataManagement.Hibernate;
 
 import java.util.*;
 import javax.persistence.*;
-
 import DataManagement.HConnector;
 import beans.*;
 
@@ -125,6 +124,11 @@ public class HUser {
 	//										FUNCTIONS
 	//----------------------------------------------------------------------------------------------------------
 
+	
+	//  USED BY ADMINISTRATOR INTERFACE
+	//  The function returns all the user saved into the database.
+	//  the class HUser contains HEmployee, HTeamedEmployee who contain all the
+	//  role entity defined into the database.
 	@SuppressWarnings("unchecked")
 	public static List<HUser> getAllUsers(){
 		
@@ -137,6 +141,10 @@ public class HUser {
 		return huserList;		
 	}
 	
+	
+	//  USED BY ADMINISTRATOR INTERFACE
+	//  The function gives a list of graphic interface compatible classes User
+	//  which match with the given key
 	public static List<User> searchUsers(String SEARCHED_VALUE){
 		
 		List<HUser> huserList = new ArrayList<>();
@@ -165,6 +173,24 @@ public class HUser {
 	  
 	}
 	
+	
+	//  USED BY ADMINISTRATOR INTERFACE
+	//  the function returns a list of graphic interface compatible classes Users
+	public static List<User> toUserList( List<HUser> HUSERLIST ){
+		
+		List<User> userList = new ArrayList<>();
+		
+		for( int i=0; i<HUSERLIST.size(); i++ ) {
+			
+			userList.add(new User(HUSERLIST.get(i)));
+		}
+		
+		return userList;
+	}
+	
+	
+	//  USED BY ADMINISTRATOR INTERFACE
+	//  delete the entity which matches the given primary key from the database 
 	public static boolean deleteUser( String username) {
 		
 		EntityManager manager = HConnector.FACTORY.createEntityManager();
@@ -187,6 +213,10 @@ public class HUser {
 		return ret;
 	}
 	
+	
+	//  USED BY ADMINISTRATOR INTERFACE
+	//  Main classe called to delete a user, identified the type of user
+	//  (employee, teamedEmployee, huser) it calls the right function to insert it.
 	public boolean insertUser() {
 		
 		EntityManager manager = HConnector.FACTORY.createEntityManager();
@@ -209,18 +239,9 @@ public class HUser {
 		return ret;
 	}
 	
+	
 	@Override
 	public String toString() { return "Username: " + username + "\tName: " + name + "\tSurname: " + surname + "\tMail: " + mail; }
 
-	public static List<User> toUserList( List<HUser> HUSERLIST ){
-		
-		List<User> userList = new ArrayList<>();
-		
-		for( int i=0; i<HUSERLIST.size(); i++ ) {
-			
-			userList.add(new User(HUSERLIST.get(i)));
-		}
-		
-		return userList;
-	}
+
 }

@@ -139,6 +139,24 @@ public class HOrder {
 	//										 FUNCTIONS
 	//----------------------------------------------------------------------------------------------------------
 
+	
+	//  USED BY CUSTOMER INTERFACE 
+	//  the function gives a list of Order classes compatible with the graphic interface
+	public static List<Order> toOrderList( List<HOrder> HORDERLIST ){
+		
+		List<Order> orderList = new ArrayList<>();
+		
+		for( int i=0; i<HORDERLIST.size(); i++ ) {
+			
+			orderList.add(new Order(HORDERLIST.get(i)));
+		}
+		
+		return orderList;
+	}
+	
+	
+	//  USED BY CUSTOMER INTERFACE 
+	//  the function saves a new order of the customer into the database
 	public boolean insertOrder() {
 		
 		EntityManager manager = HConnector.FACTORY.createEntityManager();
@@ -161,23 +179,12 @@ public class HOrder {
 		return ret;
 	}
 
+	
 	@Override
 	public String toString() {
 		
 		return "IDorder: " + IDorder + "\tPurchaseDate: " + purchaseDate + "\tPrice: " + price 
 				+ "\tstatus: " + status + "\n\tPRODUCTSTOCK: " + productStock.toString();
 	
-	}
-	
-	public static List<Order> toOrderList( List<HOrder> HORDERLIST ){
-		
-		List<Order> orderList = new ArrayList<>();
-		
-		for( int i=0; i<HORDERLIST.size(); i++ ) {
-			
-			orderList.add(new Order(HORDERLIST.get(i)));
-		}
-		
-		return orderList;
 	}
 }

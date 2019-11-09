@@ -72,6 +72,9 @@ public class HTeamedEmployee extends HEmployee{
 	//										          FUNCTIONS
 	//----------------------------------------------------------------------------------------------------------
 
+	
+	//  USED BY ADMINISTRATOR INTERFACE
+	//  the function gives a list of graphic interface compatible classes Employee
 	public static List<Employee> toEmployeeList( List<HTeamedEmployee> HEMPLOYEELIST ){
 		
 		List<Employee> employeeList = new ArrayList<>();
@@ -84,6 +87,9 @@ public class HTeamedEmployee extends HEmployee{
 		return employeeList;
 	}
 	
+	
+	//  USED BY ADMINISTRATOR INTERFACE
+	//  the function saves a new Teamed Employee into the database
 	public static boolean addTeamedEmployee( HTeamedEmployee employee ){
 		
 		System.out.println("Adding TeamedEmployee: " + employee.toString());
@@ -91,18 +97,16 @@ public class HTeamedEmployee extends HEmployee{
 		boolean ret = true;
 		HTeam team = manager.find(HTeam.class, employee.getIDTeam());
 		
-		if( team == null ) return false;
-		
-		
+		if( team == null ) return false;  //  the employee has to be part of a valid team
+			
 		List<HTeamedEmployee> members = team.getMembers();
 		manager.getTransaction().begin();
-		manager.persist( employee );
-
-		
+		// we save the employee and update the team members
+		manager.persist( employee );		
 		members.add(employee);
-		team.setMembers(members);
-		
+		team.setMembers(members);		
 		manager.persist(team);
+		
 		try {
 			
 			manager.getTransaction().commit();
@@ -118,6 +122,7 @@ public class HTeamedEmployee extends HEmployee{
 		return ret;
 		
 	}
+	
 	
 	@Override
 	public String toString() { return super.toString() + "\tIdTeam: " + IDteam; }

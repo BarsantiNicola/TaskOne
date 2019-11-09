@@ -16,6 +16,7 @@ import DataManagement.HConnector;
 public class HProductStock {
 
 	@Id
+	@GeneratedValue
 	@Column( name = "IDstock" , nullable = false )
 	private int IDstock;
 	
@@ -40,7 +41,7 @@ public class HProductStock {
 
 	public HProductStock() {}
 	
-	public HProductStock( int IDstock , HProduct product ){
+	public HProductStock( int IDStock , HProduct product ){
 		
 		this.IDstock = IDstock;
 		this.product = product;
@@ -80,6 +81,8 @@ public class HProductStock {
 	//										       FUNCTIONS
 	//----------------------------------------------------------------------------------------------------------
 
+	
+	//  USED BY HEADDEPARTMENT INTERFACE 
 	// add a new available stock to the product
 	public static boolean addProductStock( HProductStock stock ) {
 		
@@ -105,6 +108,9 @@ public class HProductStock {
 		
 	}
 	
+	
+	//  USED BY HEADDEPARTMENT INTERFACE  
+	//  It gives the last used stock ID
 	public static int getLastStockID() {
 		
 		EntityManager manager = HConnector.FACTORY.createEntityManager();
@@ -116,6 +122,7 @@ public class HProductStock {
 		
 		return lastStock.IDstock;
 	}
+	
 	
 	@Override
 	public String toString() { return "IDstock: " + IDstock + "\nPRODUCT: " + product.toString(); }
