@@ -1,9 +1,17 @@
 package ConsistenceManagement;
 
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.io.PrintWriter;
 import java.net.ServerSocket;
 import java.net.Socket;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Scanner;
 
 import com.google.gson.Gson;
@@ -15,8 +23,6 @@ import beans.Order;
 
 public class ConsistenceManager {
 	
-	private FileOutputStream persistenceJPAUpdate;
-	private FileOutputStream persistenceSQLUpdate;
 	private ServerSocket     server;
 	
 	ConsistenceManager(){
@@ -24,8 +30,6 @@ public class ConsistenceManager {
 		try {
 			
 			server = new ServerSocket(44444);
-			persistenceJPAUpdate = new FileOutputStream( "HOrder" , true );
-			persistenceSQLUpdate = new FileOutputStream( "Order" , true );
 
 		}catch( IOException e ) {
 			
@@ -72,9 +76,123 @@ public class ConsistenceManager {
 		
 	}
 	
-	void saveData() {
+	boolean saveOrder( Order[] orders ) {
 		
+		PrintWriter temp = null;
+		Gson gson = new Gson();
+		try {
+			
+			File tempOrder = new File("Order");
+			if( tempOrder.exists()) 
+				temp = new PrintWriter(new FileOutputStream( tempOrder, true ) , true );
+			else
+				temp = new PrintWriter(new FileOutputStream( tempOrder, false ) , true );
+				
+		}catch( FileNotFoundException ie ) {
+			System.out.println("Error tryin to crate a save block: " + ie.getMessage());
+			return false;
+		}
+		for( Order order: orders ) 		
+			temp.println( gson.toJson( order ));
 		
+		temp.close();
+		return true;
+		
+	}
+	
+	boolean saveHOrder( HOrder[] orders ) {
+		
+		PrintWriter temp = null;
+		Gson gson = new Gson();
+		try {
+			
+			File tempHOrder = new File("HOrder");
+			if( tempHOrder.exists()) 
+				temp = new PrintWriter(new FileOutputStream( tempHOrder, true ) , true );
+			else
+				temp = new PrintWriter(new FileOutputStream( tempHOrder, false ) , true );
+				
+		}catch( FileNotFoundException ie ) {
+			System.out.println("Error tryin to crate a save block: " + ie.getMessage());
+			return false;
+		}
+		for( HOrder order: orders ) 		
+			temp.println( gson.toJson( order ));
+		
+		temp.close();
+		return true;
+		
+	}
+	
+	Order[] loadOrders() { 
+		
+		List<Order> orders = new ArrayList<>();
+		File tempOrder = new File("Order");	
+
+		Scanner temp = null;
+		Gson gson = new Gson();
+		Order[] ret = null;
+		
+		if( tempOrder.exists()) {
+			
+			try {
+				temp = new Scanner( new FileInputStream( tempOrder ));
+				while( temp.hasNextLine())
+					orders.add(gson.fromJson(temp.nextLine(), Order.class ));
+				ret = new Order[orders.size()];
+				for( int a = 0; a<orders.size(); a++ )
+					ret[a] = orders.get(a);
+				
+				temp.close();
+				return ret;
+			}catch( IOException ie ) {
+				
+				System.out.println("Error during the loading of the informations: " + ie.getMessage());
+			}
+		}
+		
+		return null;
+	}
+	
+	HOrder[] loadHOrders() { 		
+		
+		List<HOrder> orders = new ArrayList<>();
+		File tempOrder = new File("HOrder");	
+		HOrder[] ret = null;
+		Scanner temp = null;
+		Gson gson = new Gson();
+	
+		if( tempOrder.exists()) {
+		
+			try {
+				temp = new Scanner( new FileInputStream( tempOrder ));
+				while( temp.hasNextLine())
+					orders.add(gson.fromJson(temp.nextLine(), HOrder.class ));
+				ret = new HOrder[orders.size()];
+				for( int a = 0; a<orders.size(); a++ )
+					ret[a] = orders.get(a);
+				
+				temp.close();
+				return ret;
+				
+			}catch( IOException ie ) {
+				
+				System.out.println("Error during the loading of the informations: " + ie.getMessage());
+			}
+		}
+	
+		return null;
+	}
+	
+	void deleteOrders() {
+		File tempOrder = new File("Order");
+		tempOrder.delete();
+		
+	}
+	
+	void deleteHOrders() {
+		File tempHOrder = new File("HOrder");
+		tempHOrder.delete();
 	}
 	
 	public static void main( String[] args ) {
@@ -83,12 +201,19 @@ public class ConsistenceManager {
 		HConnector hibernateData = new HConnector();
 		KValueConnector keyValueData = new KValueConnector();
 		
-		while( true ) {
+		/*while( true ) {
 			
-			System.out.println( "Data: " + data.getDatas());
+			data.saveHOrder( (HOrder[])data.getDatas());
 			
-		}
-		
+		}*/
+		HOrder[] orders = data.loadHOrders();
+		for( HOrder o : orders)
+			System.out.println(o.getStatus());
+
+		/*HOrder[] order = data.loadHOrders();
+		System.out.println(order.length);
+		System.out.println("order: " + order[0].getStatus());
+		*/
 	}
 	
 
