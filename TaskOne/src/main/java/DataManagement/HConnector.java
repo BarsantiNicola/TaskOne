@@ -42,7 +42,6 @@ public class HConnector extends DataConnector{
 
 	}
 	
-	//RIVEDERE-------------------------------------------------------------------------------
 	static public int getMinIDProduct( String SEARCHED_PRODUCT ){ 
 
     	EntityManager manager = FACTORY.createEntityManager();

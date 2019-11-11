@@ -15,6 +15,7 @@ public class Main {
 		System.out.println("hey");
 		DB levelDBStore = null;
 		Options options = new Options();
+		
 		try {
 			levelDBStore = factory.open(new File("levelDBStore"),options);
 		} catch (IOException e) {
