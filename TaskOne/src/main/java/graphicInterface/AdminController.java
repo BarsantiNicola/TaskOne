@@ -190,7 +190,7 @@ class AdminController extends InterfaceController{
 
         long startTime = System.currentTimeMillis();
         boolean result = DataManager.insertUser( newUser );
-        LOG.println( "QUERY: insertNewUser;\t TIME: " + (System.currentTimeMillis() - startTime) + "ms");
+        LOG.println( "QUERY: insertNewUser;\t TIME: " + (System.currentTimeMillis()- startTime) + "ms");
         if( result )
             userTable.add(newUser);
 
