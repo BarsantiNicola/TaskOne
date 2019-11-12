@@ -673,7 +673,7 @@ public class DatabaseConnector extends DataConnector{
 			ResultSet users = getUsers.getResultSet();
 
 			while (users.next())
-				list.add(new User(users.getString("username"), users.getString("name"), users.getString("surname"), users.getString("password"), users.getString("mail") , users.getString( "role") , users.getInt( "salary") , users.getInt( "Team")));
+				list.add(new User(users.getString("username"), users.getString("name"), users.getString("surname"), users.getString("password"), users.getString("mail") , users.getString( "role") , users.getInt( "salary") , users.getString("address") , users.getInt( "Team")));
 
 		} catch (SQLException caughtException) {
 
@@ -705,7 +705,7 @@ public class DatabaseConnector extends DataConnector{
 			ResultSet users = searchUsers.getResultSet();
 
 			while (users.next())
-				list.add(new User(users.getString("username"), users.getString("name"), users.getString("surname"), users.getString("password"), users.getString("mail") , users.getString( "role") , users.getInt("salary") , users.getInt("Team")));
+				list.add(new User(users.getString("username"), users.getString("name"), users.getString("surname"), users.getString("password"), users.getString("mail") , users.getString( "role") , users.getInt("salary") , users.getString("address") , users.getInt("Team")));
 
 		} catch (SQLException caughtException) {
 

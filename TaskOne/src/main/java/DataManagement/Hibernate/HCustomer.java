@@ -34,16 +34,19 @@ public class HCustomer extends HUser{
 
 	public HCustomer(){ myOrders = new ArrayList<>(); }
 
-	public HCustomer( String username, String name, String surname, String password , String mail , List<HOrder> myOrders ){
+	public HCustomer( String username, String name, String surname, String password , String mail , String address , List<HOrder> myOrders ){
 		
 		super( username , name , surname , password , mail );
 		this.myOrders = myOrders;
+		this.address = address;
 	
 	}
 	
-	public HCustomer( User user ) {
+	public HCustomer( User user , List<HOrder> myOrders ) {
 		
 		super(user);
+		this.myOrders = myOrders;
+		this.address = user.getAddress();
 		
 	}
 	
@@ -57,9 +60,13 @@ public class HCustomer extends HUser{
 		return HOrder.toOrderList(myOrders);
 	}
 	
-	public List<HOrder> getMyHorders(){
+	public List<HOrder> getMyHOrders(){
 		
 		return myOrders;
+	}
+	
+	public String getAddress() {
+		return address;
 	}
 	
 	//----------------------------------------------------------------------------------------------------------
@@ -72,6 +79,9 @@ public class HCustomer extends HUser{
 		this.myOrders = orders;
 	}
 	
+	public void setAddress( String addr ) {
+		this.address = addr;
+	}
 	//----------------------------------------------------------------------------------------------------------
 	//										FUNCTIONS
 	//----------------------------------------------------------------------------------------------------------
@@ -137,7 +147,7 @@ public class HCustomer extends HUser{
 		HCustomer customer = this;
 		boolean ret = true;
 
-		List<HOrder> orderList = customer.getMyHorders();
+		List<HOrder> orderList = customer.getMyHOrders();
 		manager.getTransaction().begin();
 		
 		manager.persist(order);

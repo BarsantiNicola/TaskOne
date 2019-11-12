@@ -201,7 +201,7 @@ public class DataTransfer {
     			}
     			System.out.println("ORDERS: " + orders );
 
-    			entityManager.persist(new HCustomer( pCustomers.getString("username") , pCustomers.getString("name") , pCustomers.getString("surname") , pCustomers.getString("password") , pCustomers.getString("mail") , orders ));
+    			entityManager.persist(new HCustomer( pCustomers.getString("username") , pCustomers.getString("name") , pCustomers.getString("surname") , pCustomers.getString("password") , pCustomers.getString("mail") , "" , orders ));
     			
     		}
           	entityManager.getTransaction().commit();

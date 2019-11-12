@@ -19,8 +19,9 @@ public class User {
 	private final SimpleStringProperty role;       //  CUSTOMER/ADMINISTRATOR/HEAD DEPARTMENT
 	private final SimpleIntegerProperty salary;     //  may be miss(ex. a CUSTOMER)
 	private final SimpleIntegerProperty team;       //  may be miss
-
-	public User( String Username, String Name, String Surname, String Password, String Mail , String Role , Integer Salary , Integer Team ) {
+	private final SimpleStringProperty address;
+	
+	public User( String Username, String Name, String Surname, String Password, String Mail , String Role , Integer Salary , String addr , Integer Team ) {
 		
 		username = new SimpleStringProperty(Username);
 		name = new SimpleStringProperty(Name);
@@ -30,6 +31,7 @@ public class User {
 		role = new SimpleStringProperty(Role);
 		salary = new SimpleIntegerProperty(Salary);
 		team = new SimpleIntegerProperty(Team);
+		address = new SimpleStringProperty(addr);
 
 	}
 	
@@ -41,6 +43,10 @@ public class User {
 		surname = new SimpleStringProperty(HUSER.getSurname());
 		password = new SimpleStringProperty(HUSER.getPassword());   
 		mail = new SimpleStringProperty(HUSER.getMail());
+		if( HUSER instanceof HCustomer )
+			address = new SimpleStringProperty(((HCustomer)HUSER).getAddress());
+		else
+			address = new SimpleStringProperty("");
 
 		
 		if( HUSER instanceof HEmployee){
@@ -95,6 +101,11 @@ public class User {
 	public int getTeam() {
 
 		return team.get();
+	}
+	
+	public String getAddress() {
+		
+		return address.get();
 	}
 
 }

@@ -31,7 +31,7 @@ class AdminController extends InterfaceController{
 	AdminController( Scene app ){
 
         //  it links the fields to the class variable associated
-        String[][] userFields = { { "Username" , "username" } , { "Password" ,"password" } , { "Name" , "name" } , { "Surname" ,"surname" } , { "Email" , "mail"} , { "Role" , "role"} , { "Salary" , "salary"} , { "Team" , "team"} };  //  FIELDS OF TABLE EMPLOYEE
+        String[][] userFields = { { "Username" , "username" } , { "Password" ,"password" } , { "Name" , "name" } , { "Surname" ,"surname" } , { "Email" , "mail"} , { "Role" , "role"} , { "Salary" , "salary"} , { "Address" , "address" } , { "Team" , "team"} };  //  FIELDS OF TABLE EMPLOYEE
         TableColumn column;
         List<User> values;
         myInterface = (AnchorPane)app.lookup("#ADMINUsersTable" );
@@ -171,19 +171,19 @@ class AdminController extends InterfaceController{
             	newUser = new User(values.get("Username"),
                     values.get("Name"), values.get("Surname"),
                     values.get("Password"), values.get("Mail"),
-                    values.get("Role"), Integer.parseInt(values.get("Salary")), Integer.parseInt(values.get("Team")));
+                    values.get("Role"), Integer.parseInt(values.get("Salary")), null ,Integer.parseInt(values.get("Team")));
             else
             	newUser = new User(values.get("Username"),
                         values.get("Name"), values.get("Surname"),
                         values.get("Password"), values.get("Mail"),
-                        values.get("Role"), Integer.parseInt(values.get("Salary")), -1 );
+                        values.get("Role"), Integer.parseInt(values.get("Salary")), null , -1 );
             
         } else {
         	
         	newUser = new User(values.get("Username"),
                     values.get("Name"), values.get("Surname"),
                     values.get("Password"), values.get("Mail"),
-                    "", 0,
+                    "", 0, values.get("Address"),
                     0);
         }
             

@@ -103,7 +103,7 @@ public class HConnector extends DataConnector{
     	
     	EntityManager manager = FACTORY.createEntityManager();
     	List<Order> orders = new ArrayList<>();
-    	List<HOrder> horders = manager.find( HCustomer.class , CUSTOMER_ID ).getMyHorders();
+    	List<HOrder> horders = manager.find( HCustomer.class , CUSTOMER_ID ).getMyHOrders();
     	for( HOrder o : horders )
     		orders.add(new Order(o));
     	
@@ -123,7 +123,7 @@ public class HConnector extends DataConnector{
     	
     	HUser user;
     	if( NEW_USER.getRole().length() == 0 )
-    		user = new HCustomer( NEW_USER );
+    		user = new HCustomer( NEW_USER , null );
     	else
     		if( NEW_USER.getTeam() == -1 )
     			user = new HEmployee( NEW_USER );

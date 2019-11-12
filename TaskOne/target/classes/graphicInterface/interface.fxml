@@ -225,6 +225,7 @@
                            <children>
                               <AnchorPane id="UserForm" prefHeight="200.0" prefWidth="200.0">
                                  <children>
+                                    <TextField layoutX="110.0" layoutY="200.0" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="15.9608154296875" prefWidth="145.0" promptText="Address" style="-fx-font-size: 8pt ;" />
                             <TextField layoutX="110.0" layoutY="50.0" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="15.9608154296875" prefWidth="145.0" promptText="Username" style="-fx-font-size: 8pt ;" />
                             <TextField layoutX="110.0" layoutY="80.0" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="16.0" prefWidth="145.0" promptText="Name" style="-fx-font-size: 8pt ;" />
                             <TextField layoutX="110.0" layoutY="110.0" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="16.0" prefWidth="145.0" promptText="Surname" style="-fx-font-size: 8pt ;" />
@@ -235,6 +236,7 @@
                             <Text fill="WHITE" font="$x1" strokeType="OUTSIDE" strokeWidth="0.0" text="Surname" x="40.0" y="120.0" />
                             <Text fill="WHITE" font="$x1" strokeType="OUTSIDE" strokeWidth="0.0" text="Password" x="40.0" y="150.0" />
                             <Text fill="WHITE" font="$x1" strokeType="OUTSIDE" strokeWidth="0.0" text="Email" x="40.0" y="180.0" />
+                                    <Text fill="WHITE" font="$x1" strokeType="OUTSIDE" strokeWidth="0.0" text="Address" x="40.0" y="210.0" />
                                  </children>
                               </AnchorPane>
                               <AnchorPane id="EmployeeForm" prefHeight="200.0" prefWidth="200.0" visible="false">
@@ -269,7 +271,7 @@
                         <MenuButton layoutX="80.0" layoutY="54.0" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" mnemonicParsing="false" prefHeight="30.0" prefWidth="78.0" text="Choose">
                           <items>
                             <MenuItem mnemonicParsing="false" onAction="#changeInsertBox" text="Employee" />
-                            <MenuItem mnemonicParsing="false" onAction="#changeInsertBox" text="User" />
+                            <MenuItem mnemonicParsing="false" onAction="#changeInsertBox" text="Customer" />
                           </items>
                            <font>
                               <Font name="System Bold" size="12.0" />
