@@ -1,11 +1,17 @@
 package DataManagement;
 
-public class PasswordUserType {
+public class JSONPasswordUserType {
 	
 	String password;
 	UserType usertype;
 	
-	public PasswordUserType() {}
+	public JSONPasswordUserType() {}
+	
+	public JSONPasswordUserType( String password, UserType usertype ) {
+		
+		this.password = password;
+		this.usertype = usertype;
+	}
 	
 	public String getPassword() {
 		

@@ -32,7 +32,7 @@ public class KValueConnector extends DataConnector{
 			String key = "user:" + USERNAME;
 			String hashKey = DigestUtils.sha1Hex(key);
 			
-			PasswordUserType psw = new PasswordUserType();
+			JSONPasswordUserType psw = new JSONPasswordUserType();
 			Gson gson = new Gson();
 							
 			if(Integer.parseInt(hashKey,16) < Math.pow(2, 160) ) {
@@ -40,14 +40,14 @@ public class KValueConnector extends DataConnector{
 				JsonObject json = JsonParser.parseString(new String(levelDBStore1.get(hashKey.getBytes()))).getAsJsonObject();
 				
 				if (json.get("Password") != null)
-					psw = gson.fromJson(new String(levelDBStore1.get(hashKey.getBytes())),PasswordUserType.class);
+					psw = gson.fromJson(new String(levelDBStore1.get(hashKey.getBytes())),JSONPasswordUserType.class);
 						
 			} else {
 				
 				JsonObject json = JsonParser.parseString(new String(levelDBStore2.get(hashKey.getBytes()))).getAsJsonObject();
 				
 				if (json.get("Password") != null)
-					psw = gson.fromJson(new String(levelDBStore2.get(hashKey.getBytes())),PasswordUserType.class);
+					psw = gson.fromJson(new String(levelDBStore2.get(hashKey.getBytes())),JSONPasswordUserType.class);
 			
 			}
 			
@@ -55,6 +55,33 @@ public class KValueConnector extends DataConnector{
 			myMap.put(psw.password, psw.usertype);
 			
 			return myMap;
+		}
+		
+		public JSONorderID getOrders( String USERNAME ) {
+			
+			String key = "user:" + USERNAME + ":order";
+			String hashKey = DigestUtils.sha1Hex(key);
+			
+			JSONorderID orderIDList = new JSONorderID();
+			Gson gson = new Gson();
+			
+			if(Integer.parseInt(hashKey,16) < Math.pow(2, 160) ) {
+				
+				JsonObject json = JsonParser.parseString(new String(levelDBStore1.get(hashKey.getBytes()))).getAsJsonObject();
+				
+				if (json.get("orderIDList") != null)
+					orderIDList = gson.fromJson(new String(levelDBStore1.get(hashKey.getBytes())),JSONorderID.class);
+						
+			} else {
+				
+				JsonObject json = JsonParser.parseString(new String(levelDBStore2.get(hashKey.getBytes()))).getAsJsonObject();
+				
+				if (json.get("orderIDList") != null)
+					orderIDList = gson.fromJson(new String(levelDBStore2.get(hashKey.getBytes())),JSONorderID.class);
+			
+			}
+			
+			return orderIDList;
 		}
 		
 		public Product getProduct( String PRODUCTNAME ) {
@@ -89,11 +116,37 @@ public class KValueConnector extends DataConnector{
 			
 		}
 		
-		public void getOrder( String USERNAME, int ORDER_ID ) {
+		public Order getOrder( String USERNAME, int ORDERID ) {
 			
+			String key = "user:" + USERNAME + ":order" + ORDERID;
+			String hashKey = DigestUtils.sha1Hex(key);
+			
+			Order order;
+			Gson gson = new Gson();
+			
+			if(Integer.parseInt(hashKey,16) < Math.pow(2, 160) ) {
+				
+				JsonObject json = JsonParser.parseString(new String(levelDBStore1.get(hashKey.getBytes()))).getAsJsonObject();
+				
+				if (json.get("ProductName") != null)
+					order = gson.fromJson(new String(levelDBStore1.get(hashKey.getBytes())),Order.class);
+				else
+					return null;
+						
+			} else {
+				
+				JsonObject json = JsonParser.parseString(new String(levelDBStore2.get(hashKey.getBytes()))).getAsJsonObject();
+				
+				if (json.get("ProductName") != null)
+					order = gson.fromJson(new String(levelDBStore2.get(hashKey.getBytes())),Order.class);
+				else
+					return null;
+			
+			}
+			
+			return order;
 		}
-		
-		
+				
 	    List<User> searchUsers( String SEARCHED_STRING ){ return null; }
 
 	    List<User> getUsers(){ return null; }
