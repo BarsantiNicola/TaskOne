@@ -12,7 +12,7 @@ public class Product {
 	private final SimpleIntegerProperty productPrice;
 	private final SimpleStringProperty productDescription;
 	private final SimpleIntegerProperty productAvailability;
-	
+		
 	public Product( int type , String name, int cost, String description , int availability ) {
 
 		productType = new SimpleIntegerProperty(type);

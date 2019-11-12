@@ -27,40 +27,66 @@ public class KValueConnector extends DataConnector{
 			
 		}
 		
-		public String getUserInformation( String USERNAME ) {
+		public HashMap<String,UserType> getUserInformation( String USERNAME ) {
 			
 			String key = "user:" + USERNAME;
-			
 			String hashKey = DigestUtils.sha1Hex(key);
 			
-			String password,user;
-			UserType usertype;
-				
+			PasswordUserType psw = new PasswordUserType();
+			Gson gson = new Gson();
+							
 			if(Integer.parseInt(hashKey,16) < Math.pow(2, 160) ) {
 				
-				password = new String(levelDBStore1.get(key.getBytes()),"UTF-8");
+				JsonObject json = JsonParser.parseString(new String(levelDBStore1.get(hashKey.getBytes()))).getAsJsonObject();
 				
-				key += ":";
-				key += password;
-				
-				user = new String(levelDBStore1.get(key.getBytes()),"UTF-8");
-				
+				if (json.get("Password") != null)
+					psw = gson.fromJson(new String(levelDBStore1.get(hashKey.getBytes())),PasswordUserType.class);
+						
 			} else {
 				
-				password = new String(levelDBStore2.get(key.getBytes()),"UTF-8");
+				JsonObject json = JsonParser.parseString(new String(levelDBStore2.get(hashKey.getBytes()))).getAsJsonObject();
 				
-				key += ":";
-				key += password;
-				
-				user = new String(levelDBStore2.get(key.getBytes()),"UTF-8");
+				if (json.get("Password") != null)
+					psw = gson.fromJson(new String(levelDBStore2.get(hashKey.getBytes())),PasswordUserType.class);
+			
 			}
 			
-			HashMap<String, Object> myMap = new HashMap();
-			myMap.put("firstValue", password);
-			myMap.put("secondValue" ,usertype); //Sto mappando una classe con valore first value 5 e second value ciao
+			HashMap<String, UserType> myMap = new HashMap<String,UserType>();
+			myMap.put(psw.password, psw.usertype);
+			
+			return myMap;
+		}
+		
+		public Product getProduct( String PRODUCTNAME ) {
+			
+			String key = "product:" + PRODUCTNAME;
+			String hashKey = DigestUtils.sha1Hex(key);
+			
+			Product product;
 			Gson gson = new Gson();
 			
-			return gson.toJson(myMap);
+			if(Integer.parseInt(hashKey,16) < Math.pow(2, 160) ) {
+				
+				JsonObject json = JsonParser.parseString(new String(levelDBStore1.get(hashKey.getBytes()))).getAsJsonObject();
+				
+				if (json.get("ProductName") != null)
+					product = gson.fromJson(new String(levelDBStore1.get(hashKey.getBytes())),Product.class);
+				else
+					return null;
+						
+			} else {
+				
+				JsonObject json = JsonParser.parseString(new String(levelDBStore2.get(hashKey.getBytes()))).getAsJsonObject();
+				
+				if (json.get("ProductName") != null)
+					product = gson.fromJson(new String(levelDBStore2.get(hashKey.getBytes())),Product.class);
+				else
+					return null;
+			
+			}
+			
+			return product;
+			
 		}
 		
 		public void getOrder( String USERNAME, int ORDER_ID ) {
