@@ -16,7 +16,6 @@ import DataManagement.HConnector;
 public class HProductStock {
 
 	@Id
-	@GeneratedValue
 	@Column( name = "IDstock" , nullable = false )
 	private int IDstock;
 	
@@ -41,7 +40,7 @@ public class HProductStock {
 
 	public HProductStock() {}
 	
-	public HProductStock( int IDStock , HProduct product ){
+	public HProductStock( int IDstock , HProduct product ){
 		
 		this.IDstock = IDstock;
 		this.product = product;
@@ -115,7 +114,7 @@ public class HProductStock {
 		
 		EntityManager manager = HConnector.FACTORY.createEntityManager();
 
-		HProductStock lastStock = (HProductStock)manager.createQuery("SELECT max(p) FROM HProductStock p").getSingleResult();
+		HProductStock lastStock = (HProductStock)manager.createQuery("SELECT p FROM HProductStock p WHERE p = ( SELECT max(h.IDstock) FROM HProductStock h )").getSingleResult();
 		manager.close();
 		
 		System.out.println("STOCK: " + lastStock.IDstock);

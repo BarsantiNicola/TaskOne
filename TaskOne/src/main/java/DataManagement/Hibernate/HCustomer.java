@@ -25,6 +25,8 @@ public class HCustomer extends HUser{
             inverseJoinColumns = {@JoinColumn(name = "IDorder")})
 	List<HOrder> myOrders;
 
+	@Column( name = "address", nullable = false )
+	String address;
 
 	//----------------------------------------------------------------------------------------------------------
 	//										CONSTRUCTORS

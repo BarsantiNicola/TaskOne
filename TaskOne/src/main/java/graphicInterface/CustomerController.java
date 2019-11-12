@@ -124,7 +124,7 @@ public class CustomerController extends InterfaceController {
         Product product;
         Order newOrder;
 
-        System.out.println("INSERT NEW ORDER");
+
         String productName = "";
         while( it.hasNext()){
             app = it.next();
@@ -135,9 +135,9 @@ public class CustomerController extends InterfaceController {
                 break;
             }
         }
-        System.out.println("INSERT NEW ORDER");
+
         long startTime = System.currentTimeMillis();
-        //int myProductType = DataManager.getProductType( productName );
+
         LOG.println( "QUERY: getProductType;\t TIME: " + (System.currentTimeMillis() - startTime) + "ms");
         startTime = System.currentTimeMillis();
         int myProductId = DataManager.getMinIDProduct( productName );
@@ -148,18 +148,20 @@ public class CustomerController extends InterfaceController {
 
             product = productList.next();
             if( product.getProductName().compareTo(productName) == 0 ){
-                newOrder = new Order( myProductId , product.getProductName() , product.getProductPrice() , new Timestamp(System.currentTimeMillis())  , product.getProductPrice() ,"ordered"  );
+            	if( product.getProductAvailability() < 1 ) return;
+                newOrder = new Order( myProductId , product.getProductName() , product.getProductPrice() , new Timestamp(System.currentTimeMillis())  , product.getProductPrice() ,"received"  );
 
                 startTime = System.currentTimeMillis();
                 boolean result = DataManager.insertOrder( customerId , myProductId, product.getProductPrice() );
                 LOG.println( "QUERY: insertNewOrder;\t TIME: " + (System.currentTimeMillis() - startTime) + "ms");
-
+                System.out.println("RISULTATO INSERIMENTO ORDINE: " + result );
                 if( result ){
 
                     ordersTable.add( newOrder );
                     product.setProductAvailability( product.getProductAvailability()-1);
-                    if( product.getProductAvailability() < 0 )
-                        productsTable.remove( product );
+                    productsTable.remove( product );
+                    if( product.getProductAvailability() > 0 )
+                    	productsTable.add(product);
                     break;
 
                 }

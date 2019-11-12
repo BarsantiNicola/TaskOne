@@ -145,7 +145,7 @@ public class HeadDepartmentController extends InterfaceController{
             if( p.getProductName().compareTo(name) == 0 ) {
 
                 long startTime = System.currentTimeMillis();
-                boolean result =  dataManager.updateProductAvailability(p.getProductName(), p.getProductAvailability() + 1);
+                boolean result =  dataManager.updateProductAvailability(p.getProductName(), 1);
                 LOG.println( "QUERY: updateProductAvailability;\t TIME: " + (System.currentTimeMillis() - startTime) + "ms");
                 if ( result ) {
                     productsTable.removeAll( p );

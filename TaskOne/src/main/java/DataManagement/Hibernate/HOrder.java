@@ -4,6 +4,10 @@ import javax.persistence.*;
 
 import DataManagement.HConnector;
 import beans.*;
+import javafx.beans.property.SimpleIntegerProperty;
+import javafx.beans.property.SimpleObjectProperty;
+import javafx.beans.property.SimpleStringProperty;
+
 import java.sql.*;
 import java.util.*;
 
@@ -75,6 +79,23 @@ public class HOrder {
 		this.status = status;
 		this.productStock = stock;
 
+	}
+	
+	public HOrder( Order order ) {
+		
+		//  WE HAVE TO USE KEY-VALUE DATABASE TO BUILD THE COSTRUCTOR
+		this.purchaseDate = order.getPurchaseDate();
+		this.price = order.getProductPrice(); 
+		this.status = order.getOrderStatus();
+		//this.productStock = new HProductStock( this.)
+	/*	HProduct product = order.getProductStock().getProduct();
+		productId = new SimpleIntegerProperty(order.getProductStock().getIDstock());
+		productName = new SimpleStringProperty( product.getProductName());
+		productPrice = new SimpleIntegerProperty( product.getProductPrice() );
+		purchaseDate = new SimpleObjectProperty( order.getPurchaseDate());
+		purchasedPrice = new SimpleIntegerProperty( order.getPrice() );
+		orderStatus = new SimpleStringProperty( order.getStatus() );*/
+		
 	}
 
 	//----------------------------------------------------------------------------------------------------------

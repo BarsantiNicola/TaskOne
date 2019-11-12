@@ -197,7 +197,12 @@ public class HUser {
 		boolean ret = true;
 		
 		manager.getTransaction().begin();
-        manager.remove(manager.find(HUser.class, username));
+		HUser user = manager.find(HUser.class, username);
+		if( user instanceof HTeamedEmployee )
+			return HTeamedEmployee.removeEmployee( (HTeamedEmployee)user );
+
+		manager.remove(user);
+                
 		try {
 			
 			manager.getTransaction().commit();

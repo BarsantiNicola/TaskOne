@@ -123,6 +123,49 @@ public class HTeamedEmployee extends HEmployee{
 		
 	}
 	
+	public static boolean removeEmployee( HTeamedEmployee employee ) {
+				
+		EntityManager manager = HConnector.FACTORY.createEntityManager();
+		boolean ret = true;
+		HTeam team = manager.find(HTeam.class, employee.getIDTeam());
+		
+		System.out.println("ok ci siamo!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!");
+		if( team == null ) return false;  //  the employee has to be part of a valid team
+			
+		List<HTeamedEmployee> members = team.getMembers();
+		for( HTeamedEmployee te : members )
+			if( te.getUsername().compareTo( employee.getUsername()) == 0 ) {
+				members.remove( te );
+				break;
+			}
+
+		System.out.println(members.size());
+		manager.getTransaction().begin();
+		
+		team.setMembers(members);
+		// we save the employee and update the team members
+		manager.merge(team);
+		manager.detach(employee);
+		//manager.remove(employee);
+		
+		try {
+			
+			manager.getTransaction().commit();
+			//manager.getTransaction().begin();
+
+			//manager.getTransaction().commit();
+			
+		}catch( IllegalStateException | RollbackException e ) {
+			
+			ret = false;
+			
+		}
+		
+		manager.close();
+		
+		return ret;
+	}
+	
 	
 	@Override
 	public String toString() { return super.toString() + "\tIdTeam: " + IDteam; }

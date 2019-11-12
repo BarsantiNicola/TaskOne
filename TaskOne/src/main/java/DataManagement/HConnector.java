@@ -105,7 +105,7 @@ public class HConnector extends DataConnector{
     	List<Order> orders = new ArrayList<>();
     	List<HOrder> horders = manager.find( HCustomer.class , CUSTOMER_ID ).getMyHorders();
     	for( HOrder o : horders )
-    		orders.add( new Order(o));
+    		orders.add(new Order(o));
     	
     	return orders;
     }
@@ -168,9 +168,11 @@ public class HConnector extends DataConnector{
     	EntityManager manager = FACTORY.createEntityManager();
     	
     	HCustomer newCustomer = manager.find(HCustomer.class, CUSTOMER_ID);
-
-    	HOrder newOrder = new HOrder( new Timestamp(System.currentTimeMillis()), PRICE , "ordered" , CUSTOMER_ID , manager.find(HProductStock.class, PRODUCT_ID));
-
+    	HProductStock productstock = manager.find( HProductStock.class, PRODUCT_ID );
+    	
+    	HOrder newOrder = new HOrder( new Timestamp(System.currentTimeMillis()), PRICE , "ordered" , CUSTOMER_ID , productstock );
+    	productstock.getProduct().decreaseAvailability();
+    	
     	manager.close();
 
     	return newCustomer.addOrder( newOrder );
@@ -231,7 +233,7 @@ public class HConnector extends DataConnector{
 
     public boolean deleteUser( String USER_NAME ) {
     
-    	
+    
     	return HUser.deleteUser( USER_NAME);    	
     	
     }

@@ -176,14 +176,16 @@ public class HProduct {
 
         //  increasing the availability of a product consist to insert
         //  new stocks available for users orders.
-    	HProductStock productStock = new HProductStock(  HProductStock.getLastStockID() , this );
     	HProduct product = this; 
+    	HProductStock productStock = new HProductStock(  HProductStock.getLastStockID()+1 , product );
+
     	
     	System.out.println( "THE NEW IDSTOCK INSERTED: " + productStock.getIDstock());
 		manager.getTransaction().begin();
 		
 		//  we update the availability by update the product and save the new stock
 		product.setProductAvailability( availability+1);  
+
 		manager.persist(productStock);
 		manager.merge(product);
 
@@ -193,6 +195,7 @@ public class HProduct {
 			
 		}catch( IllegalStateException | RollbackException e ) {
 			
+			System.out.println("Error: " + e.getMessage());
 			ret = false;
 			
 		}
@@ -200,6 +203,44 @@ public class HProduct {
 		manager.close();
 		
 		return ret;
+		
+	}
+	
+	public boolean decreaseAvailability() {
+		
+		System.out.println("Changine the availability of product: " + toString());
+		System.out.println("PRODUCT_ADDED: " + productAvailability + "\tNEW_AVAILABILITY: " + (productAvailability-1));
+		
+		EntityManager manager = HConnector.FACTORY.createEntityManager();
+        int availability = productAvailability;
+        boolean ret = true;
+
+        //  increasing the availability of a product consist to insert
+        //  new stocks available for users orders.
+    	HProduct product = this; 
+
+		manager.getTransaction().begin();
+		
+		//  we update the availability by update the product and save the new stock
+		product.setProductAvailability( availability-1);  
+
+		manager.merge(product);
+
+		try {
+			
+			manager.getTransaction().commit();
+			
+		}catch( IllegalStateException | RollbackException e ) {
+			
+			System.out.println("Error: " + e.getMessage());
+			ret = false;
+			
+		}
+		
+		manager.close();
+		
+		return ret;
+		
 		
 	}
 
