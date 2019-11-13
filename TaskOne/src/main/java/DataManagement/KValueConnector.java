@@ -185,7 +185,7 @@ public class KValueConnector extends DataConnector{
 	    int getMinIDProduct( int PRODUCT_TYPE ){ return -1; }
 	    
 	    //  CONSISTENCE IF ADMINISTRATOR DELETE A CUSTOMER
-	    boolean deleteCustomer( String CUSTOMER_ID ) { return false; }  
+	    boolean deleteUser( String USER_NAME ){ return false; } 
 	    
 	    boolean insertOrder( String CUSTOMER_ID , int PRODUCT_ID , String PRODUCT_NAME , int PRICE ){ return false; }
 	    
@@ -199,6 +199,9 @@ public class KValueConnector extends DataConnector{
 	    
 	    // CONSISTENCE IF A CUSTOMER BUY A PRODUCT OR HEADDEPARTMENT INSERT STOCKS
 	    boolean updateProductAvailability( String PRODUCTNAME , int NEW_AVAILABILITY ) { return false; }
+	    
+	    // CONSISTENCE IF ADMINISTRATOR ADD A NEW CUSTOMER
+	    boolean insertUser( User NEW_USER ) { return false; }
 	    
 	    List<Product> getAvailableProducts(){ return new ArrayList<>(); }
 
@@ -219,11 +222,7 @@ public class KValueConnector extends DataConnector{
 
 	    List<User> getUsers(){ return null; }
 
-	    boolean insertUser( User NEW_USER ) { return false; }
-
 	    boolean updateSalary(int SALARY , String USER_ID  ){ return false; }
-
-	    boolean deleteUser(String USER_NAME){ return false; }
 
 	    int getProductType( String PRODUCT_NAME ){ return -1; }
 	    
