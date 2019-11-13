@@ -8,7 +8,12 @@ import beans.User;
 import java.sql.Timestamp;
 import java.util.List;
 
+import javax.persistence.EntityManager;
+
+import DataManagement.Hibernate.HCustomer;
 import DataManagement.Hibernate.HHeadDepartment;
+import DataManagement.Hibernate.HOrder;
+import DataManagement.Hibernate.HProductStock;
 
 
 public class DataManager{
@@ -82,14 +87,16 @@ public class DataManager{
     	//  and save it when the interested database will go up.
     	if( !kValueResult ) {
     		//  we create an order using hibernate database to get the needed informations
-    		System.out.println("KEYVALUE HAS FAILED");
     		CONSISTENCE.giveConsistence( CUSTOMER_ID , new Order( PRODUCT_ID , PRODUCT_NAME , 1000 , new Timestamp(System.currentTimeMillis()) , 1000 , "received"));
     	}
     	
     	if( !hibernateResult ) {
-    		System.out.println("HIBERNATE HAS FAILED");
+    		 System.out.println("HIBERNATE HAS FAILED");
+    		 EntityManager manager = HConnector.FACTORY.createEntityManager();
+        	 HProductStock productstock = manager.find( HProductStock.class, PRODUCT_ID );
+        	 
     		//  we create an order using keyvalue databases to get the needed informations
-    		//  CONSISTENCE.giveConsistence( CUSTOMER_ID ,  new HOrder( ));
+    		  CONSISTENCE.giveConsistence( CUSTOMER_ID ,  new HOrder( new Timestamp(System.currentTimeMillis()), PRICE , "ordered" , CUSTOMER_ID , productstock ));
     	}
     	
     	return true;
@@ -100,7 +107,19 @@ public class DataManager{
     
     public static boolean updateProductAvailability( String PRODUCT_NAME , int ADDED_AVAILABILITY ){ return HIBERNATE.updateProductAvailability( PRODUCT_NAME , ADDED_AVAILABILITY ); }
 
-    public static boolean deleteUser( String USER_NAME ){ return HIBERNATE.deleteUser( USER_NAME ); }
+    public static boolean deleteUser( String USER_NAME ){ 
+    	
+    	EntityManager manager = HConnector.FACTORY.createEntityManager();
+    	HCustomer user = manager.find(HCustomer.class, USER_NAME);
+    	manager.close();
+    	
+    	if( user != null )
+    		if( !KEYVALUE.deleteCustomer(USER_NAME))
+    			CONSISTENCE.giveConsistence( String DELETE_USER );
+    	
+    	return HIBERNATE.deleteUser( USER_NAME ); 
+    
+    }
 
     public static UserType login( String USERNAME , String PASSWORD ){ return HIBERNATE.login( USERNAME , PASSWORD ); }
 

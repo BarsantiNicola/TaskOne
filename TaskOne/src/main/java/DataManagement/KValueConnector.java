@@ -180,15 +180,25 @@ public class KValueConnector extends DataConnector{
 		}
 		
 		
-		//  FUNZIONI CHE MANCA REALIZZAZIONE
+		//  TODO
 		
 	    int getMinIDProduct( int PRODUCT_TYPE ){ return -1; }
+	    
+	    //  CONSISTENCE IF ADMINISTRATOR DELETE A CUSTOMER
+	    boolean deleteCustomer( String CUSTOMER_ID ) { return false; }  
 	    
 	    boolean insertOrder( String CUSTOMER_ID , int PRODUCT_ID , String PRODUCT_NAME , int PRICE ){ return false; }
 	    
 	    boolean insertOrder( String CUSTOMER , Order ORDER ) { return false; }
 	    
+	    //  CONSISTENCE IF HEADDEPARTMENT INSERT A STOCK
 	    boolean insertStock( String PRODUCTNAME , int STOCKID ) { return false; }
+	    
+	    //  CONSISTENCE IF CUSTOMER BUY A PRODUCT
+	    boolean deleteStock( String PRODUCTNAME , int STOCKID ) { return false; }  
+	    
+	    // CONSISTENCE IF A CUSTOMER BUY A PRODUCT OR HEADDEPARTMENT INSERT STOCKS
+	    boolean updateProductAvailability( String PRODUCTNAME , int NEW_AVAILABILITY ) { return false; }
 	    
 	    List<Product> getAvailableProducts(){ return new ArrayList<>(); }
 
@@ -220,8 +230,6 @@ public class KValueConnector extends DataConnector{
 	    List<Product> getTeamProducts( int TEAM_ID ){ return null; }
 
 	    List<Employee> getTeamEmployees( int TEAM_ID ){ return null; }
-
-	    boolean updateProductAvailability( String PRODUCT_NAME , int ADDED_AVAILABILITY ){ return false; }
 
 	    List<Employee> searchTeamEmployees( int TEAM_ID , String SEARCHED_VALUE ){ return null; }
 

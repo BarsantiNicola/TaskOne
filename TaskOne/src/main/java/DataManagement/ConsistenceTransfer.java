@@ -52,6 +52,8 @@ public class ConsistenceTransfer {
 		
 	}
 	
+	boolean giveConsistence( String DELETE_USER ) { return false; }
+	
 	public static void main( String[] args ) {
 		
 		try {

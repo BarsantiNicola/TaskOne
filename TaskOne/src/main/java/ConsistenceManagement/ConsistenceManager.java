@@ -159,12 +159,10 @@ public class ConsistenceManager {
 					continue;
 				}
 			}else
-				data.saveOrder(receivedData);
-				/*
 				if( !keyValueData.insertOrder( receivedData.getCustomer() , receivedData.getOrder())) {
 					data.saveOrder( receivedData );
 					continue;
-				}*/
+				}
 							
 		}
 
