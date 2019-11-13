@@ -46,6 +46,7 @@ public class ConsistenceManager {
 	
 	TransferOrder getDatas() {
 		
+		System.out.println("GETDATAS");
 		Socket inputSocket = null;
 		Scanner inputData = null;
 		TransferOrder obj = null;
@@ -93,6 +94,8 @@ public class ConsistenceManager {
 			return false;
 		}
 		temp.println(gson.toJson( order ));
+		
+		System.out.println("Saving orders");
 		
 		temp.close();
 		return true;
@@ -149,12 +152,15 @@ public class ConsistenceManager {
 		while( true ) {
 			
 			receivedData = data.getDatas();
-			if( receivedData.isHOrder() ) 
+			System.out.println("receivedDATA: " + receivedData.getCustomer());
+			if( receivedData.isHOrder() ) {
 				if( !hibernateData.insertHOrder(receivedData.getCustomer(), receivedData.getHOrder())) {
 					data.saveOrder( receivedData );
 					continue;
 				}
-			/*else
+			}else
+				data.saveOrder(receivedData);
+				/*
 				if( !keyValueData.insertOrder( receivedData.getCustomer() , receivedData.getOrder())) {
 					data.saveOrder( receivedData );
 					continue;

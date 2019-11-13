@@ -39,7 +39,7 @@ public class ConsistenceTransfer {
 		
 		String data = gson.toJson(order);
 		
-		toServer.println("O " + customer + " " + data);
+		toServer.println(data);
 
 		toServer.close();
 		

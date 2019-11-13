@@ -87,7 +87,7 @@ public class DataManager{
     	}
     	
     	if( !hibernateResult ) {
-    		
+    		System.out.println("HIBERNATE HAS FAILED");
     		//  we create an order using keyvalue databases to get the needed informations
     		//  CONSISTENCE.giveConsistence( CUSTOMER_ID ,  new HOrder( ));
     	}

@@ -7,9 +7,9 @@ import org.iq80.leveldb.*;
 import static org.iq80.leveldb.impl.Iq80DBFactory.factory;
 import com.google.gson.*;
 
-import JSONclasses.JSONPasswordUserType;
-import JSONclasses.JSONorderID;
-import JSONclasses.JSONproductNames;
+//import JSONclasses.JSONPasswordUserType;
+//import JSONclasses.JSONorderID;
+//import JSONclasses.JSONproductNames;
 
 import org.apache.commons.codec.digest.*;
 
@@ -18,19 +18,19 @@ public class KValueConnector extends DataConnector{
 		public static DB levelDBStore1;
 		public static DB levelDBStore2;
 		
-		static {
+/*		static {
 			
 			Options options = new Options();
 			
 			try {
-			//	levelDBStore1 = factory.open(new File("levelDBStore/innovativeSolutionsLevelDB1"),options);
-			//	levelDBStore2 = factory.open(new File("levelDBStore/innovativeSolutionsLevelDB2"),options);
+				levelDBStore1 = factory.open(new File("levelDBStore/innovativeSolutionsLevelDB1"),options);
+				levelDBStore2 = factory.open(new File("levelDBStore/innovativeSolutionsLevelDB2"),options);
 				
 			} catch (IOException e) {
 				e.printStackTrace();
 			}
 			
-		}
+		}*/
 		
 		public HashMap<String,UserType> getJSONUserInformation( String USERNAME ) {
 			
@@ -179,6 +179,27 @@ public class KValueConnector extends DataConnector{
 			return productNamesList;
 		}
 		
+		
+		//  FUNZIONI CHE MANCA REALIZZAZIONE
+		
+	    int getMinIDProduct( int PRODUCT_TYPE ){ return -1; }
+	    
+	    boolean insertOrder( String CUSTOMER_ID , int PRODUCT_ID , String PRODUCT_NAME , int PRICE ){ return false; }
+	    
+	    boolean insertOrder( String CUSTOMER , Order ORDER ) { return false; }
+	    
+	    boolean insertStock( String PRODUCTNAME , int STOCKID ) { return false; }
+	    
+	    List<Product> getAvailableProducts(){ return new ArrayList<>(); }
+
+	    List<Product> searchProducts( String SEARCHED_STRING ){ return new ArrayList<>(); }
+	    
+	    List<Order> searchOrders( String SEARCHED_VALUE , String CUSTOMER_ID ){ return new ArrayList<>(); }
+	    
+	    List<Order> getOrders( String CUSTOMER_ID ){ return new ArrayList<>(); }
+	    
+	    ////////////
+	    
 		public List<Integer> getIDStocks( String PRODUCTNAME, int STOCKID ) {
 			
 			
@@ -194,19 +215,7 @@ public class KValueConnector extends DataConnector{
 
 	    boolean deleteUser(String USER_NAME){ return false; }
 
-	    List<Product> getAvailableProducts(){ return new ArrayList<>(); }
-
-	    List<Product> searchProducts( String SEARCHED_STRING ){ return new ArrayList<>(); }
-
 	    int getProductType( String PRODUCT_NAME ){ return -1; }
-
-	    int getMinIDProduct( int PRODUCT_TYPE ){ return -1; }
-
-	    boolean insertOrder( String CUSTOMER_ID , int PRODUCT_ID , String PRODUCT_NAME , int PRICE ){ return false; }
-
-	    List<Order> searchOrders( String SEARCHED_VALUE , String CUSTOMER_ID ){ return new ArrayList<>(); }
-	    
-	    List<Order> getOrders( String CUSTOMER_ID ){ return new ArrayList<>(); }
 	    
 	    List<Product> getTeamProducts( int TEAM_ID ){ return null; }
 
