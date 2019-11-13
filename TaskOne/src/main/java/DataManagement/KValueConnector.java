@@ -57,7 +57,11 @@ public class KValueConnector extends DataConnector{
 			return myMap;
 		}
 		
-		public JSONorderID getOrders( String USERNAME ) {
+		
+		
+		//////////  TI HO CAMBIATO IL NOME ERA COINCIDENTE CON UNA FUNZIONE DI INTERFACCIA CHE NON AVEVO INSERITO IN DATACONNECTOR
+		/////////   (GETORDER) ==> MESSA UNA COPIA VUOTA IN FONDO
+		public JSONorderID getJSONOrders( String USERNAME ) {
 			
 			String key = "user:" + USERNAME + ":order";
 			String hashKey = DigestUtils.sha1Hex(key);
@@ -157,16 +161,20 @@ public class KValueConnector extends DataConnector{
 
 	    boolean deleteUser(String USER_NAME){ return false; }
 
-	    List<Product> getAvailableProducts(){ return null; }
+	    List<Product> getAvailableProducts(){ return new ArrayList<>(); }
 
-	    List<Product> searchProducts( String SEARCHED_STRING ){ return null; }
+	    List<Product> searchProducts( String SEARCHED_STRING ){ return new ArrayList<>(); }
 
 	    int getProductType( String PRODUCT_NAME ){ return -1; }
 
 	    int getMinIDProduct( int PRODUCT_TYPE ){ return -1; }
 
-	    boolean insertOrder( String CUSTOMER_ID , int PRODUCT_ID , int PRICE ){ return false; }
+	    boolean insertOrder( String CUSTOMER_ID , int PRODUCT_ID , String PRODUCT_NAME , int PRICE ){ return false; }
 
+	    List<Order> searchOrders( String SEARCHED_VALUE , String CUSTOMER_ID ){ return new ArrayList<>(); }
+	    
+	    List<Order> getOrders( String CUSTOMER_ID ){ return new ArrayList<>(); }
+	    
 	    List<Product> getTeamProducts( int TEAM_ID ){ return null; }
 
 	    List<Employee> getTeamEmployees( int TEAM_ID ){ return null; }
@@ -176,6 +184,5 @@ public class KValueConnector extends DataConnector{
 	    List<Employee> searchTeamEmployees( int TEAM_ID , String SEARCHED_VALUE ){ return null; }
 
 	    List<Product> searchTeamProducts( int TEAM_ID , String SEARCHED_VALUE ){ return null; }
-
 
 }

@@ -543,7 +543,7 @@ public class DatabaseConnector extends DataConnector{
 	}
 	
 	//insert a new order for a customer
-	public boolean insertOrder( String customer, int productId , int price ) {
+	public boolean insertOrder( String customer, int productId , String productName , int price ) {
 		
 		int insertedRows = 0;
 
@@ -569,7 +569,7 @@ public class DatabaseConnector extends DataConnector{
 	}
 	
 	//retrieve all the orders of a given customer
-	public static List<Order> getOrder( String IDcustomer ){
+	public List<Order> getOrders( String IDcustomer ){
 		
 		List<Order> ordersList = new ArrayList<>();
 
@@ -749,7 +749,7 @@ public class DatabaseConnector extends DataConnector{
 
 	
 	//  it gives a list of orders of the customer who match with the given key
-	public static List<Order> searchOrders( String value, String customerID ) {
+	public List<Order> searchOrders( String value, String customerID ) {
 
 		List<Order> list = new ArrayList<>();
 

@@ -152,7 +152,7 @@ public class CustomerController extends InterfaceController {
                 newOrder = new Order( myProductId , product.getProductName() , product.getProductPrice() , new Timestamp(System.currentTimeMillis())  , product.getProductPrice() ,"received"  );
 
                 startTime = System.currentTimeMillis();
-                boolean result = DataManager.insertOrder( customerId , myProductId, product.getProductPrice() );
+                boolean result = DataManager.insertOrder( customerId , myProductId, productName , product.getProductPrice() );
                 LOG.println( "QUERY: insertNewOrder;\t TIME: " + (System.currentTimeMillis() - startTime) + "ms");
                 System.out.println("RISULTATO INSERIMENTO ORDINE: " + result );
                 if( result ){

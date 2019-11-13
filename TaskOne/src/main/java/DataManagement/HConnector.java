@@ -99,7 +99,7 @@ public class HConnector extends DataConnector{
     
     }
 
-    public List<Order> getOrder( String CUSTOMER_ID ){ 
+    public List<Order> getOrders( String CUSTOMER_ID ){ 
     	
     	EntityManager manager = FACTORY.createEntityManager();
     	List<Order> orders = new ArrayList<>();
@@ -110,7 +110,7 @@ public class HConnector extends DataConnector{
     	return orders;
     }
 
-    public static List<Order> searchOrders( String SEARCHED_VALUE , String CUSTOMER_ID ){ 
+    public List<Order> searchOrders( String SEARCHED_VALUE , String CUSTOMER_ID ){ 
     	
     	EntityManager manager = FACTORY.createEntityManager();
     	HCustomer customer = manager.getReference(HCustomer.class, CUSTOMER_ID);
@@ -163,7 +163,7 @@ public class HConnector extends DataConnector{
     	return manager.find( HHeadDepartment.class , MANAGER).getMyTeam().getIDTeam();
     }
 
-    public boolean insertOrder( String CUSTOMER_ID , int PRODUCT_ID , int PRICE ){ 
+    public boolean insertOrder( String CUSTOMER_ID , int PRODUCT_ID , String productName , int PRICE ){ 
     	
     	EntityManager manager = FACTORY.createEntityManager();
     	

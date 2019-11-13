@@ -14,13 +14,11 @@ import beans.Order;
 public class ConsistenceTransfer {
 
 	
-	ConsistenceTransfer() throws Exception{
-		
-
-		
+	ConsistenceTransfer(){
+			
 	}
 	
-	boolean givePersistance( Object obj ) {
+	boolean giveConsistence( Object obj ) {
 		Socket server = null;
 		PrintWriter toServer = null;
 		try {
@@ -31,17 +29,17 @@ public class ConsistenceTransfer {
 			System.out.println("Errore: " + ie.getMessage());
 		}
 		Gson gson = new Gson();
-		if( !(obj instanceof Order[]) && !(obj instanceof HOrder[])) {
+		if( !(obj instanceof Order) && !(obj instanceof HOrder)) {
 			System.out.println("Error on " + obj.getClass().getName() + " : only Order.class and HOrder.class accepted" );
 			return false;
 		}
 		
 		String data = gson.toJson(obj);
 		
-		if( obj instanceof Order[] )
+		if( obj instanceof Order )
 			toServer.println("O " + data);
 		else
-			if( obj instanceof HOrder[] )
+			if( obj instanceof HOrder )
 					toServer.println("H " + data);
 
 		toServer.close();
@@ -58,9 +56,8 @@ public class ConsistenceTransfer {
 		
 		try {
 			ConsistenceTransfer t = new ConsistenceTransfer();
-			HOrder[] order = new HOrder[1];
-			order[0] = new HOrder( new Timestamp( System.currentTimeMillis()), 5000, "delivered" , "Nicola" , null );
-			System.out.println( t.givePersistance( order ));
+			HOrder order = new HOrder( new Timestamp( System.currentTimeMillis()), 5000, "delivered" , "Nicola" , null );
+			System.out.println( t.giveConsistence( order ));
 
 		}catch( Exception e ) {
 			

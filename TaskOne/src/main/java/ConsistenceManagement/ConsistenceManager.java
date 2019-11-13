@@ -24,8 +24,13 @@ import beans.Order;
 public class ConsistenceManager {
 	
 	private ServerSocket     server;
+	private final HConnector hibernateDatabase;
+	private final KValueConnector keyValueDatabase;
 	
 	ConsistenceManager(){
+		
+		hibernateDatabase = new HConnector();
+		keyValueDatabase = new KValueConnector();
 		
 		try {
 			
@@ -39,11 +44,11 @@ public class ConsistenceManager {
 		
 	}
 	
-	Object[] getDatas() {
+	Object getDatas() {
 		
 		Socket inputSocket = null;
 		Scanner inputData = null;
-		Object[] ret = null;
+		Object ret = null;
 		
 		try {
 		
@@ -54,9 +59,10 @@ public class ConsistenceManager {
 			String saveType = inputData.next();
 
 			if( saveType.compareTo("O") == 0 ) 	
-				ret = gson.fromJson( inputData.nextLine() , Order[].class );
-			if( saveType.compareTo("H") == 0 )
-				ret = gson.fromJson( inputData.nextLine() , HOrder[].class );
+				ret = gson.fromJson( inputData.nextLine() , Order.class );
+			else
+				if( saveType.compareTo("H") == 0 )
+					ret = gson.fromJson( inputData.nextLine() , HOrder.class );
 			
 
 			inputData.close();
@@ -76,7 +82,7 @@ public class ConsistenceManager {
 		
 	}
 	
-	boolean saveOrder( Order[] orders ) {
+	boolean saveOrder( Order order ) {
 		
 		PrintWriter temp = null;
 		Gson gson = new Gson();
@@ -92,15 +98,14 @@ public class ConsistenceManager {
 			System.out.println("Error tryin to crate a save block: " + ie.getMessage());
 			return false;
 		}
-		for( Order order: orders ) 		
-			temp.println( gson.toJson( order ));
+		temp.println(gson.toJson( order ));
 		
 		temp.close();
 		return true;
 		
 	}
 	
-	boolean saveHOrder( HOrder[] orders ) {
+	boolean saveHOrder( HOrder order ) {
 		
 		PrintWriter temp = null;
 		Gson gson = new Gson();
@@ -116,8 +121,7 @@ public class ConsistenceManager {
 			System.out.println("Error tryin to crate a save block: " + ie.getMessage());
 			return false;
 		}
-		for( HOrder order: orders ) 		
-			temp.println( gson.toJson( order ));
+		temp.println(gson.toJson( order ));
 		
 		temp.close();
 		return true;
@@ -200,15 +204,21 @@ public class ConsistenceManager {
 		ConsistenceManager data = new ConsistenceManager();
 		HConnector hibernateData = new HConnector();
 		KValueConnector keyValueData = new KValueConnector();
-		
-		/*while( true ) {
+		Object receivedData;
+		while( true ) {
 			
-			data.saveHOrder( (HOrder[])data.getDatas());
-			
-		}*/
-		HOrder[] orders = data.loadHOrders();
-		for( HOrder o : orders)
-			System.out.println(o.getStatus());
+			receivedData = data.getDatas();
+			if( receivedData instanceof Order ) {
+			//	if( !keyValueDatabase.insertOrder( (Order)receivedData ))  SERVE FUNZIONE KVALUE PER SALVARE DIRETTAMENTE UN ORDINE
+					data.saveOrder( (Order)receivedData);
+				continue;
+			}
+			if( receivedData instanceof HOrder ) 
+				if( !data.hibernateDatabase.insertHOrder( (HOrder)receivedData))
+					data.saveHOrder((HOrder)receivedData);
+							
+		}
+
 
 		/*HOrder[] order = data.loadHOrders();
 		System.out.println(order.length);

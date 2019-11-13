@@ -18,12 +18,16 @@ public abstract class DataConnector {
     abstract List<Product> getAvailableProducts();
 
     abstract List<Product> searchProducts( String SEARCHED_STRING );
+    
+    abstract List<Order> searchOrders( String SEARCHED_VALUE , String CUSTOMER_ID );
+    
+    abstract List<Order> getOrders( String CUSTOMERID );
 
     abstract int getProductType( String PRODUCT_NAME );
 
     abstract int getMinIDProduct( int PRODUCT_TYPE );
 
-    abstract boolean insertOrder( String CUSTOMER_ID , int PRODUCT_ID , int PRICE );
+    abstract boolean insertOrder( String CUSTOMER_ID , int PRODUCT_ID , String PRODUCT_NAME , int PRICE );
 
     abstract List<Product> getTeamProducts( int TEAM_ID );
 
