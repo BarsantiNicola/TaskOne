@@ -197,8 +197,9 @@ public class KValueConnector extends DataConnector{
 	    //  CONSISTENCE IF CUSTOMER BUY A PRODUCT
 	    boolean deleteStock( String PRODUCTNAME , int STOCKID ) { return false; }  
 	    
-	    // CONSISTENCE IF A CUSTOMER BUY A PRODUCT OR HEADDEPARTMENT INSERT STOCKS
-	    boolean updateProductAvailability( String PRODUCTNAME , int NEW_AVAILABILITY ) { return false; }
+	    // CONSISTENCE IF A CUSTOMER BUY A PRODUCT OR HEADDEPARTMENT INSERT STOCKS 
+	    // PAY ATTENTION ON "ADDED", IT CAN BE A POSITIVE OR NEGATIVE NUMBER AND IT HAS TO BE SUM TO THE CURRENT AVAILABILITY
+	    boolean updateProductAvailability( String PRODUCTNAME , int ADDED_AVAILABILITY ) { return false; }
 	    
 	    // CONSISTENCE IF ADMINISTRATOR ADD A NEW CUSTOMER
 	    boolean insertUser( User NEW_USER ) { return false; }
