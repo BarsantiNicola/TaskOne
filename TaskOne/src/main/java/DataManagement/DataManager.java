@@ -24,7 +24,13 @@ public class DataManager{
     private final static ConsistenceTransfer CONSISTENCE = new ConsistenceTransfer();
     
 
-    public static List<User> searchUsers(String SEARCHED_STRING ){ return HIBERNATE.searchUsers( SEARCHED_STRING);}
+    public static List<User> searchUsers(String SEARCHED_STRING ){ 
+    	
+    	List<User> ret = KEYVALUE.searchUsers( SEARCHED_STRING);
+    	if(ret.size()== 0) ret = HIBERNATE.searchUsers(SEARCHED_STRING);
+    	return ret;
+    	
+    }
     
     public static List<Employee> searchTeamEmployees( int TEAM_ID , String SEARCHED_VALUE ){ return HIBERNATE.searchTeamEmployees( TEAM_ID , SEARCHED_VALUE );}
 
