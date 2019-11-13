@@ -7,6 +7,7 @@ import java.sql.Timestamp;
 
 import com.google.gson.Gson;
 
+import ConsistenceManagement.TransferOrder;
 import DataManagement.Hibernate.HOrder;
 import DataManagement.Hibernate.HProductStock;
 import beans.Order;
@@ -18,9 +19,11 @@ public class ConsistenceTransfer {
 			
 	}
 	
-	boolean giveConsistence( Object obj ) {
+	boolean giveConsistence( String customer , Object obj ) {
 		Socket server = null;
 		PrintWriter toServer = null;
+		TransferOrder order = new TransferOrder( obj , customer );
+		
 		try {
 			server = new Socket( "127.0.0.1" , 44444 );
 			toServer = new PrintWriter( server.getOutputStream() , true );
@@ -34,17 +37,14 @@ public class ConsistenceTransfer {
 			return false;
 		}
 		
-		String data = gson.toJson(obj);
+		String data = gson.toJson(order);
 		
-		if( obj instanceof Order )
-			toServer.println("O " + data);
-		else
-			if( obj instanceof HOrder )
-					toServer.println("H " + data);
+		toServer.println("O " + customer + " " + data);
 
 		toServer.close();
+		
 		try {
-		server.close();
+			server.close();
 		}catch( IOException e ) {
 			System.out.println("Error trying to close");
 		}
@@ -57,7 +57,7 @@ public class ConsistenceTransfer {
 		try {
 			ConsistenceTransfer t = new ConsistenceTransfer();
 			HOrder order = new HOrder( new Timestamp( System.currentTimeMillis()), 5000, "delivered" , "Nicola" , null );
-			System.out.println( t.giveConsistence( order ));
+			//System.out.println( t.giveConsistence( order ));
 
 		}catch( Exception e ) {
 			

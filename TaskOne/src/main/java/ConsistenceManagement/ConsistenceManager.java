@@ -44,26 +44,19 @@ public class ConsistenceManager {
 		
 	}
 	
-	Object getDatas() {
+	TransferOrder getDatas() {
 		
 		Socket inputSocket = null;
 		Scanner inputData = null;
-		Object ret = null;
+		TransferOrder obj = null;
 		
 		try {
 		
 			inputSocket = server.accept();
 			inputData = new Scanner( inputSocket.getInputStream());
 			Gson gson = new Gson();
-			System.out.println("Start data");
-			String saveType = inputData.next();
 
-			if( saveType.compareTo("O") == 0 ) 	
-				ret = gson.fromJson( inputData.nextLine() , Order.class );
-			else
-				if( saveType.compareTo("H") == 0 )
-					ret = gson.fromJson( inputData.nextLine() , HOrder.class );
-			
+			obj = gson.fromJson( inputData.nextLine() , TransferOrder.class );
 
 			inputData.close();
 			inputSocket.close();
@@ -78,17 +71,18 @@ public class ConsistenceManager {
 			
 		}
 		
-		return ret;
+		return obj;
+		
 		
 	}
 	
-	boolean saveOrder( Order order ) {
+	boolean saveOrder( TransferOrder order ) {
 		
 		PrintWriter temp = null;
 		Gson gson = new Gson();
 		try {
 			
-			File tempOrder = new File("Order");
+			File tempOrder = new File("DataStore");
 			if( tempOrder.exists()) 
 				temp = new PrintWriter(new FileOutputStream( tempOrder, true ) , true );
 			else
@@ -105,45 +99,23 @@ public class ConsistenceManager {
 		
 	}
 	
-	boolean saveHOrder( HOrder order ) {
-		
-		PrintWriter temp = null;
-		Gson gson = new Gson();
-		try {
-			
-			File tempHOrder = new File("HOrder");
-			if( tempHOrder.exists()) 
-				temp = new PrintWriter(new FileOutputStream( tempHOrder, true ) , true );
-			else
-				temp = new PrintWriter(new FileOutputStream( tempHOrder, false ) , true );
-				
-		}catch( FileNotFoundException ie ) {
-			System.out.println("Error tryin to crate a save block: " + ie.getMessage());
-			return false;
-		}
-		temp.println(gson.toJson( order ));
-		
-		temp.close();
-		return true;
-		
-	}
 	
-	Order[] loadOrders() { 
+	TransferOrder[] loadOrders() { 
 		
-		List<Order> orders = new ArrayList<>();
-		File tempOrder = new File("Order");	
+		List<TransferOrder> orders = new ArrayList<>();
+		File tempOrder = new File("DataStore");	
 
 		Scanner temp = null;
 		Gson gson = new Gson();
-		Order[] ret = null;
+		TransferOrder[] ret = null;
 		
 		if( tempOrder.exists()) {
 			
 			try {
 				temp = new Scanner( new FileInputStream( tempOrder ));
 				while( temp.hasNextLine())
-					orders.add(gson.fromJson(temp.nextLine(), Order.class ));
-				ret = new Order[orders.size()];
+					orders.add(gson.fromJson(temp.nextLine(), TransferOrder.class ));
+				ret = new TransferOrder[orders.size()];
 				for( int a = 0; a<orders.size(); a++ )
 					ret[a] = orders.get(a);
 				
@@ -158,72 +130,38 @@ public class ConsistenceManager {
 		return null;
 	}
 	
-	HOrder[] loadHOrders() { 		
-		
-		List<HOrder> orders = new ArrayList<>();
-		File tempOrder = new File("HOrder");	
-		HOrder[] ret = null;
-		Scanner temp = null;
-		Gson gson = new Gson();
-	
-		if( tempOrder.exists()) {
-		
-			try {
-				temp = new Scanner( new FileInputStream( tempOrder ));
-				while( temp.hasNextLine())
-					orders.add(gson.fromJson(temp.nextLine(), HOrder.class ));
-				ret = new HOrder[orders.size()];
-				for( int a = 0; a<orders.size(); a++ )
-					ret[a] = orders.get(a);
-				
-				temp.close();
-				return ret;
-				
-			}catch( IOException ie ) {
-				
-				System.out.println("Error during the loading of the informations: " + ie.getMessage());
-			}
-		}
-	
-		return null;
-	}
+
 	
 	void deleteOrders() {
-		File tempOrder = new File("Order");
+		File tempOrder = new File("DataStore");
 		tempOrder.delete();
 		
 	}
 	
-	void deleteHOrders() {
-		File tempHOrder = new File("HOrder");
-		tempHOrder.delete();
-	}
 	
 	public static void main( String[] args ) {
 		
 		ConsistenceManager data = new ConsistenceManager();
 		HConnector hibernateData = new HConnector();
 		KValueConnector keyValueData = new KValueConnector();
-		Object receivedData;
+		TransferOrder receivedData;
+		
 		while( true ) {
 			
 			receivedData = data.getDatas();
-			if( receivedData instanceof Order ) {
-			//	if( !keyValueDatabase.insertOrder( (Order)receivedData ))  SERVE FUNZIONE KVALUE PER SALVARE DIRETTAMENTE UN ORDINE
-					data.saveOrder( (Order)receivedData);
-				continue;
-			}
-			if( receivedData instanceof HOrder ) 
-				if( !data.hibernateDatabase.insertHOrder( (HOrder)receivedData))
-					data.saveHOrder((HOrder)receivedData);
+			if( receivedData.isHOrder() ) 
+				if( !hibernateData.insertHOrder(receivedData.getCustomer(), receivedData.getHOrder())) {
+					data.saveOrder( receivedData );
+					continue;
+				}
+			/*else
+				if( !keyValueData.insertOrder( receivedData.getCustomer() , receivedData.getOrder())) {
+					data.saveOrder( receivedData );
+					continue;
+				}*/
 							
 		}
 
-
-		/*HOrder[] order = data.loadHOrders();
-		System.out.println(order.length);
-		System.out.println("order: " + order[0].getStatus());
-		*/
 	}
 	
 

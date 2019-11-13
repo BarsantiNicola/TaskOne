@@ -83,13 +83,13 @@ public class DataManager{
     	if( !kValueResult ) {
     		//  we create an order using hibernate database to get the needed informations
     		System.out.println("KEYVALUE HAS FAILED");
-    		CONSISTENCE.giveConsistence(new Order( PRODUCT_ID , PRODUCT_NAME , 1000 , new Timestamp(System.currentTimeMillis()) , 1000 , "received"));
+    		CONSISTENCE.giveConsistence( CUSTOMER_ID , new Order( PRODUCT_ID , PRODUCT_NAME , 1000 , new Timestamp(System.currentTimeMillis()) , 1000 , "received"));
     	}
     	
     	if( !hibernateResult ) {
     		
     		//  we create an order using keyvalue databases to get the needed informations
-    		//  CONSISTENCE.giveConsistence( new HOrder( ));
+    		//  CONSISTENCE.giveConsistence( CUSTOMER_ID ,  new HOrder( ));
     	}
     	
     	return true;

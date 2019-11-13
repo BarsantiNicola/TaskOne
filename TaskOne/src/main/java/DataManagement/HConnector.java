@@ -85,7 +85,14 @@ public class HConnector extends DataConnector{
 
         return -1; 
     }
-	
+	public boolean insertHOrder( String customer , HOrder order ) {
+		
+		EntityManager manager = FACTORY.createEntityManager();
+		HCustomer cust = manager.find( HCustomer.class , customer );
+		if( cust == null ) return false;
+		return cust.addOrder( order );
+		
+	}
 	
     public List<User> searchUsers( String SEARCHED_STRING ){ 
     	

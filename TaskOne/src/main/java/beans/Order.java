@@ -18,6 +18,7 @@ public class Order{
 	private final SimpleObjectProperty<Timestamp> purchaseDate;
 	private final SimpleIntegerProperty purchasedPrice;
 	private final SimpleStringProperty orderStatus;
+
 	
 	public Order( int Id , String name , int price , Timestamp date, int cost , String status ) {
 
@@ -71,5 +72,5 @@ public class Order{
 		
 		return orderStatus.get();
 	}
-	
+
 }
