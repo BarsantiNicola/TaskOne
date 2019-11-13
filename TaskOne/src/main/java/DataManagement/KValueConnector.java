@@ -189,7 +189,7 @@ public class KValueConnector extends DataConnector{
 	    
 	    boolean insertOrder( String CUSTOMER_ID , int PRODUCT_ID , String PRODUCT_NAME , int PRICE ){ return false; }
 	    
-	    boolean insertOrder( String CUSTOMER , Order ORDER ) { return false; }
+	    public boolean insertOrder( String CUSTOMER , Order ORDER ) { return false; }
 	    
 	    //  CONSISTENCE IF HEADDEPARTMENT INSERT A STOCK
 	    boolean insertStock( String PRODUCTNAME , int STOCKID ) { return false; }

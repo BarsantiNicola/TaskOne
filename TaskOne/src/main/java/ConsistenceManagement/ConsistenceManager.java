@@ -11,6 +11,7 @@ import java.net.Socket;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Scanner;
 
@@ -44,12 +45,11 @@ public class ConsistenceManager {
 		
 	}
 	
-	TransferOrder getDatas() {
+	TransferData getDatas() {
 		
-		System.out.println("GETDATAS");
 		Socket inputSocket = null;
 		Scanner inputData = null;
-		TransferOrder obj = null;
+		TransferData obj = null;
 		
 		try {
 		
@@ -57,7 +57,7 @@ public class ConsistenceManager {
 			inputData = new Scanner( inputSocket.getInputStream());
 			Gson gson = new Gson();
 
-			obj = gson.fromJson( inputData.nextLine() , TransferOrder.class );
+			obj = gson.fromJson( inputData.nextLine() , TransferData.class );
 
 			inputData.close();
 			inputSocket.close();
@@ -77,13 +77,16 @@ public class ConsistenceManager {
 		
 	}
 	
-	boolean saveOrder( TransferOrder order ) {
+	boolean saveKeyValueState( TransferData value ) {
 		
 		PrintWriter temp = null;
 		Gson gson = new Gson();
+		
+		if( value.getCommand() == RequestedCommand.ADDHORDER ) return false;
+		
 		try {
 			
-			File tempOrder = new File("DataStore");
+			File tempOrder = new File("KeyValueData");
 			if( tempOrder.exists()) 
 				temp = new PrintWriter(new FileOutputStream( tempOrder, true ) , true );
 			else
@@ -93,9 +96,37 @@ public class ConsistenceManager {
 			System.out.println("Error tryin to crate a save block: " + ie.getMessage());
 			return false;
 		}
-		temp.println(gson.toJson( order ));
+		temp.println(gson.toJson( value ));
 		
-		System.out.println("Saving orders");
+		System.out.println("Saving update for the keyvalue database");
+		
+		temp.close();
+		return true;
+		
+	}
+	
+	boolean saveHibernateState( TransferData value ) {
+		
+		PrintWriter temp = null;
+		Gson gson = new Gson();
+		
+		if( value.getCommand() != RequestedCommand.ADDHORDER ) return false;
+		
+		try {
+			
+			File tempOrder = new File("HibernateData");
+			if( tempOrder.exists()) 
+				temp = new PrintWriter(new FileOutputStream( tempOrder, true ) , true );
+			else
+				temp = new PrintWriter(new FileOutputStream( tempOrder, false ) , true );
+				
+		}catch( FileNotFoundException ie ) {
+			System.out.println("Error tryin to crate a save block: " + ie.getMessage());
+			return false;
+		}
+		temp.println(gson.toJson( value ));
+		
+		System.out.println("Saving update to the hibernate database");
 		
 		temp.close();
 		return true;
@@ -103,24 +134,54 @@ public class ConsistenceManager {
 	}
 	
 	
-	TransferOrder[] loadOrders() { 
+	TransferData[] loadKeyValueUpdates() { 
 		
-		List<TransferOrder> orders = new ArrayList<>();
-		File tempOrder = new File("DataStore");	
+		List<TransferData> updates = new ArrayList<>();
+		File tempK = new File("KeyValueData");	
 
 		Scanner temp = null;
 		Gson gson = new Gson();
-		TransferOrder[] ret = null;
+		TransferData[] ret = null;
 		
-		if( tempOrder.exists()) {
+		if( tempK.exists()) {
 			
 			try {
-				temp = new Scanner( new FileInputStream( tempOrder ));
+				temp = new Scanner( new FileInputStream( tempK ));
 				while( temp.hasNextLine())
-					orders.add(gson.fromJson(temp.nextLine(), TransferOrder.class ));
-				ret = new TransferOrder[orders.size()];
-				for( int a = 0; a<orders.size(); a++ )
-					ret[a] = orders.get(a);
+					updates.add(gson.fromJson(temp.nextLine(), TransferData.class ));
+				ret = new TransferData[updates.size()];
+				for( int a = 0; a<updates.size(); a++ )
+					ret[a] = updates.get(a);
+				
+				temp.close();
+				return ret;
+			}catch( IOException ie ) {
+				
+				System.out.println("Error during the loading of the informations: " + ie.getMessage());
+			}
+		}
+		
+		return null;
+	}
+	
+	TransferData[] loadHibernateUpdates() { 
+		
+		List<TransferData> updates = new ArrayList<>();
+		File tempK = new File("HibernateData");	
+
+		Scanner temp = null;
+		Gson gson = new Gson();
+		TransferData[] ret = null;
+		
+		if( tempK.exists()) {
+			
+			try {
+				temp = new Scanner( new FileInputStream( tempK ));
+				while( temp.hasNextLine())
+					updates.add(gson.fromJson(temp.nextLine(), TransferData.class ));
+				ret = new TransferData[updates.size()];
+				for( int a = 0; a<updates.size(); a++ )
+					ret[a] = updates.get(a);
 				
 				temp.close();
 				return ret;
@@ -147,22 +208,30 @@ public class ConsistenceManager {
 		ConsistenceManager data = new ConsistenceManager();
 		HConnector hibernateData = new HConnector();
 		KValueConnector keyValueData = new KValueConnector();
-		TransferOrder receivedData;
+		TransferData receivedData;
+		HashMap<String,Object> values;
 		
 		while( true ) {
 			
 			receivedData = data.getDatas();
-			System.out.println("receivedDATA: " + receivedData.getCustomer());
-			if( receivedData.isHOrder() ) {
-				if( !hibernateData.insertHOrder(receivedData.getCustomer(), receivedData.getHOrder())) {
-					data.saveOrder( receivedData );
-					continue;
-				}
-			}else
-				if( !keyValueData.insertOrder( receivedData.getCustomer() , receivedData.getOrder())) {
-					data.saveOrder( receivedData );
-					continue;
-				}
+			values = receivedData.getValues();
+
+			switch( receivedData.getCommand()) {
+			
+			case ADDORDER: 
+				
+				if( !keyValueData.insertOrder( (String)values.get("username") , receivedData.getOrder()))
+					data.saveKeyValueState( receivedData );
+				break;
+				
+			case ADDHORDER:
+
+				if( !hibernateData.insertHOrder( (String)values.get("username") , receivedData.getHorder() ))
+					data.saveHibernateState( receivedData );
+				break;
+				
+			}
+
 							
 		}
 

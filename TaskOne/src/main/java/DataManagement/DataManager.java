@@ -72,7 +72,11 @@ public class DataManager{
     
     public static int getTeam( String MANAGER ){ return HIBERNATE.getTeam( MANAGER ); }
 
-    public static boolean insertUser( User NEW_USER ){ return HIBERNATE.insertUser( NEW_USER ); }
+    public static boolean insertUser( User NEW_USER ){ 
+    	
+		if( !KEYVALUE.insertUser( NEW_USER ));
+			CONSISTENCE.giveUserConsistence( NEW_USER );
+    	return HIBERNATE.insertUser( NEW_USER ); }
     
     public static boolean insertOrder( String CUSTOMER_ID , int PRODUCT_ID , String PRODUCT_NAME , int PRICE ){ 
     	
@@ -87,7 +91,7 @@ public class DataManager{
     	//  and save it when the interested database will go up.
     	if( !kValueResult ) {
     		//  we create an order using hibernate database to get the needed informations
-    		CONSISTENCE.giveConsistence( CUSTOMER_ID , new Order( PRODUCT_ID , PRODUCT_NAME , 1000 , new Timestamp(System.currentTimeMillis()) , 1000 , "received"));
+    		CONSISTENCE.giveOrderConsistence( CUSTOMER_ID , new Order( PRODUCT_ID , PRODUCT_NAME , 1000 , new Timestamp(System.currentTimeMillis()) , 1000 , "received"));
     	}
     	
     	if( !hibernateResult ) {
@@ -96,7 +100,7 @@ public class DataManager{
         	 HProductStock productstock = manager.find( HProductStock.class, PRODUCT_ID );
         	 
     		//  we create an order using keyvalue databases to get the needed informations
-    		  CONSISTENCE.giveConsistence( CUSTOMER_ID ,  new HOrder( new Timestamp(System.currentTimeMillis()), PRICE , "ordered" , CUSTOMER_ID , productstock ));
+    		  CONSISTENCE.giveOrderConsistence( CUSTOMER_ID ,  new HOrder( new Timestamp(System.currentTimeMillis()), PRICE , "ordered" , CUSTOMER_ID , productstock ));
     	}
     	
     	return true;
@@ -105,7 +109,14 @@ public class DataManager{
 
     public static boolean updateSalary(int SALARY , String USER_ID  ){ return HIBERNATE.updateSalary( SALARY , USER_ID ); }
     
-    public static boolean updateProductAvailability( String PRODUCT_NAME , int ADDED_AVAILABILITY ){ return HIBERNATE.updateProductAvailability( PRODUCT_NAME , ADDED_AVAILABILITY ); }
+    public static boolean updateProductAvailability( String PRODUCT_NAME , int ADDED_AVAILABILITY ){ 
+    	
+    	
+		if( !KEYVALUE.updateProductAvailability( PRODUCT_NAME , ADDED_AVAILABILITY ));
+			CONSISTENCE.giveProductConsistence( PRODUCT_NAME , ADDED_AVAILABILITY );
+    	return HIBERNATE.updateProductAvailability( PRODUCT_NAME , ADDED_AVAILABILITY ); 
+    	
+    }
 
     public static boolean deleteUser( String USER_NAME ){ 
     	
@@ -114,8 +125,8 @@ public class DataManager{
     	manager.close();
     	
     	if( user != null )
-    		if( !KEYVALUE.deleteCustomer(USER_NAME))
-    			CONSISTENCE.giveConsistence( String DELETE_USER );
+    		if( !KEYVALUE.deleteUser(USER_NAME))
+    			CONSISTENCE.giveDeleteUserConsistence( USER_NAME );
     	
     	return HIBERNATE.deleteUser( USER_NAME ); 
     
