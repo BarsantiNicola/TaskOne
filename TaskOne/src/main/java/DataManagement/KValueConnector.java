@@ -6,6 +6,11 @@ import beans.*;
 import org.iq80.leveldb.*;
 import static org.iq80.leveldb.impl.Iq80DBFactory.factory;
 import com.google.gson.*;
+
+import JSONclasses.JSONPasswordUserType;
+import JSONclasses.JSONorderID;
+import JSONclasses.JSONproductNames;
+
 import org.apache.commons.codec.digest.*;
 
 public class KValueConnector extends DataConnector{
@@ -27,7 +32,7 @@ public class KValueConnector extends DataConnector{
 			
 		}
 		
-		public HashMap<String,UserType> getUserInformation( String USERNAME ) {
+		public HashMap<String,UserType> getJSONUserInformation( String USERNAME ) {
 			
 			String key = "user:" + USERNAME;
 			String hashKey = DigestUtils.sha1Hex(key);
@@ -57,10 +62,6 @@ public class KValueConnector extends DataConnector{
 			return myMap;
 		}
 		
-		
-		
-		//////////  TI HO CAMBIATO IL NOME ERA COINCIDENTE CON UNA FUNZIONE DI INTERFACCIA CHE NON AVEVO INSERITO IN DATACONNECTOR
-		/////////   (GETORDER) ==> MESSA UNA COPIA VUOTA IN FONDO
 		public JSONorderID getJSONOrders( String USERNAME ) {
 			
 			String key = "user:" + USERNAME + ":order";
@@ -149,6 +150,38 @@ public class KValueConnector extends DataConnector{
 			}
 			
 			return order;
+		}
+		
+		public JSONproductNames getJSONProducts() {
+			
+			String key = "product:names";
+			String hashKey = DigestUtils.sha1Hex(key);
+			
+			JSONproductNames productNamesList = new JSONproductNames();
+			Gson gson = new Gson();
+			
+			if(Integer.parseInt(hashKey,16) < Math.pow(2, 160) ) {
+				
+				JsonObject json = JsonParser.parseString(new String(levelDBStore1.get(hashKey.getBytes()))).getAsJsonObject();
+				
+				if (json.get("orderIDList") != null)
+					productNamesList = gson.fromJson(new String(levelDBStore1.get(hashKey.getBytes())),JSONproductNames.class);
+						
+			} else {
+				
+				JsonObject json = JsonParser.parseString(new String(levelDBStore2.get(hashKey.getBytes()))).getAsJsonObject();
+				
+				if (json.get("orderIDList") != null)
+					productNamesList = gson.fromJson(new String(levelDBStore2.get(hashKey.getBytes())),JSONproductNames.class);
+			
+			}
+			
+			return productNamesList;
+		}
+		
+		public List<Integer> getIDStocks( String PRODUCTNAME, int STOCKID ) {
+			
+			
 		}
 				
 	    List<User> searchUsers( String SEARCHED_STRING ){ return null; }

@@ -1,4 +1,4 @@
-package DataManagement;
+package JSONclasses;
 
 import java.util.*;
 

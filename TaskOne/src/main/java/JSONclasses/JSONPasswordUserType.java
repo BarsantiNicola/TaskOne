@@ -1,4 +1,6 @@
-package DataManagement;
+package JSONclasses;
+
+import DataManagement.UserType;
 
 public class JSONPasswordUserType {
 	
