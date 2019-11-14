@@ -13,6 +13,7 @@ import javax.persistence.EntityManager;
 import DataManagement.Hibernate.HCustomer;
 import DataManagement.Hibernate.HHeadDepartment;
 import DataManagement.Hibernate.HOrder;
+import DataManagement.Hibernate.HProduct;
 import DataManagement.Hibernate.HProductStock;
 
 
@@ -24,7 +25,13 @@ public class DataManager{
     private final static ConsistenceTransfer CONSISTENCE = new ConsistenceTransfer();
     
 
-    public static List<User> searchUsers(String SEARCHED_STRING ){ return HIBERNATE.searchUsers( SEARCHED_STRING);}
+    public static List<User> searchUsers(String SEARCHED_STRING ){ 
+    	
+    	List<User> ret = KEYVALUE.searchUsers( SEARCHED_STRING);
+    	if(ret.size()== 0) ret = HIBERNATE.searchUsers(SEARCHED_STRING);
+    	return ret;
+    	
+    }
     
     public static List<Employee> searchTeamEmployees( int TEAM_ID , String SEARCHED_VALUE ){ return HIBERNATE.searchTeamEmployees( TEAM_ID , SEARCHED_VALUE );}
 
@@ -74,33 +81,48 @@ public class DataManager{
 
     public static boolean insertUser( User NEW_USER ){ 
     	
-		if( !KEYVALUE.insertUser( NEW_USER ));
-			CONSISTENCE.giveUserConsistence( NEW_USER );
-    	return HIBERNATE.insertUser( NEW_USER ); }
+		if( HIBERNATE.insertUser( NEW_USER )){
+			if(!KEYVALUE.insertUser( NEW_USER )) 	
+				CONSISTENCE.giveUserConsistence( NEW_USER );
+			return true;
+		}
+
+    	return false;
+    }
     
     public static boolean insertOrder( String CUSTOMER_ID , int PRODUCT_ID , String PRODUCT_NAME , int PRICE ){ 
     	
     	//  for give consistence to the data we try to save the order in all databases 
     	boolean kValueResult = KEYVALUE.insertOrder( CUSTOMER_ID , PRODUCT_ID , PRODUCT_NAME , PRICE );
     	boolean hibernateResult = HIBERNATE.insertOrder( CUSTOMER_ID, PRODUCT_ID, PRODUCT_NAME , PRICE );
-    	
+		EntityManager manager;
     	//  all databases are down. We can't create an order, the request fails
     	if( !kValueResult && !hibernateResult ) return false;
     	
     	//  if some databases are down we send the datas to a third remote service who store the datas 
     	//  and save it when the interested database will go up.
     	if( !kValueResult ) {
+    		manager = HConnector.FACTORY.createEntityManager();
     		//  we create an order using hibernate database to get the needed informations
-    		CONSISTENCE.giveOrderConsistence( CUSTOMER_ID , new Order( PRODUCT_ID , PRODUCT_NAME , 1000 , new Timestamp(System.currentTimeMillis()) , 1000 , "received"));
+    		HProduct product = manager.find( HProduct.class , PRODUCT_NAME );
+    		manager.close();
+    		CONSISTENCE.giveOrderConsistence( CUSTOMER_ID , new Order( PRODUCT_ID , PRODUCT_NAME , product.getProductPrice() , new Timestamp(System.currentTimeMillis()) , PRICE , "received"));
+    		
     	}
     	
     	if( !hibernateResult ) {
     		 System.out.println("HIBERNATE HAS FAILED");
-    		 EntityManager manager = HConnector.FACTORY.createEntityManager();
-        	 HProductStock productstock = manager.find( HProductStock.class, PRODUCT_ID );
         	 
+    		 List<Product> products = KEYVALUE.getAvailableProducts();
+    		 HProductStock pStock = null;
+    		 for( Product product: products ) 	 
+    			 if( product.getProductName().compareTo( PRODUCT_NAME ) == 0 ) {
+    				 pStock = new HProductStock( PRODUCT_ID , new HProduct(product));
+    				 break;
+    			 }
+    		 
     		//  we create an order using keyvalue databases to get the needed informations
-    		  CONSISTENCE.giveOrderConsistence( CUSTOMER_ID ,  new HOrder( new Timestamp(System.currentTimeMillis()), PRICE , "ordered" , CUSTOMER_ID , productstock ));
+    		  CONSISTENCE.giveOrderConsistence( CUSTOMER_ID ,  new HOrder( new Timestamp(System.currentTimeMillis()), PRICE , "ordered" , CUSTOMER_ID , pStock ));
     	}
     	
     	return true;
@@ -111,25 +133,25 @@ public class DataManager{
     
     public static boolean updateProductAvailability( String PRODUCT_NAME , int ADDED_AVAILABILITY ){ 
     	
-    	
-		if( !KEYVALUE.updateProductAvailability( PRODUCT_NAME , ADDED_AVAILABILITY ));
-			CONSISTENCE.giveProductConsistence( PRODUCT_NAME , ADDED_AVAILABILITY );
-    	return HIBERNATE.updateProductAvailability( PRODUCT_NAME , ADDED_AVAILABILITY ); 
-    	
+		if( HIBERNATE.updateProductAvailability( PRODUCT_NAME , ADDED_AVAILABILITY )){
+			if(!KEYVALUE.updateProductAvailability( PRODUCT_NAME , ADDED_AVAILABILITY )) 	
+				CONSISTENCE.giveProductConsistence( PRODUCT_NAME , ADDED_AVAILABILITY );
+			return true;
+		}
+
+    	return false;
+ 	
     }
 
     public static boolean deleteUser( String USER_NAME ){ 
     	
-    	EntityManager manager = HConnector.FACTORY.createEntityManager();
-    	HCustomer user = manager.find(HCustomer.class, USER_NAME);
-    	manager.close();
-    	
-    	if( user != null )
-    		if( !KEYVALUE.deleteUser(USER_NAME))
+    	if( HIBERNATE.deleteUser(USER_NAME)){
+    		if(!KEYVALUE.deleteUser(USER_NAME)) 	
     			CONSISTENCE.giveDeleteUserConsistence( USER_NAME );
-    	
-    	return HIBERNATE.deleteUser( USER_NAME ); 
-    
+    		return true;
+    	}
+
+    	return false;
     }
 
     public static UserType login( String USERNAME , String PASSWORD ){ return HIBERNATE.login( USERNAME , PASSWORD ); }

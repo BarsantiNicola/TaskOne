@@ -56,6 +56,16 @@ public class HProduct {
 		this.IDteam = teamID;
 		
 	}
+	
+	public HProduct( Product p ) {
+		
+		this.productName = p.getProductName();
+		this.productPrice = p.getProductPrice();
+		this.productDescription = p.getProductDescription();
+		this.productAvailability = p.getProductAvailability();
+		this.productType = p.getProductType();
+		
+	}
 
 	//----------------------------------------------------------------------------------------------------------
 	//											GETTERS

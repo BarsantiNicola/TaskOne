@@ -117,12 +117,12 @@ public class HCustomer extends HUser{
 		
 		System.out.println("Adding Customer: " + customer.toString());
 		EntityManager manager = HConnector.FACTORY.createEntityManager();
-		boolean ret = true;
-		
-		manager.getTransaction().begin();
-		manager.persist( customer );
+		boolean ret = true;	
+
 		try {
 			
+			manager.getTransaction().begin();
+			manager.persist( customer );
 			manager.getTransaction().commit();
 			
 		}catch( IllegalStateException | RollbackException e ) {
@@ -148,16 +148,16 @@ public class HCustomer extends HUser{
 		boolean ret = true;
 
 		List<HOrder> orderList = customer.getMyHOrders();
-		manager.getTransaction().begin();
-		
-		manager.persist(order);
-		orderList.add(order);
-		
-		setMyOrders( orderList );
-		manager.merge(customer);
-		
+	
 		try {
 			
+			manager.getTransaction().begin();
+			
+			manager.persist(order);
+			orderList.add(order);
+			
+			setMyOrders( orderList );
+			manager.merge(customer);
 			manager.getTransaction().commit();
 			
 		}catch( IllegalStateException | RollbackException e ) {

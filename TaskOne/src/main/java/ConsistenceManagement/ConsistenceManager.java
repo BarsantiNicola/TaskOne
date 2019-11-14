@@ -36,6 +36,7 @@ public class ConsistenceManager {
 		try {
 			
 			server = new ServerSocket(44444);
+			server.setSoTimeout(300000);
 
 		}catch( IOException e ) {
 			
@@ -52,8 +53,9 @@ public class ConsistenceManager {
 		TransferData obj = null;
 		
 		try {
-		
+			
 			inputSocket = server.accept();
+			System.out.println("Data received");
 			inputData = new Scanner( inputSocket.getInputStream());
 			Gson gson = new Gson();
 
@@ -214,8 +216,13 @@ public class ConsistenceManager {
 		while( true ) {
 			
 			receivedData = data.getDatas();
+			if(receivedData == null ) {
+				System.out.println("AGGIORNAMENTO!");
+				continue;
+			}
 			values = receivedData.getValues();
 
+			System.out.println("received: " + receivedData.getCommand());
 			switch( receivedData.getCommand()) {
 			
 			case ADDORDER: 
@@ -229,6 +236,8 @@ public class ConsistenceManager {
 				if( !hibernateData.insertHOrder( (String)values.get("username") , receivedData.getHorder() ))
 					data.saveHibernateState( receivedData );
 				break;
+			default:
+					data.saveKeyValueState( receivedData );
 				
 			}
 

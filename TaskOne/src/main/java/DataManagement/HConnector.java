@@ -85,6 +85,7 @@ public class HConnector extends DataConnector{
 
         return -1; 
     }
+	
 	public boolean insertHOrder( String customer , HOrder order ) {
 		
 		EntityManager manager = FACTORY.createEntityManager();
