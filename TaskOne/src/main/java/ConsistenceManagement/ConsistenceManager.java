@@ -69,7 +69,6 @@ public class ConsistenceManager {
 			if( inputData != null ) inputData.close();
 			if( inputSocket != null ) try { inputSocket.close();}catch( IOException c ){}
 			
-			System.out.println("Error while trying to accept the connection: " + e.getMessage());
 			return null;
 			
 		}

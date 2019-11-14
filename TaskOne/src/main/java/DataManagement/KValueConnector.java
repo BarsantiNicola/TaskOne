@@ -191,11 +191,6 @@ public class KValueConnector extends DataConnector{
 	    
 	    public boolean insertOrder( String CUSTOMER , Order ORDER ) { return false; }
 	    
-	    //  CONSISTENCE IF HEADDEPARTMENT INSERT A STOCK
-	    boolean insertStock( String PRODUCTNAME , int STOCKID ) { return false; }
-	    
-	    //  CONSISTENCE IF CUSTOMER BUY A PRODUCT
-	    boolean deleteStock( String PRODUCTNAME , int STOCKID ) { return false; }  
 	    
 	    // CONSISTENCE IF A CUSTOMER BUY A PRODUCT OR HEADDEPARTMENT INSERT STOCKS 
 	    // PAY ATTENTION ON "ADDED", IT CAN BE A POSITIVE OR NEGATIVE NUMBER AND IT HAS TO BE SUM TO THE CURRENT AVAILABILITY
