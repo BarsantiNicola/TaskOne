@@ -143,18 +143,32 @@ public class DataManager{
  	
     }
 
+
     public static boolean deleteUser( String USER_NAME ){ 
     	
+    	EntityManager manager = HIBERNATE.FACTORY.createEntityManager();
+    	HCustomer customer = manager.find(HCustomer.class, USER_NAME );
+    	manager.close();
+    	//  keyvalue database have only the customer's access informations
     	if( HIBERNATE.deleteUser(USER_NAME)){
-    		if(!KEYVALUE.deleteUser(USER_NAME)) 	
-    			CONSISTENCE.giveDeleteUserConsistence( USER_NAME );
+    		if( customer != null ) {
+    			System.out.println("I'm a customer!!");
+    			if(!KEYVALUE.deleteUser(USER_NAME)) 	
+    				CONSISTENCE.giveDeleteUserConsistence( USER_NAME );
+    		}
     		return true;
     	}
 
     	return false;
     }
 
-    public static UserType login( String USERNAME , String PASSWORD ){ return HIBERNATE.login( USERNAME , PASSWORD ); }
+    public static UserType login( String USERNAME , String PASSWORD ){ 
+    	
+    	if( KEYVALUE.login( USERNAME , PASSWORD ) == UserType.NOUSER )
+    		return HIBERNATE.login( USERNAME , PASSWORD ); 
+    	
+    	return UserType.CUSTOMER;
+    }
 
     public static int getMinIDProduct( String PRODUCT_NAME ){ return HIBERNATE.getMinIDProduct(PRODUCT_NAME ); }
 

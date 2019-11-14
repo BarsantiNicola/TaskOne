@@ -195,16 +195,16 @@ public class HUser {
 		
 		EntityManager manager = HConnector.FACTORY.createEntityManager();
 		boolean ret = true;
+		HUser user = manager.find(HUser.class, username); 
 		
-		manager.getTransaction().begin();
-		HUser user = manager.find(HUser.class, username);
+		System.out.println("OK CISIAMO ");
 		if( user instanceof HTeamedEmployee )
 			return HTeamedEmployee.removeEmployee( (HTeamedEmployee)user );
-
-		manager.remove(user);
-                
+		System.out.println("OK REMOVED NO EMPLOYEE");
 		try {
 			
+			manager.getTransaction().begin();
+			manager.remove(user);
 			manager.getTransaction().commit();
 			
 		}catch( IllegalStateException | RollbackException e ) {

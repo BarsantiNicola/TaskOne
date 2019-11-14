@@ -1,3 +1,4 @@
+package Main;
 import org.iq80.leveldb.DB;
 
 import static org.iq80.leveldb.impl.Iq80DBFactory.factory;
@@ -29,15 +30,14 @@ public class Main {
 		
 		
 		String st= "key";
-		byte[] byst= st.getBytes();
+		byte[] byst= "key".getBytes();
 		String st1 = "value";
-		byte[] byst1 = st1.getBytes();
+		byte[] byst1 = "value".getBytes();
 		
-		levelDBStore.put(byst, byst1);
-		
-		byte[] byresult = levelDBStore.get(byst);
-		String result = new String(byresult);
-		System.out.println(result);
+	//	levelDBStore.put(byst, byst1);
+	//	byte[] byresult = levelDBStore.get(byst);
+	//	String result = new String(byresult);
+	//	System.out.println(result);
 		
 		
 		

@@ -200,6 +200,8 @@ public class KValueConnector extends DataConnector{
 	    // CONSISTENCE IF ADMINISTRATOR ADD A NEW CUSTOMER
 	    boolean insertUser( User NEW_USER ) { return false; }
 	    
+	    UserType login( String USERNAME , String PASSWORD ) { return UserType.NOUSER; }
+	    
 	    List<Product> getAvailableProducts(){ return new ArrayList<>(); }
 
 	    List<Product> searchProducts( String SEARCHED_STRING ){ return new ArrayList<>(); }
@@ -207,6 +209,7 @@ public class KValueConnector extends DataConnector{
 	    List<Order> searchOrders( String SEARCHED_VALUE , String CUSTOMER_ID ){ return new ArrayList<>(); }
 	    
 	    List<Order> getOrders( String CUSTOMER_ID ){ return new ArrayList<>(); }
+	    
 	    
 	    ////////////
 	    

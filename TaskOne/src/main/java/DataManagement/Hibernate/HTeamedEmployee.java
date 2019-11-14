@@ -129,10 +129,10 @@ public class HTeamedEmployee extends HEmployee{
 		boolean ret = true;
 		HTeam team = manager.find(HTeam.class, employee.getIDTeam());
 		
-		System.out.println("ok ci siamo!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!");
-		if( team == null ) return false;  //  the employee has to be part of a valid team
+		if( team == null ) return false;  //  only teamed employee are admited
 			
 		List<HTeamedEmployee> members = team.getMembers();
+
 		for( HTeamedEmployee te : members )
 			if( te.getUsername().compareTo( employee.getUsername()) == 0 ) {
 				members.remove( te );
@@ -140,29 +140,30 @@ public class HTeamedEmployee extends HEmployee{
 			}
 
 		System.out.println(members.size());
-		manager.getTransaction().begin();
-		
-		team.setMembers(members);
-		// we save the employee and update the team members
-		manager.merge(team);
-		manager.detach(employee);
-		//manager.remove(employee);
 		
 		try {
 			
-			manager.getTransaction().commit();
-			//manager.getTransaction().begin();
+			manager.getTransaction().begin();
 
-			//manager.getTransaction().commit();
+			team.setMembers(members);
+			// we save the employee and update the team members
+			manager.merge(team);
+			manager.flush();
+			manager.detach(employee);
+
+			manager.getTransaction().commit();
+
+			System.out.println("commit!!");
 			
 		}catch( IllegalStateException | RollbackException e ) {
 			
+			System.out.println("Error: " + e.getMessage());
 			ret = false;
 			
 		}
 		
 		manager.close();
-		
+		System.out.println("ret: " + ret);
 		return ret;
 	}
 	

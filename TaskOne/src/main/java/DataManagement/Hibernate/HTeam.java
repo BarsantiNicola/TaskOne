@@ -28,7 +28,7 @@ public class HTeam {
 	@Column( name="location", length = 45, nullable = false )
 	private String location;
 	
-	@OneToMany( cascade = {CascadeType.PERSIST, CascadeType.REFRESH, CascadeType.MERGE})
+	@OneToMany( cascade = CascadeType.ALL)
 	@JoinTable(name = "members",joinColumns = {@JoinColumn(name = "IDteam")},
             inverseJoinColumns = {@JoinColumn(name = "IDemployee")})
 	List<HTeamedEmployee> members;
