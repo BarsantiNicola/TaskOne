@@ -36,7 +36,7 @@ public class ConsistenceManager {
 		try {
 			
 			server = new ServerSocket(44444);
-			server.setSoTimeout(300000);
+			server.setSoTimeout(20000);
 
 		}catch( IOException e ) {
 			
@@ -203,6 +203,9 @@ public class ConsistenceManager {
 		
 	}
 	
+	boolean updateHibernate( TransferData[] updates ) { return false; }
+	
+	boolean updateKeyValue( TransferData[] updates ) { return false; }
 	
 	public static void main( String[] args ) {
 		
@@ -211,12 +214,24 @@ public class ConsistenceManager {
 		KValueConnector keyValueData = new KValueConnector();
 		TransferData receivedData;
 		HashMap<String,Object> values;
+		File hibernateStore = new File("HibernateData");
+		File keyValueStore = new File( "KeyValueData");
 		
 		while( true ) {
 			
 			receivedData = data.getDatas();
 			if(receivedData == null ) {
-				System.out.println("AGGIORNAMENTO!");
+				System.out.println("Trying to update data to the databases");
+				if( !hibernateStore.exists())
+					System.out.println("Hibernate database already up to date");
+				else
+					if( data.updateHibernate(data.loadHibernateUpdates()))
+							System.out.println("Hibernate database correctly updated");
+				if( !keyValueStore.exists())
+					System.out.println("KeyValue databases already up to date");
+				else
+					if( data.updateKeyValue(data.loadKeyValueUpdates()))
+						System.out.println("KeyValue databases correctly updated");
 				continue;
 			}
 			values = receivedData.getValues();
