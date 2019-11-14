@@ -9,9 +9,10 @@ import beans.*;
 
 public class KTransfer {
 			
+	private static DatabaseConnector database = new DatabaseConnector();
 			public static boolean importUsers() {
 				
-				List<User> userList = DatabaseConnector.getUsers(); //il metodo c'è ma non è statico
+				List<User> userList = database.getUsers(); //il metodo c'è ma non è statico
 				
 				String key, hashKey;
 				User user;
@@ -27,7 +28,7 @@ public class KTransfer {
 					key = "user:" + user.getUsername();
 					hashKey = DigestUtils.sha1Hex(key);
 					
-					jsonObject = new JSONPasswordUserType(user.getPassword(),usertype);
+					jsonObject = new JSONPasswordUserType(user.getPassword());
 					
 					if(Integer.parseInt(hashKey,16) < Math.pow(2, 160) ) {
 						
@@ -43,7 +44,8 @@ public class KTransfer {
 						
 			public static boolean importOrderIDs() {
 				
-				List<User> userList = DatabaseConnector.getUsers(); //statica? 
+
+				List<User> userList = database.getUsers(); //statica? 
 				JSONorderID idList;
 				List<Order> orderList = new ArrayList<>();
 				
@@ -58,7 +60,7 @@ public class KTransfer {
 					user = userList.get(i);
 					idList = new JSONorderID();
 					
-					orderList = DatabaseConnector.getOrders(user.getUsername());  //static?
+					orderList = database.getOrders(user.getUsername());  //static?
 					
 					for( int j=0; j<orderList.size(); j++ ) {
 						
@@ -83,7 +85,7 @@ public class KTransfer {
 			
 			public static boolean importOrders() {
 				
-				List<User> userList = DatabaseConnector.getUsers();   //statica?
+				List<User> userList = database.getUsers();   //statica?
 				List<Order> orderList;
 				User user;
 				Order order;
@@ -95,7 +97,7 @@ public class KTransfer {
 					
 					user = userList.get(i);
 					
-					orderList = DatabaseConnector.getOrders(user.getUsername()); //statica?
+					orderList = database.getOrders(user.getUsername()); //statica?
 					
 					for( int j=0; j < orderList.size(); j++ ) {
 						
@@ -118,7 +120,7 @@ public class KTransfer {
 			
 			public static boolean importProducts() {
 				
-				List<Product> productList = DatabaseConnector.getProducts(); //va bene prendere anche solo gli available?
+				List<Product> productList = database.getAvailableProducts(); //va bene prendere anche solo gli available?
 				String key, hashKey;
 				Product product;
 				Gson gson = new Gson();
@@ -142,7 +144,7 @@ public class KTransfer {
 			
 			public boolean importProductNames() {
 				
-				List<Product> productList = DatabaseConnector.getProducts(); //va bene prendere anche solo gli available?
+				List<Product> productList = database.getAvailableProducts(); //va bene prendere anche solo gli available?
 				List<String> namesList = new ArrayList<>();
 				
 				String key = "prod:names";

@@ -7,6 +7,10 @@ import org.iq80.leveldb.*;
 import static org.iq80.leveldb.impl.Iq80DBFactory.factory;
 import com.google.gson.*;
 
+import JSONclasses.JSONPasswordUserType;
+import JSONclasses.JSONorderID;
+import JSONclasses.JSONproductNames;
+
 //import JSONclasses.JSONPasswordUserType;
 //import JSONclasses.JSONorderID;
 //import JSONclasses.JSONproductNames;
@@ -18,7 +22,7 @@ public class KValueConnector extends DataConnector{
 		public static DB levelDBStore1;
 		public static DB levelDBStore2;
 		
-/*		static {
+	/*	static {
 			
 			Options options = new Options();
 			
@@ -32,7 +36,7 @@ public class KValueConnector extends DataConnector{
 			
 		}*/
 		
-		public HashMap<String,UserType> getJSONUserInformation( String USERNAME ) {
+		public String getJSONUserInformation( String USERNAME ) {
 			
 			String key = "user:" + USERNAME;
 			String hashKey = DigestUtils.sha1Hex(key);
@@ -56,10 +60,7 @@ public class KValueConnector extends DataConnector{
 			
 			}
 			
-			HashMap<String, UserType> myMap = new HashMap<String,UserType>();
-			myMap.put(psw.password, psw.usertype);
-			
-			return myMap;
+			return psw.getPassword();
 		}
 		
 		public JSONorderID getJSONOrders( String USERNAME ) {
@@ -210,7 +211,7 @@ public class KValueConnector extends DataConnector{
 	    ////////////
 	    
 		public List<Integer> getIDStocks( String PRODUCTNAME, int STOCKID ) {
-			
+			return null;
 			
 		}
 				

@@ -4,15 +4,14 @@ import DataManagement.UserType;
 
 public class JSONPasswordUserType {
 	
-	String password;
-	UserType usertype;
-	
+	public String password;
+	//  HO TOLTO USERTYPE, RIPENSANDOCI CI STANNO SOLO CUSTOMER NON SERVE A NULLA xD
 	public JSONPasswordUserType() {}
 	
-	public JSONPasswordUserType( String password, UserType usertype ) {
+	public JSONPasswordUserType( String password ) {
 		
 		this.password = password;
-		this.usertype = usertype;
+
 	}
 	
 	public String getPassword() {
@@ -20,19 +19,11 @@ public class JSONPasswordUserType {
 		return password;
 	}
 	
-	public UserType getUsertype() {
-		
-		return usertype;
-	}
 	
 	public void setPassword( String password ) {
 		
 		this.password = password;
 	}
 	
-	public void setUsertype( UserType usertype ) {
-		
-		this.usertype = usertype;
-	}
 	
 }
