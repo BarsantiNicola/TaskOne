@@ -181,24 +181,117 @@ public class KValueConnector extends DataConnector{
 		}
 		
 		
+		
 		//  TODO
 		
-	    int getMinIDProduct( int PRODUCT_TYPE ){ return -1; }
+	    int getMinIDProduct( int PRODUCT_TYPE ){ return -1; } //Da fare
 	    
 	    //  CONSISTENCE IF ADMINISTRATOR DELETE A CUSTOMER
-	    boolean deleteUser( String USER_NAME ){ return false; } 
+	    boolean deleteUser( String USER_NAME ){ 
+	    	
+	    	String key = "user:" + USERNAME;
+	    	String hashKey = DigestUtils.sha1Hex(key);
+	    	Gson gson = new Gson();
+	    	
+	    	if (Integer.parseInt(hashKey,16) < Math.pow(2, 160) ) {
+				
+				levelDBStore1.delete(hashKey.getBytes()); //Non sono sicuro 
+							
+			} else {
+				
+				levelDBStore2.delete(hashKey.getBytes());		
+			}
+	    	
+	    	return true; } 
 	    
-	    boolean insertOrder( String CUSTOMER_ID , int PRODUCT_ID , String PRODUCT_NAME , int PRICE ){ return false; }
+	    boolean insertOrder( String CUSTOMER_ID , int PRODUCT_ID , String PRODUCT_NAME , int PRICE ){ 
+	    	String key, hashKey;
+			Gson gson = new Gson();
+	    	
+			Order order = new Order (PRODUCT_ID, PRODUCT_NAME, PRICE, ) //Mancano timestamp e Status
+			key = "user:"+ CUSTOMER_ID + ":order:"+ orderID; //Non so dove prendere l'id dell'ordine
+			hashkey= DigestUtils.sha1Hex(key);
+			
+			if(Integer.parseInt(hashKey,16) < Math.pow(2, 160) ) {
+				
+				KValueConnector.levelDBStore1.put(hashKey.getBytes(),gson.toJson(order).getBytes());
+			} else {
+				
+				KValueConnector.levelDBStore2.put(hashKey.getBytes(),gson.toJson(order).getBytes());
+			}
+			
+			return true;
+	    	
+	    }
 	    
-	    public boolean insertOrder( String CUSTOMER , Order ORDER ) { return false; }
+	    public boolean insertOrder( String CUSTOMER , Order ORDER ) { 
+	    	String key, hashKey;
+			Gson gson = new Gson();
+	    	
+			key= "user:" + CUSTOMER + ":order:" +ORDER.getOrderID(); //manca questa funzione
+			hashKey= DigestUtils.sha1Hex(key);
+	    	
+			if(Integer.parseInt(hashKey,16) < Math.pow(2, 160) ) {
+				
+				KValueConnector.levelDBStore1.put(hashKey.getBytes(),gson.toJson(ORDER).getBytes());
+			} else {
+				
+				KValueConnector.levelDBStore2.put(hashKey.getBytes(),gson.toJson(ORDER).getBytes());
+			}
+			
+			return true;
+	    }
 	    
 	    
 	    // CONSISTENCE IF A CUSTOMER BUY A PRODUCT OR HEADDEPARTMENT INSERT STOCKS 
 	    // PAY ATTENTION ON "ADDED", IT CAN BE A POSITIVE OR NEGATIVE NUMBER AND IT HAS TO BE SUM TO THE CURRENT AVAILABILITY
-	    boolean updateProductAvailability( String PRODUCTNAME , int ADDED_AVAILABILITY ) { return false; }
+	    boolean updateProductAvailability( String PRODUCTNAME , int ADDED_AVAILABILITY ) { 
+	    	
+	    	Product product = getProduct(PRODUCTNAME);
+	    	int current_availability = product.getProductAvailability();
+	    	product.setProductAvailability(current_availability + ADDED_AVAILABILITY);
+	    	
+	    	String key, hashKey;
+	    	Gson gson = new Gson();
+	    	key = "product:" + PRODUCTNAME;
+	    	hashKey= DigestUtils.sha1Hex(key);
+	    	
+	    	if(Integer.parseInt(hashKey,16) < Math.pow(2, 160) ) {
+				
+				KValueConnector.levelDBStore1.put(hashKey.getBytes(),gson.toJson(product).getBytes());
+			} else {
+				
+				KValueConnector.levelDBStore2.put(hashKey.getBytes(),gson.toJson(product).getBytes());
+			}
+	    	
+	    	return true;
+	    }
 	    
 	    // CONSISTENCE IF ADMINISTRATOR ADD A NEW CUSTOMER
-	    boolean insertUser( User NEW_USER ) { return false; }
+	    boolean insertUser( User NEW_USER ) { 
+	    	
+	    	String key, hashKey;
+			UserType usertype;
+			Gson gson = new Gson();
+			JSONPasswordUserType jsonObject;
+			
+			usertype = DatabaseConnector.login(NEW_USER.getUsername(), NEW_USER.getPassword());
+			key = "user:" + NEW_USER.getUsername();
+			hashKey = DigestUtils.sha1Hex(key);
+			
+			jsonObject = new JSONPasswordUserType(NEW_USER.getPassword());
+			
+			if(Integer.parseInt(hashKey,16) < Math.pow(2, 160) ) {
+				
+				KValueConnector.levelDBStore1.put(hashKey.getBytes(),gson.toJson(jsonObject).getBytes());
+			} else {
+				
+				KValueConnector.levelDBStore2.put(hashKey.getBytes(),gson.toJson(jsonObject).getBytes());
+			}
+			
+			return true;
+	    		
+	    }
 	    
 	    UserType login( String USERNAME , String PASSWORD ) { return UserType.NOUSER; }
 	    
