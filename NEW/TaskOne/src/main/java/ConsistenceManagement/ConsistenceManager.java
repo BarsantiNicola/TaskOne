@@ -198,13 +198,29 @@ public class ConsistenceManager {
 	
 
 	
-	void deleteOrders() {
-		File tempOrder = new File("DataStore");
+	void deleteHibernateUpdates() {
+		File tempOrder = new File("HibernateData");
 		tempOrder.delete();
 		
 	}
 	
-	boolean updateHibernate( TransferData[] updates ) { return false; }
+	void deleteKeyValueUpdates() {
+		File tempOrder = new File("KeyValueData");
+		tempOrder.delete();
+		
+	}
+	
+	void updateDatabase( TransferData[] updates ) { 
+	
+		for( TransferData update : updates ) {			
+			if( !makeUpdate(update))
+				if( update.getCommand() == RequestedCommand.ADDHORDER)
+					saveHibernateState( update );
+				else
+					saveKeyValueState( update );
+		}
+	
+	}
 	
 	boolean updateKeyValue( TransferData[] updates ) { return false; }
 	
@@ -217,7 +233,7 @@ public class ConsistenceManager {
 		HashMap<String,Object> values;
 		File hibernateStore = new File("HibernateData");
 		File keyValueStore = new File( "KeyValueData");
-		
+		TransferData[] datas;
 		while( true ) {
 			
 			receivedData = data.getDatas();
@@ -225,39 +241,35 @@ public class ConsistenceManager {
 				System.out.println("Trying to update data to the databases");
 				if( !hibernateStore.exists())
 					System.out.println("Hibernate database already up to date");
-				else
-					if( data.updateHibernate(data.loadHibernateUpdates()))
-							System.out.println("Hibernate database correctly updated");
+				else {
+					
+					datas = data.loadHibernateUpdates();
+					data.deleteHibernateUpdates();
+					data.updateDatabase(datas);
+					
+				}
+
 				if( !keyValueStore.exists())
 					System.out.println("KeyValue databases already up to date");
-				else
-					if( data.updateKeyValue(data.loadKeyValueUpdates()))
-						System.out.println("KeyValue databases correctly updated");
+				else {
+					
+					datas = data.loadKeyValueUpdates();
+					data.deleteKeyValueUpdates();
+					data.updateDatabase(datas);
+					
+				}
+
 				continue;
 			}
 			values = receivedData.getValues();
 
 			System.out.println("received: " + receivedData.getCommand());
-			switch( receivedData.getCommand()) {
-			
-			case ADDORDER: 
-				
-				if( !keyValueData.insertOrder( (String)values.get("username") , receivedData.getOrder()))
-					data.saveKeyValueState( receivedData );
-				break;
-				
-			case ADDHORDER:
-
-				if( !hibernateData.insertHOrder( (String)values.get("username") , receivedData.getHorder() ))
+			if( !data.makeUpdate(receivedData)) 
+				if( receivedData.getCommand() == RequestedCommand.ADDHORDER )
 					data.saveHibernateState( receivedData );
-				break;
-			default:
-					data.saveKeyValueState( receivedData );
-				
+				else
+					data.saveKeyValueState(receivedData);
 			}
-
-							
-		}
 
 	}
 	
@@ -270,14 +282,12 @@ public class ConsistenceManager {
 			case ADDHORDER:
 				return hibernateDatabase.insertHOrder( (String)data.getValues().get("username"), data.getHorder());
 			case ADDPRODUCT:
-				return keyValueDatabase.updateProductAvailability((String)data.getValues().get("product"), (int)data.getValues().get("availability"));	
+				return keyValueDatabase.updateProductAvailability((String)data.getValues().get("product"), ((Double)data.getValues().get("availability")).intValue());	
 			case ADDCUSTOMER:
-				return  keyValueDatabase.insertUser( new User( (String)data.getValues().get("username") , (String)data.getValues().get("password") , null , null , null , null , null , null , null ));
+				return  keyValueDatabase.insertUser( new User( (String)data.getValues().get("username") , null , null , (String)data.getValues().get("password") , null , null , 0 , null , 0 ));
 			case REMOVECUSTOMER:
 				return  keyValueDatabase.deleteUser((String)data.getValues().get("username"));
-			case UPDATEPRODUCT:
-				break;
-			
+		
 		}
 		
 		return false;
