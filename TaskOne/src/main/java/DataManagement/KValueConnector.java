@@ -189,7 +189,7 @@ public class KValueConnector extends DataConnector{
 	    //  CONSISTENCE IF ADMINISTRATOR DELETE A CUSTOMER
 	    boolean deleteUser( String USER_NAME ){ 
 	    	
-	    	String key = "user:" + USERNAME;
+	    	String key = "user:" + USER_NAME;
 	    	String hashKey = DigestUtils.sha1Hex(key);
 	    	Gson gson = new Gson();
 	    	
@@ -383,19 +383,81 @@ public class KValueConnector extends DataConnector{
 	    	
 	    }
 	    
-	    List<Order> searchOrders( String SEARCHED_VALUE , String CUSTOMER_ID ){ return new ArrayList<>(); }
-	    
-	    List<Order> getOrders( String CUSTOMER_ID ){ 
+	    List<Order> searchOrders( String SEARCHED_VALUE , String CUSTOMER_ID ){ 
 	    	
 	    	List<Order> orderList = new ArrayList<Order>();
 	    	
-	    	JSONproductNames productNames = getJSONProducts();
+	    	JSONorderID orderIDS = getJSONOrders(CUSTOMER_ID);
 	    	Gson gson = new Gson();
 	    	
 	    	String key, hashKey;
 	    	JsonObject json;
 	    	
-	    	for( int i=0; i < )
+	    	for( int i=0; i < orderIDS.getOrderIDList().size(); i++ ) {
+	    		
+	    		key = "user:" + CUSTOMER_ID + "order:" + orderIDS.getID(i);
+	    		hashKey = DigestUtils.sha1Hex(key);
+	    		
+	    		if(Integer.parseInt(hashKey,16) < Math.pow(2, 160) ) {
+					
+	    			json = JsonParser.parseString(new String(levelDBStore1.get(hashKey.getBytes()))).getAsJsonObject();
+						    			
+					if ( json.has("orderStatus") && 
+							json.get("productName").getAsString().contains(SEARCHED_VALUE)) {
+						
+						orderList.add(gson.fromJson(json,Order.class));
+					}
+				
+	    		} else {
+					
+					json = JsonParser.parseString(new String(levelDBStore2.get(hashKey.getBytes()))).getAsJsonObject();
+					
+					if( json.has("orderStatus") && 
+							json.get("productName").getAsString().contains(SEARCHED_VALUE) ) {
+						
+						orderList.add(gson.fromJson(json,Order.class));
+					}					
+				}
+	    	}
+	    	
+	    	return orderList; 
+	    	
+	    }
+	    
+	    List<Order> getOrders( String CUSTOMER_ID ){ 
+	    	
+	    	List<Order> orderList = new ArrayList<Order>();
+	    	
+	    	JSONorderID orderIDS = getJSONOrders(CUSTOMER_ID);
+	    	Gson gson = new Gson();
+	    	
+	    	String key, hashKey;
+	    	JsonObject json;
+	    	
+	    	for( int i=0; i < orderIDS.getOrderIDList().size(); i++ ) {
+	    		
+	    		key = "user:" + CUSTOMER_ID + "order:" + orderIDS.getID(i);
+	    		hashKey = DigestUtils.sha1Hex(key);
+	    		
+	    		if(Integer.parseInt(hashKey,16) < Math.pow(2, 160) ) {
+					
+	    			json = JsonParser.parseString(new String(levelDBStore1.get(hashKey.getBytes()))).getAsJsonObject();
+						    			
+					if ( json.has("orderStatus") ) {
+						
+						orderList.add(gson.fromJson(json,Order.class));
+					}
+				
+	    		} else {
+					
+					json = JsonParser.parseString(new String(levelDBStore2.get(hashKey.getBytes()))).getAsJsonObject();
+					
+					if( json.has("orderStatus") ) {
+						
+						orderList.add(gson.fromJson(json,Order.class));
+					}					
+				}
+	    	}
 	    	
 	    	return orderList; 
 	    	
