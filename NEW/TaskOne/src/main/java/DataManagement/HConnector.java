@@ -212,7 +212,12 @@ public class HConnector extends DataConnector{
     	HCustomer newCustomer = manager.find(HCustomer.class, CUSTOMER_ID);
     	HProductStock productstock = manager.find( HProductStock.class, PRODUCT_ID );
     	
-    	HOrder newOrder = new HOrder( new Timestamp(System.currentTimeMillis()), PRICE , "ordered" , CUSTOMER_ID , productstock );
+        Integer maxOrderID = manager.createQuery(
+        	       "SELECT "
+        	     + "max(p.IDorder)"
+        	     + "FROM HOrder p", Integer.class).getSingleResult(); 
+        
+    	HOrder newOrder = new HOrder( maxOrderID+1 , new Timestamp(System.currentTimeMillis()), PRICE , "ordered" , newCustomer , productstock );
     	productstock.getProduct().decreaseAvailability();
     	
     	manager.close();

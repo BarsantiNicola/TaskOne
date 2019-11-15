@@ -61,7 +61,7 @@ public class HConnector extends DataConnector{
 			List<HProductStock> productStocks = (List<HProductStock>) query.getResultList();
             
             query = manager.createQuery(
-                    "SELECT o.productStock "
+                    "SELECT o "
                   + "FROM HOrder o "
                 ); 
                         

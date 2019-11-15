@@ -147,15 +147,18 @@ public class HCustomer extends HUser{
 //add a new order to the customer list and save it in the database
 
 public boolean addOrder( HOrder order )
-{
  {
   EntityManager manager = HConnector.FACTORY.createEntityManager();
+  List<HOrder> orders = this.getMyHOrders();
+
+  
   try
    {
+
     manager.getTransaction().begin();
-    myOrders.add(order);
-    System.out.println("++++++++++++ IDorder: " + order.getIDorder());
     manager.persist(order);
+    System.out.println("++++++++++++ IDorder: " + order.getIDorder());
+   // manager.merge(this);
     manager.getTransaction().commit();
     manager.close();
 
@@ -167,7 +170,7 @@ public boolean addOrder( HOrder order )
     System.out.println("Error: " + e.getMessage());
     return false;
    }
- }
+ 
 }
 	
 	/*
