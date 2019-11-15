@@ -10,13 +10,13 @@ import beans.*;
 public class KTransfer {
 			
 	private static DatabaseConnector database = new DatabaseConnector();
-			
-	public static boolean importUsers() {
+			public static boolean importUsers() {
 				
 				List<User> userList = database.getUsers(); //il metodo c'è ma non è statico
 				
 				String key, hashKey;
 				User user;
+				UserType usertype;
 				JSONPasswordUserType jsonObject;
 				Gson gson = new Gson();
 				
@@ -167,8 +167,6 @@ public class KTransfer {
 					
 					KValueConnector.levelDBStore2.put(hashKey.getBytes(),gson.toJson(jsonObject).getBytes());
 				}
-				
-				return true;
 				
 			}
 			

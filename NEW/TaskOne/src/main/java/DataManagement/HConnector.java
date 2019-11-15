@@ -61,7 +61,7 @@ public class HConnector extends DataConnector{
 			List<HProductStock> productStocks = (List<HProductStock>) query.getResultList();
             
             query = manager.createQuery(
-                    "SELECT o "
+                    "SELECT o.productStock "
                   + "FROM HOrder o "
                 ); 
                         
@@ -114,6 +114,8 @@ public class HConnector extends DataConnector{
     	List<HOrder> horders = manager.find( HCustomer.class , CUSTOMER_ID ).getMyHOrders();
     	for( HOrder o : horders )
     		orders.add(new Order(o));
+    	
+    	manager.close();
     	
     	return orders;
     }
@@ -171,6 +173,38 @@ public class HConnector extends DataConnector{
     	return manager.find( HHeadDepartment.class , MANAGER).getMyTeam().getIDTeam();
     }
 
+    
+    /* [RICKY] Try
+    boolean insertOrder( String CUSTOMER_ID , int PRODUCT_ID , String PRODUCT_NAME , int PRICE )
+     { 
+      
+     EntityManager manager = FACTORY.createEntityManager();
+     
+     Integer maxOrderID = manager.createQuery(
+       "SELECT "
+     + "max(p.IDorder)"
+     + "FROM HOrder p", Integer.class).getSingleResult(); 
+     
+     HCustomer Customer = manager.find(HCustomer.class, CUSTOMER_ID);
+     HProductStock productstock = manager.find( HProductStock.class, PRODUCT_ID );
+     
+     try
+      {
+       manager.getTransaction().begin();
+       HOrder newOrder = new HOrder(maxOrderID.intValue()+1, new Timestamp(System.currentTimeMillis()), PRICE , "received" , Customer , productstock );
+       manager.persist(newOrder);
+       manager.getTransaction().commit();
+       manager.close();
+       return true;
+      }
+     catch( IllegalStateException | RollbackException e )
+      {
+       System.out.println("Error: " + e.getMessage());
+       manager.close();
+       return false;
+      } 
+    } */
+
     public boolean insertOrder( String CUSTOMER_ID , int PRODUCT_ID , String productName , int PRICE ){ 
     	
     	EntityManager manager = FACTORY.createEntityManager();
@@ -178,7 +212,12 @@ public class HConnector extends DataConnector{
     	HCustomer newCustomer = manager.find(HCustomer.class, CUSTOMER_ID);
     	HProductStock productstock = manager.find( HProductStock.class, PRODUCT_ID );
     	
-    	HOrder newOrder = new HOrder( new Timestamp(System.currentTimeMillis()), PRICE , "ordered" , CUSTOMER_ID , productstock );
+        Integer maxOrderID = manager.createQuery(
+        	       "SELECT "
+        	     + "max(p.IDorder)"
+        	     + "FROM HOrder p", Integer.class).getSingleResult(); 
+        
+    	HOrder newOrder = new HOrder( maxOrderID+1 , new Timestamp(System.currentTimeMillis()), PRICE , "ordered" , newCustomer , productstock );
     	productstock.getProduct().decreaseAvailability();
     	
     	manager.close();
