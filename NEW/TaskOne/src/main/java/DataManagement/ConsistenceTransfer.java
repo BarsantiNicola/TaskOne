@@ -67,30 +67,6 @@ public class ConsistenceTransfer {
 
 	}
 	
-	boolean giveStockConsistence( String PRODUCT_NAME , String STOCKID ) {
-		
-		TransferData data = null;
-		HashMap<String,Object> values = new HashMap<>();
-		
-		values.put( "product", PRODUCT_NAME );
-		values.put( "stockID" , STOCKID );
-		
-		data = new TransferData( values , null , null , RequestedCommand.ADDSTOCK );
-		return sendMessage(data);
-
-	}
-	
-	boolean giveStockDeleteConsistence( String STOCKID ) {
-		
-		TransferData data = null;
-		HashMap<String,Object> values = new HashMap<>();
-		
-		values.put( "stockID" , STOCKID );
-		
-		data = new TransferData( values , null , null , RequestedCommand.REMOVESTOCK );
-		return sendMessage(data);
-
-	}
 	
 	boolean sendMessage( TransferData data ) {
 		
@@ -138,8 +114,7 @@ public class ConsistenceTransfer {
 		
 			System.out.println( t.giveUserConsistence( new User("marcy" , "marcella" , "Bosco" , "marcy123" , "" , "" , 1 , "" , 2 )));
 			System.out.println( t.giveProductConsistence("fava", 5));
-			System.out.println( t.giveStockConsistence("mario", "2"));
-			System.out.println( t.giveStockDeleteConsistence( "2" ));
+
 		}catch( Exception e ) {
 			
 			System.out.println("Error trying to contact server: " + e.getMessage());
