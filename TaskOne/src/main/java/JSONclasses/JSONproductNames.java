@@ -13,14 +13,19 @@ public class JSONproductNames {
 		this.productNamesList = productNamesList;
 	}
 	
-	public List<String> getOrderIDList(){
+	public List<String> getProductNamesList(){
 		
 		return productNamesList;
 	}
 	
-	public void setOrderIDList( List<String> productNamesList ) {
+	public void setOProductNamesList( List<String> productNamesList ) {
 		
 		this.productNamesList = productNamesList;
+	}
+	
+	public String getName( int index ) {
+		
+		return productNamesList.get(index);
 	}
 
 }

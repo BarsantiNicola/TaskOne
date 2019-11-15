@@ -48,14 +48,14 @@ public class KValueConnector extends DataConnector{
 				
 				JsonObject json = JsonParser.parseString(new String(levelDBStore1.get(hashKey.getBytes()))).getAsJsonObject();
 				
-				if (json.get("Password") != null)
+				if ( json.has("Password") )
 					psw = gson.fromJson(new String(levelDBStore1.get(hashKey.getBytes())),JSONPasswordUserType.class);
 						
 			} else {
 				
 				JsonObject json = JsonParser.parseString(new String(levelDBStore2.get(hashKey.getBytes()))).getAsJsonObject();
 				
-				if (json.get("Password") != null)
+				if ( json.has("Password") )
 					psw = gson.fromJson(new String(levelDBStore2.get(hashKey.getBytes())),JSONPasswordUserType.class);
 			
 			}
@@ -75,14 +75,14 @@ public class KValueConnector extends DataConnector{
 				
 				JsonObject json = JsonParser.parseString(new String(levelDBStore1.get(hashKey.getBytes()))).getAsJsonObject();
 				
-				if (json.get("orderIDList") != null)
+				if ( json.has("orderIDList") )
 					orderIDList = gson.fromJson(new String(levelDBStore1.get(hashKey.getBytes())),JSONorderID.class);
 						
 			} else {
 				
 				JsonObject json = JsonParser.parseString(new String(levelDBStore2.get(hashKey.getBytes()))).getAsJsonObject();
 				
-				if (json.get("orderIDList") != null)
+				if ( json.has("orderIDList") )
 					orderIDList = gson.fromJson(new String(levelDBStore2.get(hashKey.getBytes())),JSONorderID.class);
 			
 			}
@@ -102,7 +102,7 @@ public class KValueConnector extends DataConnector{
 				
 				JsonObject json = JsonParser.parseString(new String(levelDBStore1.get(hashKey.getBytes()))).getAsJsonObject();
 				
-				if (json.get("ProductName") != null)
+				if ( json.has("ProductName") )
 					product = gson.fromJson(new String(levelDBStore1.get(hashKey.getBytes())),Product.class);
 				else
 					return null;
@@ -111,7 +111,7 @@ public class KValueConnector extends DataConnector{
 				
 				JsonObject json = JsonParser.parseString(new String(levelDBStore2.get(hashKey.getBytes()))).getAsJsonObject();
 				
-				if (json.get("ProductName") != null)
+				if ( json.has("ProductName") )
 					product = gson.fromJson(new String(levelDBStore2.get(hashKey.getBytes())),Product.class);
 				else
 					return null;
@@ -134,7 +134,7 @@ public class KValueConnector extends DataConnector{
 				
 				JsonObject json = JsonParser.parseString(new String(levelDBStore1.get(hashKey.getBytes()))).getAsJsonObject();
 				
-				if (json.get("ProductName") != null)
+				if ( json.has("ProductName") )
 					order = gson.fromJson(new String(levelDBStore1.get(hashKey.getBytes())),Order.class);
 				else
 					return null;
@@ -143,7 +143,7 @@ public class KValueConnector extends DataConnector{
 				
 				JsonObject json = JsonParser.parseString(new String(levelDBStore2.get(hashKey.getBytes()))).getAsJsonObject();
 				
-				if (json.get("ProductName") != null)
+				if ( json.has("ProductName"))
 					order = gson.fromJson(new String(levelDBStore2.get(hashKey.getBytes())),Order.class);
 				else
 					return null;
@@ -165,14 +165,14 @@ public class KValueConnector extends DataConnector{
 				
 				JsonObject json = JsonParser.parseString(new String(levelDBStore1.get(hashKey.getBytes()))).getAsJsonObject();
 				
-				if (json.get("orderIDList") != null)
+				if ( json.has("orderIDList") )
 					productNamesList = gson.fromJson(new String(levelDBStore1.get(hashKey.getBytes())),JSONproductNames.class);
 						
 			} else {
 				
 				JsonObject json = JsonParser.parseString(new String(levelDBStore2.get(hashKey.getBytes()))).getAsJsonObject();
 				
-				if (json.get("orderIDList") != null)
+				if ( json.has("orderIDList") )
 					productNamesList = gson.fromJson(new String(levelDBStore2.get(hashKey.getBytes())),JSONproductNames.class);
 			
 			}
@@ -202,13 +202,109 @@ public class KValueConnector extends DataConnector{
 	    
 	    UserType login( String USERNAME , String PASSWORD ) { return UserType.NOUSER; }
 	    
-	    List<Product> getAvailableProducts(){ return new ArrayList<>(); }
+	    List<Product> getAvailableProducts(){ 
+	    	
+	    	List<Product> productList = new ArrayList<Product>();
+	    	
+	    	JSONproductNames productNames = getJSONProducts();
+	    	Gson gson = new Gson();
+	    	
+	    	String key, hashKey;
+	    	JsonObject json;
+	    	
+	    	for( int i=0; i < productNames.getProductNamesList().size() ; i++ ) {
+	    		
+	    		key = "product:" + productNames.getName(i);
+	    		hashKey = DigestUtils.sha1Hex(key);
+	    		
+	    		if(Integer.parseInt(hashKey,16) < Math.pow(2, 160) ) {
+					
+	    			json = JsonParser.parseString(new String(levelDBStore1.get(hashKey.getBytes()))).getAsJsonObject();
+						    			
+					if ( json.has("ProductName") && json.get("ProductAvailability").getAsInt() > 0 ) {
+						
+						productList.add(gson.fromJson(json,Product.class));
+					}
+				
+	    		} else {
+					
+					json = JsonParser.parseString(new String(levelDBStore2.get(hashKey.getBytes()))).getAsJsonObject();
+					
+					if( json.has("ProductName") && json.get("ProductAvailability").getAsInt() > 0 ) {
+						
+						productList.add(gson.fromJson(json,Product.class));
+					}					
+				}
+	    		
+	    	}
+	    	
+	    	return productList; 
+	    	
+	    }
 
-	    List<Product> searchProducts( String SEARCHED_STRING ){ return new ArrayList<>(); }
+	    List<Product> searchProducts( String SEARCHED_STRING ){ 
+	    	
+	    	List<Product> productList = new ArrayList<Product>();
+	    	
+	    	JSONproductNames productNames = getJSONProducts();
+	    	Gson gson = new Gson();
+	    	
+	    	String key, hashKey;
+	    	JsonObject json;
+	    	
+	    	for( int i=0; i < productNames.getProductNamesList().size() ; i++ ) {
+	    		
+	    		key = "product:" + productNames.getName(i);
+	    		hashKey = DigestUtils.sha1Hex(key);
+	    		
+	    		if(Integer.parseInt(hashKey,16) < Math.pow(2, 160) ) {
+					
+	    			json = JsonParser.parseString(new String(levelDBStore1.get(hashKey.getBytes()))).getAsJsonObject();
+						    			
+					if ( json.has("ProductName") && json.get("ProductAvailability").getAsInt() > 0 && 
+							( json.get("ProductName").getAsString().contains(SEARCHED_STRING) ||
+							  json.get("ProductDescription").getAsString().contains(SEARCHED_STRING)
+							) 
+					    ) {
+						
+						productList.add(gson.fromJson(json,Product.class));
+					}
+				
+	    		} else {
+					
+					json = JsonParser.parseString(new String(levelDBStore2.get(hashKey.getBytes()))).getAsJsonObject();
+					
+					if ( json.has("ProductName") && json.get("ProductAvailability").getAsInt() > 0 && 
+							( json.get("ProductName").getAsString().contains(SEARCHED_STRING) ||
+							  json.get("ProductDescription").getAsString().contains(SEARCHED_STRING)
+							) 
+					    ) {
+						
+						productList.add(gson.fromJson(json,Product.class));
+					}					
+				}
+	    		
+	    	}
+	    	
+	    	return productList;
+	    	
+	    }
 	    
 	    List<Order> searchOrders( String SEARCHED_VALUE , String CUSTOMER_ID ){ return new ArrayList<>(); }
 	    
-	    List<Order> getOrders( String CUSTOMER_ID ){ return new ArrayList<>(); }
+	    List<Order> getOrders( String CUSTOMER_ID ){ 
+	    	
+	    	List<Order> orderList = new ArrayList<Order>();
+	    	
+	    	JSONproductNames productNames = getJSONProducts();
+	    	Gson gson = new Gson();
+	    	
+	    	String key, hashKey;
+	    	JsonObject json;
+	    	
+	    	return orderList; 
+	    	
+	    }
 	    
 	    
 	    ////////////
