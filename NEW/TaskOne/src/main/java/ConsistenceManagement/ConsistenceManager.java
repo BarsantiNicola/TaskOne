@@ -21,6 +21,7 @@ import DataManagement.HConnector;
 import DataManagement.KValueConnector;
 import DataManagement.Hibernate.HOrder;
 import beans.Order;
+import beans.User;
 
 public class ConsistenceManager {
 	
@@ -94,7 +95,7 @@ public class ConsistenceManager {
 				temp = new PrintWriter(new FileOutputStream( tempOrder, false ) , true );
 				
 		}catch( FileNotFoundException ie ) {
-			System.out.println("Error tryin to crate a save block: " + ie.getMessage());
+			System.out.println("Error tryin to create a save block: " + ie.getMessage());
 			return false;
 		}
 		temp.println(gson.toJson( value ));
@@ -122,7 +123,7 @@ public class ConsistenceManager {
 				temp = new PrintWriter(new FileOutputStream( tempOrder, false ) , true );
 				
 		}catch( FileNotFoundException ie ) {
-			System.out.println("Error tryin to crate a save block: " + ie.getMessage());
+			System.out.println("Error trying to create a save block: " + ie.getMessage());
 			return false;
 		}
 		temp.println(gson.toJson( value ));
@@ -258,6 +259,29 @@ public class ConsistenceManager {
 							
 		}
 
+	}
+	
+	boolean makeUpdate( TransferData data ) {
+		
+		switch( data.getCommand() ) {
+		
+			case ADDORDER:
+				return keyValueDatabase.insertOrder( (String)data.getValues().get("username"), data.getOrder());
+			case ADDHORDER:
+				return hibernateDatabase.insertHOrder( (String)data.getValues().get("username"), data.getHorder());
+			case ADDPRODUCT:
+				return keyValueDatabase.updateProductAvailability((String)data.getValues().get("product"), (int)data.getValues().get("availability"));	
+			case ADDCUSTOMER:
+				return  keyValueDatabase.insertUser( new User( (String)data.getValues().get("username") , (String)data.getValues().get("password") , null , null , null , null , null , null , null ));
+			case REMOVECUSTOMER:
+				return  keyValueDatabase.deleteUser((String)data.getValues().get("username"));
+			case UPDATEPRODUCT:
+				break;
+			
+		}
+		
+		return false;
+		
 	}
 	
 

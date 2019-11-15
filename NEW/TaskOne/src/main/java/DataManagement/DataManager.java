@@ -28,8 +28,7 @@ public class DataManager{
 
     public static List<User> searchUsers(String SEARCHED_STRING ){ 
     	
-    	List<User> ret = new ArrayList<>();
-    	KEYVALUE.searchUsers( SEARCHED_STRING);
+    	List<User> ret = KEYVALUE.searchUsers( SEARCHED_STRING );
     	if(ret.size()== 0) 
     	 ret = HIBERNATE.searchUsers(SEARCHED_STRING);
     	return ret;
@@ -78,7 +77,7 @@ public class DataManager{
     
     }
 
-    public static int getProductType( String PRODUCT_NAME ){ return HIBERNATE.getProductType( PRODUCT_NAME ); }
+  //  public static int getProductType( String PRODUCT_NAME ){ return HIBERNATE.getProductType( PRODUCT_NAME ); }
     
     public static int getTeam( String MANAGER ){ return HIBERNATE.getTeam( MANAGER ); }
 
