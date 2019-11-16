@@ -2,6 +2,8 @@ package DataManagement;
 
 import java.util.*;
 import java.io.*;
+import java.security.MessageDigest;
+import java.security.NoSuchAlgorithmException;
 import java.sql.*;
 import beans.*;
 import org.iq80.leveldb.*;
@@ -364,13 +366,35 @@ public class KValueConnector extends DataConnector{
 	    		
 	    }
 	    
+	    int getHash( String key ) {
+	    	
+	    	MessageDigest md = null;
+	    	byte[] result;
+	    	int finalKey = 0;
+	        try {
+	            md = MessageDigest.getInstance("SHA-1");
+	        }
+	        catch(NoSuchAlgorithmException e) {
+	            e.printStackTrace();
+	        }
+	        
+	        result = md.digest(key.getBytes());
+	        for( int a= 0; a<result.length;a++)
+	        	finalKey += (int)result[a];
+	        return finalKey;
+	        
+	    	
+	    }
 	    UserType login( String USERNAME , String PASSWORD ) { 
 	    	
 	    	String key = "user:" + USERNAME;
-	    	String hashKey = DigestUtils.sha1Hex(key);
+	    	int hashKey;
 	    	JsonObject json;
+	    	System.out.println("HASH: " + getHash(key));
 	    	
-	    	if(Integer.parseInt(hashKey,16) < Math.pow(2, 160) ) {
+
+	        
+	    /*	if( hashKey < 0 ) {
 				
 	    		json = JsonParser.parseString(new String(levelDBStore1.get(hashKey.getBytes()))).getAsJsonObject(); 
 	    		
@@ -392,7 +416,8 @@ public class KValueConnector extends DataConnector{
 	    			
 	    			return UserType.NOUSER;
 	    		}		
-			}	
+			}	*/
+	    	return UserType.NOUSER;
 	    	
 	    }
 	    
