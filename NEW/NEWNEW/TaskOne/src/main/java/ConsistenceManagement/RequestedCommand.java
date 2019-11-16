@@ -7,5 +7,6 @@ public enum RequestedCommand{
 	ADDPRODUCT,
 	ADDCUSTOMER,
 	REMOVECUSTOMER,
+	UPDATEDATABASE
 	
 }

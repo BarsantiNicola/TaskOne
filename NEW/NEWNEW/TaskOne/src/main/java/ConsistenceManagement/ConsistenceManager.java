@@ -37,7 +37,6 @@ public class ConsistenceManager {
 		try {
 			
 			server = new ServerSocket(44444);
-			server.setSoTimeout(2000000);
 
 		}catch( IOException e ) {
 			
@@ -47,11 +46,14 @@ public class ConsistenceManager {
 		
 	}
 	
-	TransferData getDatas() {
+	TransferData getDatas( ConsistenceManager data ) {
 		
 		Socket inputSocket = null;
 		Scanner inputData = null;
+		PrintWriter outputData = null;
 		TransferData obj = null;
+		File hibernateStore = new File("HibernateData");
+		File keyValueStore = new File( "KeyValueData");
 		
 		try {
 			
@@ -59,9 +61,37 @@ public class ConsistenceManager {
 			System.out.println("Data received");
 			inputData = new Scanner( inputSocket.getInputStream());
 			Gson gson = new Gson();
-
+			TransferData[] datas;
+			
 			obj = gson.fromJson( inputData.nextLine() , TransferData.class );
 
+			if( obj.getCommand() == RequestedCommand.UPDATEDATABASE ) {
+				
+				outputData = new PrintWriter( inputSocket.getOutputStream() , true );
+				System.out.println("Trying to update data to the databases");
+				if( !hibernateStore.exists())
+					System.out.println("Hibernate database already up to date");
+				else {
+					
+					datas = data.loadHibernateUpdates();
+					data.deleteHibernateUpdates();
+					data.updateDatabase(datas);
+					
+				}
+
+				if( !keyValueStore.exists())
+					System.out.println("KeyValue databases already up to date");
+				else {
+					
+					datas = data.loadKeyValueUpdates();
+					data.deleteKeyValueUpdates();
+					data.updateDatabase(datas);
+					
+				}
+				outputData.println("DONE");
+				outputData.close();
+
+			}
 			inputData.close();
 			inputSocket.close();
 
@@ -231,36 +261,13 @@ public class ConsistenceManager {
 		KValueConnector keyValueData = new KValueConnector();
 		TransferData receivedData;
 		HashMap<String,Object> values;
-		File hibernateStore = new File("HibernateData");
-		File keyValueStore = new File( "KeyValueData");
-		TransferData[] datas;
+
+
 		while( true ) {
 			
-			receivedData = data.getDatas();
-			if(receivedData == null ) {
-				System.out.println("Trying to update data to the databases");
-				if( !hibernateStore.exists())
-					System.out.println("Hibernate database already up to date");
-				else {
-					
-					datas = data.loadHibernateUpdates();
-					data.deleteHibernateUpdates();
-					data.updateDatabase(datas);
-					
-				}
-
-				if( !keyValueStore.exists())
-					System.out.println("KeyValue databases already up to date");
-				else {
-					
-					datas = data.loadKeyValueUpdates();
-					data.deleteKeyValueUpdates();
-					data.updateDatabase(datas);
-					
-				}
-
+			receivedData = data.getDatas( data );
+			if(receivedData == null )
 				continue;
-			}
 			values = receivedData.getValues();
 
 			System.out.println("received: " + receivedData.getCommand());

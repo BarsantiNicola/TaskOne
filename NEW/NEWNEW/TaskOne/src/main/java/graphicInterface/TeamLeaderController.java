@@ -150,7 +150,7 @@ public class TeamLeaderController extends InterfaceController{
                 boolean result =  dataManager.updateProductAvailability(p.getProductName(), 1);
                 LOG.println( "QUERY: updateProductAvailability;\t TIME: " + (System.currentTimeMillis() - startTime) + "ms");
                 if ( result ) {
-                    productsTable.removeAll(productsTable );
+                    productsTable.removeAll( productsTable );
                     prod.remove(p);
                     p.setProductAvailability( p.getProductAvailability() + 1 );
                     prod.add(p);
