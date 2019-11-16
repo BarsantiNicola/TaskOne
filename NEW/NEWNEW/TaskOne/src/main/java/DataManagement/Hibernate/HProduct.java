@@ -181,16 +181,17 @@ public class HProduct {
 
     	
     	System.out.println( "THE NEW IDSTOCK INSERTED: " + productStock.getIDstock());
-		manager.getTransaction().begin();
-		
-		//  we update the availability by update the product and save the new stock
-		product.setProductAvailability( availability+1);  
 
-		manager.persist(productStock);
-		manager.merge(product);
 
 		try {
 			
+			manager.getTransaction().begin();
+			
+			//  we update the availability by update the product and save the new stock
+			product.setProductAvailability( availability+1);  
+
+			manager.persist(productStock);
+			manager.merge(product);
 			manager.getTransaction().commit();
 			
 		}catch( IllegalStateException | RollbackException e ) {

@@ -38,7 +38,6 @@ public class CustomerController extends InterfaceController {
     @SuppressWarnings({ "unchecked", "rawtypes" })
 	CustomerController( Scene app , String cId ){
 
-
         String[][] productFields = { { "Name" , "productName"} , { "Price" , "productPrice" } , { "Description" , "productDescription"} , { "Availability" , "productAvailability"} };
         String[][] orderFields = { { "productID" , "productId" } ,  { "ProductName" , "productName" } , { "ProductPrice" , "productPrice" } , { "Purchase Date" , "purchaseDate" } ,  { "Purchased Price" , "purchasedPrice" }  , { "Status" , "orderStatus" }};
         TableColumn column;

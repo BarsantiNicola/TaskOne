@@ -26,15 +26,9 @@ import DataManagement.HConnector;
 public class HTeamLeader extends HEmployee{
 	
 	
-
 	@OneToOne( cascade = {CascadeType.PERSIST, CascadeType.REFRESH, CascadeType.MERGE})
 	@JoinColumn (name = "IDTeam")
 	HTeam myTeam;
- 
-	/*
-	@JoinTable(name = "myTeam",joinColumns = {@JoinColumn(name = "teamLeader")},
-    	inverseJoinColumns = {@JoinColumn(name = "IDteam")})
-	HTeam myTeam; */
 	
 	
 	//----------------------------------------------------------------------------------------------------------

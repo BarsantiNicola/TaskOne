@@ -122,6 +122,8 @@ public class TeamLeaderController extends InterfaceController{
 
         Iterator<Node> it = insertPopup.getChildren().iterator();
         Iterator<Product> product = productsTable.iterator();
+        ObservableList<Product> prod = FXCollections.observableArrayList();
+        prod.addAll(productsTable);
         Node app;
         TextField value;
         HashMap<String , String> values = new HashMap<>();
@@ -148,9 +150,11 @@ public class TeamLeaderController extends InterfaceController{
                 boolean result =  dataManager.updateProductAvailability(p.getProductName(), 1);
                 LOG.println( "QUERY: updateProductAvailability;\t TIME: " + (System.currentTimeMillis() - startTime) + "ms");
                 if ( result ) {
-                    productsTable.removeAll( p );
+                    productsTable.removeAll(productsTable );
+                    prod.remove(p);
                     p.setProductAvailability( p.getProductAvailability() + 1 );
-                    productsTable.add( p );
+                    prod.add(p);
+                    productsTable.addAll( prod );
                     closePopups();
 
 

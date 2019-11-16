@@ -12,3 +12,12 @@
 {"values":{"product":"ISmartBand","availability":1.0},"command":"ADDPRODUCT"}
 {"values":{"username":"adri","order":{"productId":{"name":"","value":16.0,"valid":true},"productName":{"name":"","value":"ISmartBand","valid":true},"productPrice":{"name":"","value":20.0,"valid":true},"purchaseDate":{"name":"","value":"Nov 16, 2019 12:27:26 PM","valid":true},"purchasedPrice":{"name":"","value":20.0,"valid":true},"orderStatus":{"name":"","value":"received","valid":true}}},"command":"ADDORDER","order":{"productId":{"name":"","value":16,"valid":true},"productName":{"name":"","value":"ISmartBand","valid":true},"productPrice":{"name":"","value":20,"valid":true},"purchaseDate":{"name":"","value":"Nov 16, 2019 12:27:26 PM","valid":true},"purchasedPrice":{"name":"","value":20,"valid":true},"orderStatus":{"name":"","value":"received","valid":true}}}
 {"values":{"product":"ISmartVideoBell","availability":1.0},"command":"ADDPRODUCT"}
+{"values":{"product":"ISmartBand","availability":1.0},"command":"ADDPRODUCT"}
+{"values":{"product":"ISmartBand","availability":1.0},"command":"ADDPRODUCT"}
+{"values":{"product":"ISmartBand","availability":1.0},"command":"ADDPRODUCT"}
+{"values":{"product":"ISmartBand","availability":1.0},"command":"ADDPRODUCT"}
+{"values":{"product":"ISmartBand","availability":1.0},"command":"ADDPRODUCT"}
+{"values":{"product":"ISmartThermo","availability":1.0},"command":"ADDPRODUCT"}
+{"values":{"product":"ISmartThermo","availability":1.0},"command":"ADDPRODUCT"}
+{"values":{"product":"ISmartThermo","availability":1.0},"command":"ADDPRODUCT"}
+{"values":{"product":"ISmartBand","availability":1.0},"command":"ADDPRODUCT"}
