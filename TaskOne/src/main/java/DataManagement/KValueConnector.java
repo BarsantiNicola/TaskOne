@@ -390,8 +390,7 @@ public class KValueConnector extends DataConnector{
 	    String getStringHash( String key ) {
 	    	
 	    	MessageDigest md = null;
-	    	byte[] result;
-	    	int finalKey = 0;
+
 	        try {
 	            md = MessageDigest.getInstance("SHA-1");
 	        }
@@ -405,13 +404,14 @@ public class KValueConnector extends DataConnector{
 	    UserType login( String USERNAME , String PASSWORD ) { 
 	    	
 	    	String key = "user:" + USERNAME;
-	    	int hashKey;
+	    	String hashKey = getStringHash(key);
+	    	int intHashKey = getIntHash(key);
 	    	JsonObject json;
-	    	System.out.println("HASH: " + getHash(key));
+	    	System.out.println("HASH: " + getIntHash(key));
 	    	
 
 	        
-	    /*	if( hashKey < 0 ) {
+	    /*	if( intHashKey < 0 ) {
 				
 	    		json = JsonParser.parseString(new String(levelDBStore1.get(hashKey.getBytes()))).getAsJsonObject(); 
 	    		
