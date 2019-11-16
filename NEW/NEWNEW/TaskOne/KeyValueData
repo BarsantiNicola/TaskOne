@@ -25,3 +25,5 @@
 {"values":{"product":"ISmartBand","availability":1.0},"command":"ADDPRODUCT"}
 {"values":{"product":"ISmartBand","availability":1.0},"command":"ADDPRODUCT"}
 {"values":{},"command":"UPDATEDATABASE"}
+{"values":{},"command":"UPDATEDATABASE"}
+{"values":{"username":"adri","order":{"productId":{"name":"","value":87.0,"valid":true},"productName":{"name":"","value":"ISmartLight","valid":true},"productPrice":{"name":"","value":10.0,"valid":true},"purchaseDate":{"name":"","value":"Nov 16, 2019, 2:44:39 PM","valid":true},"purchasedPrice":{"name":"","value":10.0,"valid":true},"orderStatus":{"name":"","value":"received","valid":true}}},"command":"ADDORDER","order":{"productId":{"name":"","value":87,"valid":true},"productName":{"name":"","value":"ISmartLight","valid":true},"productPrice":{"name":"","value":10,"valid":true},"purchaseDate":{"name":"","value":"Nov 16, 2019, 2:44:39 PM","valid":true},"purchasedPrice":{"name":"","value":10,"valid":true},"orderStatus":{"name":"","value":"received","valid":true}}}

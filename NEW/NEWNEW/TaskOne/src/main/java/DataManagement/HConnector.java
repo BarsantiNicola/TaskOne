@@ -23,7 +23,6 @@ public class HConnector extends DataConnector{
 		
 		EntityManager manager = FACTORY.createEntityManager();
 		
-		
 		HUser user = manager.find( HUser.class , username );
 		
 		manager.close();

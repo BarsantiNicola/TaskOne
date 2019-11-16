@@ -83,6 +83,7 @@ public class DataManager{
 
     public static boolean insertUser( User NEW_USER ){ 
     	
+    	CONSISTENCE.forceUpdate();
 		if( HIBERNATE.insertUser( NEW_USER )){
 			if(!KEYVALUE.insertUser( NEW_USER )) 	
 				CONSISTENCE.giveUserConsistence( NEW_USER );
@@ -94,15 +95,17 @@ public class DataManager{
     
     public static boolean insertOrder( String CUSTOMER_ID , int PRODUCT_ID , String PRODUCT_NAME , int PRICE ){ 
     	
+    	CONSISTENCE.forceUpdate();
     	//  for give consistence to the data we try to save the order in all databases 
     	boolean kValueResult = KEYVALUE.insertOrder( CUSTOMER_ID , PRODUCT_ID , PRODUCT_NAME , PRICE );
     	boolean hibernateResult = HIBERNATE.insertOrder( CUSTOMER_ID, PRODUCT_ID, PRODUCT_NAME , PRICE );
-		    EntityManager manager;
+		EntityManager manager;
     	//  all databases are down. We can't create an order, the request fails
     	if( !kValueResult && !hibernateResult ) return false;
     	
     	//  if some databases are down we send the datas to a third remote service who store the datas 
     	//  and save it when the interested database will go up.
+
     	if( !kValueResult ) {
     		manager = HConnector.FACTORY.createEntityManager();
     		//  we create an order using hibernate database to get the needed informations
@@ -135,6 +138,7 @@ public class DataManager{
     
     public static boolean updateProductAvailability( String PRODUCT_NAME , int ADDED_AVAILABILITY ){ 
     	
+    	CONSISTENCE.forceUpdate();
 		if( HIBERNATE.updateProductAvailability( PRODUCT_NAME , ADDED_AVAILABILITY )){
 			if(!KEYVALUE.updateProductAvailability( PRODUCT_NAME , ADDED_AVAILABILITY )) 	
 				CONSISTENCE.giveProductConsistence( PRODUCT_NAME , ADDED_AVAILABILITY );
@@ -148,6 +152,7 @@ public class DataManager{
 
     public static boolean deleteUser( String USER_NAME ){ 
     	
+    	CONSISTENCE.forceUpdate();
     	EntityManager manager = HIBERNATE.FACTORY.createEntityManager();
     	HCustomer customer = manager.find(HCustomer.class, USER_NAME );
     	manager.close();
