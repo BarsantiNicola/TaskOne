@@ -1,0 +1,4 @@
+{"values":{"product":"ISmartBand","availability":1.0},"command":"ADDPRODUCT"}
+{"values":{"username":"nico"},"command":"REMOVECUSTOMER"}
+{"values":{"username":"nico911"},"command":"REMOVECUSTOMER"}
+{"values":{"username":"nico91"},"command":"REMOVECUSTOMER"}
