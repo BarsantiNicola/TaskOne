@@ -365,8 +365,8 @@ public class KValueConnector extends DataConnector{
 			return true;
 	    		
 	    }
-	    
-	    int getHash( String key ) {
+	    //  ONLY FOR DETERMINE THE DATABASE
+	    private int getIntHash( String key ) {
 	    	
 	    	MessageDigest md = null;
 	    	byte[] result;
@@ -384,6 +384,23 @@ public class KValueConnector extends DataConnector{
 	        return finalKey;
 	        
 	    	
+	    }
+	    
+	    //  FOR GET THE KEY TO SAVE VALUES
+	    String getStringHash( String key ) {
+	    	
+	    	MessageDigest md = null;
+	    	byte[] result;
+	    	int finalKey = 0;
+	        try {
+	            md = MessageDigest.getInstance("SHA-1");
+	        }
+	        catch(NoSuchAlgorithmException e) {
+	            e.printStackTrace();
+	        }
+	        
+	        return new String(md.digest(key.getBytes()));
+	           	
 	    }
 	    UserType login( String USERNAME , String PASSWORD ) { 
 	    	
