@@ -22,5 +22,10 @@ public class JSONorderID {
 		
 		this.orderIDList = orderIDList;
 	}
+	
+	public int getID( int index ) {
+		
+		return orderIDList.get(index);
+	}
 
 }

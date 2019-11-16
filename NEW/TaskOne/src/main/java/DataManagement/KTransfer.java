@@ -1,9 +1,8 @@
 package DataManagement;
 
 import java.util.*;
-import org.apache.commons.codec.digest.DigestUtils;
-import com.google.gson.Gson;
-
+import org.apache.commons.codec.digest.*;
+import com.google.gson.*;
 import JSONclasses.*;
 import beans.*;
 
@@ -11,9 +10,10 @@ import beans.*;
 public class KTransfer {
 			
 	private static DatabaseConnector database = new DatabaseConnector();
-			public static boolean importUsers() {
+			
+	public static boolean importUsers() {
 				
-				List<User> userList = database.getUsers(); //il metodo c'è ma non è statico
+				List<User> userList = database.getUsers(); 
 				
 				String key, hashKey;
 				User user;
@@ -61,7 +61,7 @@ public class KTransfer {
 					user = userList.get(i);
 					idList = new JSONorderID();
 					
-					orderList = database.getOrders(user.getUsername());  //static?
+					orderList = database.getOrders(user.getUsername());  
 					
 					for( int j=0; j<orderList.size(); j++ ) {
 						
@@ -141,6 +141,8 @@ public class KTransfer {
 						KValueConnector.levelDBStore2.put(hashKey.getBytes(),gson.toJson(product).getBytes());
 					}
 				}
+				
+				return true;
 			}
 			
 			public boolean importProductNames() {
@@ -169,8 +171,11 @@ public class KTransfer {
 					KValueConnector.levelDBStore2.put(hashKey.getBytes(),gson.toJson(jsonObject).getBytes());
 				}
 				
+				return true;
+				
 			}
 			
 			
 			
 }
+
