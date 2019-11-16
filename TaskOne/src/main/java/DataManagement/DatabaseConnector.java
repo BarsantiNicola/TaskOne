@@ -63,7 +63,7 @@ public class DatabaseConnector extends DataConnector{
 	
 	private static PreparedStatement getHEmployee;
 	private static PreparedStatement getHTeam;
-	private static PreparedStatement getHHeadDepartment;
+	private static PreparedStatement getHTeamLeader;
 	private static PreparedStatement getHProduct;
 	private static PreparedStatement getHOrder;
 	private static PreparedStatement getHProductStock;
@@ -75,7 +75,7 @@ public class DatabaseConnector extends DataConnector{
 	//initialize connection and statements
 	static {
 
-		connectionString = "jdbc:mysql://localhost:3306/exercise1?user=root&password=root&useJDBCCompliantTimezoneShift=true&useLegacyDatetimeCode=false&serverTimezone=UTC";
+		connectionString = "jdbc:mysql://localhost:3306/taskone?user=root&password=root&useJDBCCompliantTimezoneShift=true&useLegacyDatetimeCode=false&serverTimezone=UTC";
 		myConnection = null;
 
 		try {
@@ -273,7 +273,7 @@ public class DatabaseConnector extends DataConnector{
 						"SELECT * FROM team;"
 			);
 			
-			getHHeadDepartment = myConnection.prepareStatement(
+			getHTeamLeader = myConnection.prepareStatement(
 					    "SELECT * FROM employee JOIN team ON employee.IDemployee = team.teamLeader "
 					    + " JOIN user ON employee.IDemployee = user.username WHERE role <> 'Administrator';"
 			);
@@ -835,7 +835,7 @@ public class DatabaseConnector extends DataConnector{
 				isEmployeeResult.next();
 
 				if ( isTeamLeader( user) )
-					return UserType.HEAD_DEPARTMENT;
+					return UserType.TEAMLEADER;
 
 				isCustomerStatement.setString(1, user);
 				isCustomerStatement.execute();
@@ -1034,18 +1034,18 @@ public List<HTeam> getHTeams(){
 		
 	}
 
-	public List<HHeadDepartment> getHHeadDepartment(){
+	public List<HTeamLeader> getHTeamLeader(){
 		
-		List<HHeadDepartment> managers = new ArrayList<>();
+		List<HTeamLeader> managers = new ArrayList<>();
 		ResultSet set;
 		
 		try {
 			
-			getHHeadDepartment.execute();
-			set = getHHeadDepartment.getResultSet();
+			getHTeamLeader.execute();
+			set = getHTeamLeader.getResultSet();
 
 			while( set.next()) 		
-				managers.add( new HHeadDepartment( set.getString("username") , set.getString("name") , set.getString("surname") , set.getString("password") , set.getString("mail") , set.getInt("salary") , set.getString("role" ) , null));
+				managers.add( new HTeamLeader( set.getString("username") , set.getString("name") , set.getString("surname") , set.getString("password") , set.getString("mail") , set.getInt("salary") , set.getString("role" ) , null));
 			
 		}catch( SQLException e ) {
 			

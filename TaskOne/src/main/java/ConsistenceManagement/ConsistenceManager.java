@@ -21,6 +21,7 @@ import DataManagement.HConnector;
 import DataManagement.KValueConnector;
 import DataManagement.Hibernate.HOrder;
 import beans.Order;
+import beans.User;
 
 public class ConsistenceManager {
 	
@@ -36,7 +37,6 @@ public class ConsistenceManager {
 		try {
 			
 			server = new ServerSocket(44444);
-			server.setSoTimeout(20000);
 
 		}catch( IOException e ) {
 			
@@ -46,11 +46,14 @@ public class ConsistenceManager {
 		
 	}
 	
-	TransferData getDatas() {
+	TransferData getDatas( ConsistenceManager data ) {
 		
 		Socket inputSocket = null;
 		Scanner inputData = null;
+		PrintWriter outputData = null;
 		TransferData obj = null;
+		File hibernateStore = new File("HibernateData");
+		File keyValueStore = new File( "KeyValueData");
 		
 		try {
 			
@@ -58,9 +61,37 @@ public class ConsistenceManager {
 			System.out.println("Data received");
 			inputData = new Scanner( inputSocket.getInputStream());
 			Gson gson = new Gson();
-
+			TransferData[] datas;
+			
 			obj = gson.fromJson( inputData.nextLine() , TransferData.class );
 
+			if( obj.getCommand() == RequestedCommand.UPDATEDATABASE ) {
+				
+				outputData = new PrintWriter( inputSocket.getOutputStream() , true );
+				System.out.println("Trying to update data to the databases");
+				if( !hibernateStore.exists())
+					System.out.println("Hibernate database already up to date");
+				else {
+					
+					datas = data.loadHibernateUpdates();
+					data.deleteHibernateUpdates();
+					data.updateDatabase(datas);
+					
+				}
+
+				if( !keyValueStore.exists())
+					System.out.println("KeyValue databases already up to date");
+				else {
+					
+					datas = data.loadKeyValueUpdates();
+					data.deleteKeyValueUpdates();
+					data.updateDatabase(datas);
+					
+				}
+				outputData.println("DONE");
+				outputData.close();
+
+			}
 			inputData.close();
 			inputSocket.close();
 
@@ -94,7 +125,7 @@ public class ConsistenceManager {
 				temp = new PrintWriter(new FileOutputStream( tempOrder, false ) , true );
 				
 		}catch( FileNotFoundException ie ) {
-			System.out.println("Error tryin to crate a save block: " + ie.getMessage());
+			System.out.println("Error tryin to create a save block: " + ie.getMessage());
 			return false;
 		}
 		temp.println(gson.toJson( value ));
@@ -122,7 +153,7 @@ public class ConsistenceManager {
 				temp = new PrintWriter(new FileOutputStream( tempOrder, false ) , true );
 				
 		}catch( FileNotFoundException ie ) {
-			System.out.println("Error tryin to crate a save block: " + ie.getMessage());
+			System.out.println("Error trying to create a save block: " + ie.getMessage());
 			return false;
 		}
 		temp.println(gson.toJson( value ));
@@ -197,13 +228,29 @@ public class ConsistenceManager {
 	
 
 	
-	void deleteOrders() {
-		File tempOrder = new File("DataStore");
+	void deleteHibernateUpdates() {
+		File tempOrder = new File("HibernateData");
 		tempOrder.delete();
 		
 	}
 	
-	boolean updateHibernate( TransferData[] updates ) { return false; }
+	void deleteKeyValueUpdates() {
+		File tempOrder = new File("KeyValueData");
+		tempOrder.delete();
+		
+	}
+	
+	void updateDatabase( TransferData[] updates ) { 
+	
+		for( TransferData update : updates ) {			
+			if( !makeUpdate(update))
+				if( update.getCommand() == RequestedCommand.ADDHORDER)
+					saveHibernateState( update );
+				else
+					saveKeyValueState( update );
+		}
+	
+	}
 	
 	boolean updateKeyValue( TransferData[] updates ) { return false; }
 	
@@ -214,50 +261,44 @@ public class ConsistenceManager {
 		KValueConnector keyValueData = new KValueConnector();
 		TransferData receivedData;
 		HashMap<String,Object> values;
-		File hibernateStore = new File("HibernateData");
-		File keyValueStore = new File( "KeyValueData");
-		
+
+
 		while( true ) {
 			
-			receivedData = data.getDatas();
-			if(receivedData == null ) {
-				System.out.println("Trying to update data to the databases");
-				if( !hibernateStore.exists())
-					System.out.println("Hibernate database already up to date");
-				else
-					if( data.updateHibernate(data.loadHibernateUpdates()))
-							System.out.println("Hibernate database correctly updated");
-				if( !keyValueStore.exists())
-					System.out.println("KeyValue databases already up to date");
-				else
-					if( data.updateKeyValue(data.loadKeyValueUpdates()))
-						System.out.println("KeyValue databases correctly updated");
+			receivedData = data.getDatas( data );
+			if(receivedData == null )
 				continue;
-			}
 			values = receivedData.getValues();
 
 			System.out.println("received: " + receivedData.getCommand());
-			switch( receivedData.getCommand()) {
-			
-			case ADDORDER: 
-				
-				if( !keyValueData.insertOrder( (String)values.get("username") , receivedData.getOrder()))
-					data.saveKeyValueState( receivedData );
-				break;
-				
-			case ADDHORDER:
-
-				if( !hibernateData.insertHOrder( (String)values.get("username") , receivedData.getHorder() ))
+			if( !data.makeUpdate(receivedData)) 
+				if( receivedData.getCommand() == RequestedCommand.ADDHORDER )
 					data.saveHibernateState( receivedData );
-				break;
-			default:
-					data.saveKeyValueState( receivedData );
-				
+				else
+					data.saveKeyValueState(receivedData);
 			}
 
-							
+	}
+	
+	boolean makeUpdate( TransferData data ) {
+		
+		switch( data.getCommand() ) {
+		
+			case ADDORDER:
+				return keyValueDatabase.insertOrder( (String)data.getValues().get("username"), data.getOrder());
+			case ADDHORDER:
+				return hibernateDatabase.insertHOrder( (String)data.getValues().get("username"), data.getHorder());
+			case ADDPRODUCT:
+				return keyValueDatabase.updateProductAvailability((String)data.getValues().get("product"), ((Double)data.getValues().get("availability")).intValue());	
+			case ADDCUSTOMER:
+				return  keyValueDatabase.insertUser( new User( (String)data.getValues().get("username") , null , null , (String)data.getValues().get("password") , null , null , 0 , null , 0 ));
+			case REMOVECUSTOMER:
+				return  keyValueDatabase.deleteUser((String)data.getValues().get("username"));
+		
 		}
-
+		
+		return false;
+		
 	}
 	
 

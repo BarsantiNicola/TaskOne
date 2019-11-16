@@ -3,7 +3,7 @@ package DataManagement;
 import DataManagement.Hibernate.HAdministrator;
 import DataManagement.Hibernate.HCustomer;
 import DataManagement.Hibernate.HEmployee;
-import DataManagement.Hibernate.HHeadDepartment;
+import DataManagement.Hibernate.HTeamLeader;
 import DataManagement.Hibernate.HOrder;
 import DataManagement.Hibernate.HProduct;
 import DataManagement.Hibernate.HProductStock;
@@ -97,20 +97,20 @@ public class DataTransfer {
     	
     }
     
-    public void saveHHeadDepartment( List<HHeadDepartment> managers ) {
-    	System.out.println("Starting saving HHeadDepartment...");
+    public void saveHTeamLeader( List<HTeamLeader> managers ) {
+    	System.out.println("Starting saving HTeamLeader...");
     	DatabaseConnector conn = new DatabaseConnector();
     	entityManager = factory.createEntityManager(); 
 
-      	for( HHeadDepartment e : managers ) {
-      		System.out.println("Saving Manager: " + e.getSurname());
+      	for( HTeamLeader e : managers ) {
+      		System.out.println("Saving TeamLeader: " + e.getSurname());
       		e.setMyTeam( entityManager.find( HTeam.class, conn.getTeam(e.getUsername())));
           	entityManager.getTransaction().begin();
       		entityManager.persist(e);
           	entityManager.getTransaction().commit();
       	}
 
-      	System.out.println("Save HHeadDepartment complete");
+      	System.out.println("Save HTeamLeader complete");
     }
     
     public void saveHProduct( List<HProduct> products ) {
@@ -274,7 +274,7 @@ public class DataTransfer {
 
         manager.saveHTeams( conn.getHTeams());
 
-        manager.saveHHeadDepartment(conn.getHHeadDepartment());
+        manager.saveHTeamLeader(conn.getHTeamLeader());
     
         manager.saveHProductStock(conn.getHProductStock());
 

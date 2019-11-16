@@ -9,12 +9,13 @@ import beans.*;
 //												HUser
 //
 //	  Parent class of all the base user' types of the database(customer,employee,teamedemployee, 
-//	  headdepartment, administrator).
+//	  teamleader, administrator).
 //
 //----------------------------------------------------------------------------------------------------------
 
 @Entity
 @Inheritance(strategy = InheritanceType.SINGLE_TABLE)
+@DiscriminatorColumn(name = "usertype")
 @Table(name="Users")
 public class HUser {
 
@@ -200,6 +201,9 @@ public class HUser {
 		System.out.println("OK CISIAMO ");
 		if( user instanceof HTeamedEmployee )
 			return HTeamedEmployee.removeEmployee( (HTeamedEmployee)user );
+		if( user instanceof HCustomer )
+		 return HCustomer.removeCustomer( (HCustomer)user );
+		 
 		System.out.println("OK REMOVED NO EMPLOYEE");
 		try {
 			

@@ -18,14 +18,13 @@ public class JSONproductNames {
 		return productNamesList;
 	}
 	
-	public void setOProductNamesList( List<String> productNamesList ) {
+	public void setProductNameList( List<String> productNamesList ) {
 		
 		this.productNamesList = productNamesList;
 	}
-	
+
 	public String getName( int index ) {
 		
 		return productNamesList.get(index);
 	}
-
 }

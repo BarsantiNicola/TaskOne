@@ -16,7 +16,7 @@ public class User {
 	private final SimpleStringProperty surname;
 	private final SimpleStringProperty password;
 	private final SimpleStringProperty mail;
-	private final SimpleStringProperty role;       //  CUSTOMER/ADMINISTRATOR/HEAD DEPARTMENT
+	private final SimpleStringProperty role;       //  CUSTOMER/ADMINISTRATOR/TEAMLEADER
 	private final SimpleIntegerProperty salary;     //  may be miss(ex. a CUSTOMER)
 	private final SimpleIntegerProperty team;       //  may be miss
 	private final SimpleStringProperty address;
@@ -53,7 +53,7 @@ public class User {
 			role = new SimpleStringProperty(((HEmployee)HUSER).getRole());
 			salary = new SimpleIntegerProperty(((HEmployee)HUSER).getSalary());
 			if( HUSER instanceof HTeamedEmployee )
-				team = new SimpleIntegerProperty(((HTeamedEmployee)HUSER).getIDTeam());
+				team = new SimpleIntegerProperty(((HTeamedEmployee)HUSER).getTeam().getIDTeam());
 			else
 				team = new SimpleIntegerProperty(-1);
 		}else {

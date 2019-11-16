@@ -28,18 +28,24 @@ public class HTeam {
 	@Column( name="location", length = 45, nullable = false )
 	private String location;
 	
-	@OneToMany( cascade = CascadeType.ALL)
-	@JoinTable(name = "members",joinColumns = {@JoinColumn(name = "IDteam")},
-            inverseJoinColumns = {@JoinColumn(name = "IDemployee")})
+	/*@OneToMany( cascade = {CascadeType.PERSIST, CascadeType.REFRESH, CascadeType.MERGE})
+	@JoinTable(name = "members",joinColumns = {@JoinColumn(name = "IDteam")}, 
+            inverseJoinColumns = {@JoinColumn(name = "IDemployee")})*/
+
+	
+ @OneToMany(mappedBy = "team", orphanRemoval = true)
 	List<HTeamedEmployee> members;
 	
+ /*
 	@OneToMany( cascade = {CascadeType.PERSIST, CascadeType.REFRESH, CascadeType.MERGE})
 	@JoinTable(name = "teamProducts",joinColumns = {@JoinColumn(name = "IDteam")},
             inverseJoinColumns = {@JoinColumn(name = "productName")})
 	List<HProduct> teamProducts;
+ */
 
-
-
+ @OneToMany(mappedBy = "team", cascade = {CascadeType.PERSIST, CascadeType.REFRESH, CascadeType.MERGE})
+ List<HProduct> teamProducts;
+ 
 	//----------------------------------------------------------------------------------------------------------
 	//											CONSTRUCTORS
 	//----------------------------------------------------------------------------------------------------------
@@ -71,6 +77,8 @@ public class HTeam {
 		
 	public List<HTeamedEmployee> getMembers(){
 		
+	 System.out.println(members);
+	 
 		return members;
 	}
 	
@@ -110,7 +118,7 @@ public class HTeam {
 	//----------------------------------------------------------------------------------------------------------
 	
 	
-	//  USED BY HEADDEPARTMENT INTERFACE 
+	//  USED BY TEAMLEADER INTERFACE 
 	//  the function gives a list of graphic interface compatible classes Product
 	//  which matches the given key.
 	public List<Product> searchTeamProducts(String SEARCHED_VALUE){
@@ -134,21 +142,18 @@ public class HTeam {
 	}
 	
 	
-	//  USED BY HEADDEPARTMENT INTERFACE 
+	//  USED BY TEAMLEADER INTERFACE 
 	//  the function gives a list of graphic interface compatible classes Employee
 	//  which matches the given key.
 	public List<Employee> searchTeamEmployees(String SEARCHED_VALUE){
 		
 		List<Employee> employeeList = new ArrayList<>();
 		
-		for( int i=0; i<teamProducts.size(); i++ ) {
+		for( int i=0; i<members.size(); i++ ) {
 			
 			HTeamedEmployee HEMPLOYEE = members.get(i);
 			
-			if( SEARCHED_VALUE == null || ( SEARCHED_VALUE != null && 
-				(HEMPLOYEE.getUsername().contains(SEARCHED_VALUE) ||
-				 HEMPLOYEE.getName().contains(SEARCHED_VALUE) ||
-				 HEMPLOYEE.getSurname().contains(SEARCHED_VALUE) ||
+			if( SEARCHED_VALUE == null || ( SEARCHED_VALUE != null &&  (HEMPLOYEE.getUsername().contains(SEARCHED_VALUE) ||HEMPLOYEE.getName().contains(SEARCHED_VALUE) | HEMPLOYEE.getSurname().contains(SEARCHED_VALUE) ||
 				 HEMPLOYEE.getMail().contains(SEARCHED_VALUE) ||
 				 HEMPLOYEE.getRole().contains(SEARCHED_VALUE)))){
 				 employeeList.add(new Employee(HEMPLOYEE));

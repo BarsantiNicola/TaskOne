@@ -20,7 +20,7 @@ public class HProductStock {
 	private int IDstock;
 	
 	
-	@OneToOne
+	@ManyToOne
 	@JoinColumn(name = "product" , nullable = false )
 	HProduct product;
 	
@@ -81,7 +81,7 @@ public class HProductStock {
 	//----------------------------------------------------------------------------------------------------------
 
 	
-	//  USED BY HEADDEPARTMENT INTERFACE 
+	//  USED BY TEAMLEADER INTERFACE 
 	// add a new available stock to the product
 	public static boolean addProductStock( HProductStock stock ) {
 		
@@ -108,7 +108,7 @@ public class HProductStock {
 	}
 	
 	
-	//  USED BY HEADDEPARTMENT INTERFACE  
+	//  USED BY TEAMLEADER INTERFACE  
 	//  It gives the last used stock ID
 	public static int getLastStockID() {
 		

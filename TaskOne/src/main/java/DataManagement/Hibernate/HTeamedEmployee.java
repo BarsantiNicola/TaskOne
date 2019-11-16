@@ -20,9 +20,11 @@ import beans.User;
 @Entity
 public class HTeamedEmployee extends HEmployee{
 
-	@Column( name ="IDteam" , nullable = true)
-	private int IDteam;
 
+ @ManyToOne
+ @JoinColumn(name = "IDteam")
+ private HTeam team;
+ 
 	
 	//----------------------------------------------------------------------------------------------------------
 	//										          CONSTRUCTORS
@@ -31,29 +33,42 @@ public class HTeamedEmployee extends HEmployee{
 	
 	HTeamedEmployee(){}
 	
-	public HTeamedEmployee(String username, String name, String surname, String password , String mail , int salary , String role  , int team ){
+	public HTeamedEmployee(String username, String name, String surname, String password , String mail , int salary , String role  , HTeam team ){
 		
 		super( username , name , surname , password , mail , salary , role );
-		this.IDteam = team;
+		this.team = team;
 
 	}
 	
+ public HTeamedEmployee(String username, String name, String surname, String password , String mail , int salary , String role  , int team ){
+  
+  super( username , name , surname , password , mail , salary , role );
+  
+  EntityManager manager = HConnector.FACTORY.createEntityManager();
+  this.team = manager.find(HTeam.class,team);
+  this.team = new HTeam();
+
+ }
+ 
 	public HTeamedEmployee( User user ) {
 		
-		super(user);
-		this.IDteam = user.getTeam();
+  super(user);
+  EntityManager manager = HConnector.FACTORY.createEntityManager();
+  
+
+		this.team = manager.find(HTeam.class,user.getTeam());
 		
 	}
-	
+
 
 	//----------------------------------------------------------------------------------------------------------
 	//										          GETTERS
 	//----------------------------------------------------------------------------------------------------------
 
 	
-	public int getIDTeam() {
+	public HTeam getTeam() {
 		
-		return IDteam;
+		return team;
 	}
 	
 
@@ -62,9 +77,9 @@ public class HTeamedEmployee extends HEmployee{
 	//----------------------------------------------------------------------------------------------------------
 
 	
-	public void setIDTeam( int IDteam ) {
+	public void setIDTeam( HTeam IDteam ) {
 		
-		this.IDteam = IDteam;
+		this.team = IDteam;
 	}
 
 
@@ -95,7 +110,7 @@ public class HTeamedEmployee extends HEmployee{
 		System.out.println("Adding TeamedEmployee: " + employee.toString());
 		EntityManager manager = HConnector.FACTORY.createEntityManager();
 		boolean ret = true;
-		HTeam team = manager.find(HTeam.class, employee.getIDTeam());
+		HTeam team = manager.find(HTeam.class, employee.getTeam().getIDTeam());
 		
 		if( team == null ) return false;  //  the employee has to be part of a valid team
 			
@@ -126,10 +141,33 @@ public class HTeamedEmployee extends HEmployee{
 	public static boolean removeEmployee( HTeamedEmployee employee ) {
 				
 		EntityManager manager = HConnector.FACTORY.createEntityManager();
+		try
+		 {
+		  manager.getTransaction().begin();
+    if(manager.contains(employee))
+     manager.remove(employee);
+    else
+     manager.remove(manager.merge(employee));
+    
+    manager.getTransaction().commit();
+    manager.close();
+	   return true;
+		 }
+		catch( IllegalStateException | RollbackException e )
+		 {
+		  System.out.println("Error: " + e.getMessage());
+		  return false;
+		 }	
+	}
+  /*
 		boolean ret = true;
-		HTeam team = manager.find(HTeam.class, employee.getIDTeam());
 		
-		if( team == null ) return false;  //  only teamed employee are admited
+		
+		  HTeam team = manager.find(HTeam.class, employee.getTeam().getIDTeam());
+		 
+		
+		if( team == null ) 
+		 return false;  //  only teamed employee are admited
 			
 		List<HTeamedEmployee> members = team.getMembers();
 
@@ -165,10 +203,11 @@ public class HTeamedEmployee extends HEmployee{
 		manager.close();
 		System.out.println("ret: " + ret);
 		return ret;
-	}
+		
+	}*/
 	
 	
 	@Override
-	public String toString() { return super.toString() + "\tIdTeam: " + IDteam; }
+	public String toString() { return super.toString() + "\tTeam: " + team.getIDTeam(); }
 	
 }

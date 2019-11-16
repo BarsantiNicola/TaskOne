@@ -32,7 +32,7 @@ public class HOrder {
 	//--------------------------------------------
 
 	@Id
-	@GeneratedValue( strategy = GenerationType.AUTO )
+	//@GeneratedValue( strategy = GenerationType.AUTO )
 	@Column( name = "IDorder", nullable = false )
 	private int IDorder;
 
@@ -47,7 +47,11 @@ public class HOrder {
 
 	@OneToOne
 	@JoinColumn(name = "productStock")
-	HProductStock productStock;
+	private HProductStock productStock;
+	
+ @ManyToOne
+ @JoinColumn(name = "customer")
+	private HCustomer customer;
 
 	//-----------------------------------------
 	// We need to define a one-to-one association 
@@ -72,11 +76,36 @@ public class HOrder {
     // Note that the constructor doesn't need the generatedValue as
     // parameter
     //------------------------------------------
-	public HOrder( Timestamp purchaseDate, int price, String status , String customer , HProductStock stock ){
+	
+public HOrder(int IDorder, Timestamp purchaseDate, int price, String status , HCustomer customer , HProductStock stock ){
+
+     this.IDorder = IDorder;
+     this.purchaseDate = purchaseDate;
+     this.price = price;
+     this.status = status;
+     this.customer = customer;
+     this.productStock = stock;
+
+    }
+    
+//UNUSED
+public HOrder( Timestamp purchaseDate, int price, String status , String Customer , HProductStock stock ){
+
+this.purchaseDate = purchaseDate;
+this.price = price;
+this.status = status;
+this.customer = customer;
+this.productStock = stock;
+
+}
+
+//UNUSED
+public HOrder( Timestamp purchaseDate, int price, String status , HCustomer customer , HProductStock stock ){
 
 		this.purchaseDate = purchaseDate;
 		this.price = price;
 		this.status = status;
+		this.customer = customer;
 		this.productStock = stock;
 
 	}
@@ -126,7 +155,7 @@ public class HOrder {
 
 		return productStock;
 	}
-
+	
 	//----------------------------------------------------------------------------------------------------------
 	//										             SETTERS
 	//----------------------------------------------------------------------------------------------------------
@@ -155,7 +184,7 @@ public class HOrder {
 
 		this.productStock = product;
 	}
-
+ 
 	//----------------------------------------------------------------------------------------------------------
 	//										 FUNCTIONS
 	//----------------------------------------------------------------------------------------------------------
@@ -200,6 +229,13 @@ public class HOrder {
 		return ret;
 	}
 
+	
+	//Called when a customer is deleted to maintain the order in the database
+ public void removeFromCustomer(){
+
+  customer = null;
+ }
+	
 	
 	@Override
 	public String toString() {

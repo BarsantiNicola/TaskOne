@@ -20,10 +20,15 @@ import java.util.*;
 @Entity
 public class HCustomer extends HUser{
 
+ /*
 	@OneToMany( fetch = FetchType.EAGER ,  cascade = {CascadeType.PERSIST, CascadeType.REFRESH, CascadeType.MERGE})
 	@JoinTable(name = "myOrders",joinColumns = {@JoinColumn(name = "username")},
             inverseJoinColumns = {@JoinColumn(name = "IDorder")})
-	List<HOrder> myOrders;
+	List<HOrder> myOrders; */
+	
+ @OneToMany(mappedBy = "customer", cascade = {CascadeType.PERSIST, CascadeType.REFRESH, CascadeType.MERGE})
+ List<HOrder> myOrders;
+	
 
 	@Column( name = "address", nullable = false )
 	String address;
@@ -137,9 +142,41 @@ public class HCustomer extends HUser{
 		
 	}
 	
+
+//USED BY CUSTOMER INTERFACE 
+//add a new order to the customer list and save it in the database
+
+public boolean addOrder( HOrder order )
+ {
+  EntityManager manager = HConnector.FACTORY.createEntityManager();
+  List<HOrder> orders = this.getMyHOrders();
+
+  
+  try
+   {
+
+    manager.getTransaction().begin();
+    manager.persist(order);
+    System.out.println("++++++++++++ IDorder: " + order.getIDorder());
+   // manager.merge(this);
+    manager.getTransaction().commit();
+    manager.close();
+
+    return true;
+   }
+  catch( IllegalStateException | RollbackException e )
+   {
+    System.out.println("++++++++++++ IDorder: " + order.getIDorder());
+    System.out.println("Error: " + e.getMessage());
+    return false;
+   }
+ 
+}
 	
+	/*
 	//  USED BY CUSTOMER INTERFACE 
 	//  add a new order to the customer list and save it in the database
+
 	public boolean addOrder( HOrder order ){
 
 		EntityManager manager = HConnector.FACTORY.createEntityManager();
@@ -170,7 +207,32 @@ public class HCustomer extends HUser{
 		
 		return ret;
 		
-	}
+	}*/
+	
+ public static boolean removeCustomer(HCustomer customer)
+ {
+  EntityManager manager = HConnector.FACTORY.createEntityManager();
+  try
+   {
+    manager.getTransaction().begin();
+    for (HOrder o : customer.myOrders) 
+     o.removeFromCustomer();
+    if(manager.contains(customer))
+     manager.remove(customer);
+    else
+     manager.remove(manager.merge(customer));
+    
+    manager.getTransaction().commit();
+    manager.close();
+    return true;
+   }
+  catch( IllegalStateException | RollbackException e )
+   {
+    System.out.println("Error: " + e.getMessage());
+    return false;
+   } 
+ }
+	
 	
 	
 	@Override

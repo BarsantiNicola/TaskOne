@@ -173,9 +173,9 @@ public class GraphicInterface extends Application implements Initializable {
                 adminPage.setVisible( true );
                 break;
 
-            case HEAD_DEPARTMENT:
+            case TEAMLEADER:
 
-                myInterface = new HeadDepartmentController( myApplication , dataManager.getTeam( name ) );
+                myInterface = new TeamLeaderController( myApplication , dataManager.getTeam( name ) );
                 managerPage.setVisible( true );
                 break;
 

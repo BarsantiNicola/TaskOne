@@ -33,12 +33,11 @@ public class HProduct {
 
 	@Column( name = "productAvailability", nullable = false )
 	private int productAvailability;
-
-	@Column( name = "productType" , nullable = false )
-	private int productType;
 	
-	@Column( name ="IDteam" , nullable = false )
-	private int IDteam;
+ @ManyToOne
+ @JoinColumn(name = "IDteam")
+ private HTeam team;
+ 
 
 	//----------------------------------------------------------------------------------------------------------
 	//											CONSTRUCTORS
@@ -52,8 +51,10 @@ public class HProduct {
 		this.productPrice = price;
 		this.productDescription = description;
 		this.productAvailability = availability;
-		this.productType = productType;
-		this.IDteam = teamID;
+		
+		
+  EntityManager manager = HConnector.FACTORY.createEntityManager();
+  this.team = manager.find(HTeam.class,teamID);
 		
 	}
 	
@@ -63,7 +64,6 @@ public class HProduct {
 		this.productPrice = p.getProductPrice();
 		this.productDescription = p.getProductDescription();
 		this.productAvailability = p.getProductAvailability();
-		this.productType = p.getProductType();
 		
 	}
 
@@ -91,11 +91,6 @@ public class HProduct {
 		return productAvailability;
 	}
 	
-	public int getProductType() {
-		
-		return productType;
-	}
-
 
 	//----------------------------------------------------------------------------------------------------------
 	//											SETTERS
@@ -120,18 +115,13 @@ public class HProduct {
 
 		this.productAvailability = productAvailability;
 	}
-	
-	public void setProductType( int productType ) {
-		
-		this.productType = productType;
-	}
 
 	//----------------------------------------------------------------------------------------------------------
 	//										 FUNCTIONS
 	//----------------------------------------------------------------------------------------------------------
 
 	
-	//  USED BY CUSTOMER/HEADDEPARTMENT INTERFACE 
+	//  USED BY CUSTOMER/ TEAMLEADER INTERFACE 
 	//  the function gives the products matching the given key.
 	public static List<Product> searchProducts( String SEARCHED_VALUE ){
 		
@@ -158,7 +148,7 @@ public class HProduct {
 	}
 	
 	
-	//  USED BY CUSTOMER/HEADDEPARTMENT INTERFACE 
+	//  USED BY CUSTOMER/TEAMLEADER INTERFACE 
 	//  the function gives a list of graphic interface compatible classes
 	public static List<Product> toProductList( List<HProduct> HPRODUCTLIST ){
 		
@@ -173,7 +163,7 @@ public class HProduct {
 	}
 	
 	
-	//  USED BY HEADDEPARTMENT INTERFACE 
+	//  USED BY TEAMLEADER INTERFACE 
 	//  the function ADDS the number given to the current availability of the object
 	public boolean addProductAvailability( int number ) {
 		
@@ -191,16 +181,17 @@ public class HProduct {
 
     	
     	System.out.println( "THE NEW IDSTOCK INSERTED: " + productStock.getIDstock());
-		manager.getTransaction().begin();
-		
-		//  we update the availability by update the product and save the new stock
-		product.setProductAvailability( availability+1);  
 
-		manager.persist(productStock);
-		manager.merge(product);
 
 		try {
 			
+			manager.getTransaction().begin();
+			
+			//  we update the availability by update the product and save the new stock
+			product.setProductAvailability( availability+1);  
+
+			manager.persist(productStock);
+			manager.merge(product);
 			manager.getTransaction().commit();
 			
 		}catch( IllegalStateException | RollbackException e ) {
@@ -259,7 +250,7 @@ public class HProduct {
 	public String toString() {
 		
 		return "productName: " + productName + "\tproductPrice: " + productPrice + "\tproductAvailability: " 
-				+ productAvailability + "\tproductType: " + productType +"\n\tproductDescription: " + productDescription;
+				+ productAvailability +"\n\tproductDescription: " + productDescription;
 	}
 
 }
