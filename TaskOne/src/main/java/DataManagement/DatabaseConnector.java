@@ -56,6 +56,7 @@ public class DatabaseConnector extends DataConnector{
 	private static PreparedStatement isTeamLeader;
 	private static PreparedStatement getOrders;
 	private static PreparedStatement getMinIDProduct;
+	private static PreparedStatement getIDStocks;
 	private static PreparedStatement updateProductAvailability;
 	private static PreparedStatement getProductType;
 
@@ -121,6 +122,17 @@ public class DatabaseConnector extends DataConnector{
 							" FROM product_stock INNER JOIN orders" +
 							" ON IDproduct = product " +
 							" WHERE productType = ?)" +
+							" ORDER BY IDProduct"
+
+			);
+			
+			getIDStocks = myConnection.prepareStatement(
+					"SELECT IDProduct" +
+							" FROM product_stock WHERE productName = ? " +
+							" AND IDproduct NOT IN(SELECT IDproduct" +
+							" FROM product_stock INNER JOIN orders" +
+							" ON IDproduct = product " +
+							" WHERE productName = ?)" +
 							" ORDER BY IDProduct"
 
 			);
@@ -1197,6 +1209,32 @@ public List<HEmployee> getUnteamedHEmployees(){
 	return administrators;
 }
 	
+	public List<Integer> getIDStocks( String PRODUCT_NAME ){
+		
+		List<Integer> idList = new ArrayList<Integer>();
+		
+		try {
+
+			getIDStocks.setString(1, PRODUCT_NAME);
+
+
+			getIDStocks.execute();
+			ResultSet ids = getIDStocks.getResultSet();
+
+			while (ids.next())
+				idList.add(ids.getInt("IDProduct"));
+
+		} catch (SQLException caughtException) {
+
+			System.out.println("SQLException: " + caughtException.getMessage());
+			System.out.println("SQLState: " + caughtException.getSQLState());
+			System.out.println("VendorError: " + caughtException.getErrorCode());
+
+		}
+
+		return idList;
+
+	}
 	
 	
 }
