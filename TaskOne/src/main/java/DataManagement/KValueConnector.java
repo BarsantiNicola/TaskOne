@@ -88,7 +88,50 @@ public class KValueConnector extends DataConnector{
 	    		}
 	    	}
 	    	
-	    	return maxOrderID;
+	    	return maxOrderID+1;
+	    }
+	    
+	    public int getNextIDStock() {
+	    	
+	    	int id = 0;
+	    	JSONproductNames productNames = getJSONProducts();
+	    	JSONidStocks stocks = new JSONidStocks();
+	    	String key,hashKey;
+	    	JsonObject json;
+	    	Gson gson = new Gson();
+	    	
+	    	for( int i = 0; i < productNames.getProductNamesList().size(); i++ ) {
+	    		
+	    		key = "prod:" + productNames.getName(i) + ":stocks";
+	    		hashKey = getStringHash(key);
+	    		
+	    		if( getIntHash(hashKey) <= 0 ) {
+	    			
+	    			json = JsonParser.parseString(new String(levelDBStore1.get(hashKey.getBytes()))).getAsJsonObject();
+	    			
+	    			if( json.has("idStocksList") ) {
+	    				
+	    				stocks = gson.fromJson(json,JSONidStocks.class);
+	    			}
+	    			
+	    		} else {
+	    			
+	    			json = JsonParser.parseString(new String(levelDBStore2.get(hashKey.getBytes()))).getAsJsonObject();
+	    			
+	    			if( json.has("idStocksList") ) {
+	    				
+	    				stocks = gson.fromJson(json,JSONidStocks.class);
+	    			}
+	    		}
+	    		
+	    		if( Collections.max(stocks.getidStocksList()) > id ) {
+	    			
+	    			id = Collections.max(stocks.getidStocksList());
+	    		}
+	    		
+	    	}
+	    	
+	    	return id+1;
 	    }
 	    
 		public static JSONusers getJSONusers() {
@@ -282,7 +325,7 @@ public class KValueConnector extends DataConnector{
 	    	
 	    	if ( getIntHash(key) <= 0 ) {
 				
-				levelDBStore1.delete(hashKey.getBytes()); //Non sono sicuro 
+				levelDBStore1.delete(hashKey.getBytes()); //Non sono sicuro
 							
 			} else {
 				
@@ -346,7 +389,7 @@ public class KValueConnector extends DataConnector{
 			updateProductAvailability(PRODUCT_NAME,-1);
 			
 			//tolgo il product id da quelli disponibili 
-			
+			deleteProductID(PRODUCT_NAME);
 			
 			//aggiungo order id al customer
 			
@@ -374,7 +417,7 @@ public class KValueConnector extends DataConnector{
 	    	String key, hashKey;
 			Gson gson = new Gson();
 	    	
-			key= "user:" + CUSTOMER + ":order:" + ORDER.getOrderID(); //manca questa funzione
+			key= "user:" + CUSTOMER + ":order:" + getNewOrderID(); 
 			hashKey= getStringHash(key);
 	    	
 			if( getIntHash(key) <= 0 ) {
@@ -389,12 +432,13 @@ public class KValueConnector extends DataConnector{
 			
 			updateProductAvailability(ORDER.getProductName(),-1);
 			
-			//tolgo il product id da quelli disponibili COME SI FA
+			//tolgo il product id da quelli disponibili 
+			deleteProductID(ORDER.getProductName());
 			
 			//aggiungo order id al customer
 			
 			JSONorderID orders = getJSONOrders(CUSTOMER);
-			orders.getOrderIDList().add(ORDER.getOrderID()); //non c'è l'order id
+			orders.getOrderIDList().add(getNewOrderID()); 
 			
 			key = "user:" + CUSTOMER + ":order";
 			hashKey = getStringHash(key);
@@ -430,6 +474,23 @@ public class KValueConnector extends DataConnector{
 			} else {
 				
 				levelDBStore2.put(hashKey.getBytes(),gson.toJson(product).getBytes());
+			}
+	    	
+	    	//aggiungo stock id
+	    	int new_id = getNextIDStock();
+	    	
+	    	JSONidStocks stocks = getIDStocks(PRODUCTNAME);
+	    	stocks.getidStocksList().add(new_id);
+	    	
+	    	key = "prod:" + PRODUCTNAME + ":idstocks";
+	    	hashKey = getStringHash(key);
+	    	
+	    	if( getIntHash(key) <= 0 ) {
+				
+				levelDBStore1.put(hashKey.getBytes(),gson.toJson(stocks).getBytes());
+			} else {
+				
+				levelDBStore2.put(hashKey.getBytes(),gson.toJson(stocks).getBytes());
 			}
 	    	
 	    	return true;
@@ -702,7 +763,7 @@ public class KValueConnector extends DataConnector{
 	    	
 	    	JSONidStocks stocks = new JSONidStocks();
 	    	JsonObject json;
-	    	GSon gson = new Gson();
+	    	Gson gson = new Gson();
 	    	
 	    	if( getIntHash(hashKey) <= 0 ) {
 	    		
@@ -726,10 +787,10 @@ public class KValueConnector extends DataConnector{
 	    	
 	    	if( getIntHash(hashKey) <= 0 ) {
 	    		
-	    		put
+	    		levelDBStore1.put(hashKey.getBytes(),gson.toJson(stocks).getBytes());
 	    	} else {
 	    		
-	    		put
+	    		levelDBStore2.put(hashKey.getBytes(),gson.toJson(stocks).getBytes());
 	    	}
 	    }
 	    

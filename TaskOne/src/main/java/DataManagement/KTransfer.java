@@ -3,6 +3,8 @@ package DataManagement;
 import java.util.*;
 import org.apache.commons.codec.digest.*;
 import com.google.gson.*;
+
+import DataManagement.Hibernate.*;
 import JSONclasses.*;
 import beans.*;
 
