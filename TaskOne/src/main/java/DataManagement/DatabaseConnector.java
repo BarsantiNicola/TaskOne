@@ -55,6 +55,7 @@ public class DatabaseConnector extends DataConnector{
 	private static PreparedStatement rollback;
 	private static PreparedStatement isTeamLeader;
 	private static PreparedStatement getOrders;
+	private static PreparedStatement getOrdersId;
 	private static PreparedStatement getMinIDProduct;
 	private static PreparedStatement getIDStocks;
 	private static PreparedStatement updateProductAvailability;
@@ -154,12 +155,18 @@ public class DatabaseConnector extends DataConnector{
 					"INSERT INTO orders VALUES (?,?,?,?,?)");
 			
 			getOrders = myConnection.prepareStatement(
-					"SELECT product , productName , productPrice ,purchaseDate, price , status"
+					"SELECT IDorder, product , productName , productPrice ,purchaseDate, price , status"
 					+ " FROM orders JOIN product_stock"
 					+ " ON  orders.product = product_stock.IDproduct"
 					+ " JOIN product ON product_stock.productType = product.productType"
 					+ " WHERE customer=?");
 			
+			getOrdersId = myConnection.prepareStatement(
+					"SELECT IDorder"
+					+ " FROM orders JOIN product_stock"
+					+ " ON  orders.product = product_stock.IDproduct"
+					+ " JOIN product ON product_stock.productType = product.productType"
+					+ " WHERE customer=?");
 			//OTHER STATEMENTS
 			
 			searchTeamProductsStatement = myConnection.prepareStatement(
@@ -612,6 +619,33 @@ public class DatabaseConnector extends DataConnector{
 
 		return ordersList;
 	}
+	
+	//retrieve all the ordersID of a given customer
+		public List<Integer> getOrdersId( String IDcustomer ){
+			
+			List<Integer> OrderIdList = new ArrayList<>();
+
+			try {
+
+				getOrdersId.setString( 1 , IDcustomer );
+				getOrdersId.execute();
+
+				ResultSet orderStatusResult = getOrdersId.getResultSet();
+
+				while ( orderStatusResult.next() ) {
+
+					OrderIdList.add(orderStatusResult.getInt("IDorder"));
+				}
+
+
+			} catch (SQLException caughtException) {
+				System.out.println("SQLException: " + caughtException.getMessage());
+				System.out.println("SQLState: " + caughtException.getSQLState());
+				System.out.println("VendorError: " + caughtException.getErrorCode());
+			}
+
+			return OrderIdList;
+		}
 
 	//UTILITY FUNCTIONS
 	

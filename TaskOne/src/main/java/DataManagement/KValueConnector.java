@@ -536,11 +536,11 @@ public class KValueConnector extends DataConnector{
 	    	
 
 	        
-	    /*	if( intHashKey < 0 ) {
+	    	if( intHashKey < 0 ) {
 				
 	    		json = JsonParser.parseString(new String(levelDBStore1.get(hashKey.getBytes()))).getAsJsonObject(); 
 	    		
-	    		if( json.has("password") && json.get("Password").getAsString().equals(PASSWORD)) {
+	    		if( json.has("Password") && json.get("Password").getAsString().equals(PASSWORD)) {
 	    			
 	    			return UserType.CUSTOMER;
 	    		} else {
@@ -551,15 +551,14 @@ public class KValueConnector extends DataConnector{
 				
     			json = JsonParser.parseString(new String(levelDBStore2.get(hashKey.getBytes()))).getAsJsonObject(); 
 	    		
-	    		if( json.has("password") && json.get("Password").getAsString().equals(PASSWORD)) {
+	    		if( json.has("Password") && json.get("Password").getAsString().equals(PASSWORD)) {
 	    			
 	    			return UserType.CUSTOMER;
 	    		} else {
 	    			
 	    			return UserType.NOUSER;
 	    		}		
-			}	*/
-	    	return UserType.NOUSER;
+			}	
 	    	
 	    }
 	    

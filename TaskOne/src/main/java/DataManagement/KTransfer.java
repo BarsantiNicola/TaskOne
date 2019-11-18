@@ -1,5 +1,7 @@
 package DataManagement;
 
+import java.sql.ResultSet;
+import java.sql.Timestamp;
 import java.util.*;
 import org.apache.commons.codec.digest.*;
 import com.google.gson.*;
@@ -7,6 +9,7 @@ import com.google.gson.*;
 import DataManagement.Hibernate.*;
 import JSONclasses.*;
 import beans.*;
+import javafx.beans.property.SimpleObjectProperty;
 
 
 public class KTransfer {
@@ -78,10 +81,11 @@ public class KTransfer {
 
 				List<User> userList = database.getUsers(); 
 				JSONorderID idList;
-				List<Order> orderList = new ArrayList<>();
+				//List<Order> orderList = new ArrayList<>();
+				List<Integer> orderIdList = new ArrayList<>();
 				
 				User user;
-				Order order;
+				//Order order;
 						
 				String key, hashKey;
 				Gson gson = new Gson();
@@ -91,12 +95,10 @@ public class KTransfer {
 					user = userList.get(i);
 					idList = new JSONorderID();
 					
-					orderList = database.getOrders(user.getUsername());  
+					//orderList = database.getOrders(user.getUsername()); 
+					orderIdList = database.getOrdersId(user.getUsername());
 					
-					for( int j=0; j<orderList.size(); j++ ) {
-						
-						idList.add(orderList.get(j).getOrderID()); //serve un modo per prendere l'id
-					}
+					idList = new JSONorderID(orderIdList);
 					
 					key = "user:" + user.getUsername() + ":order";
 					hashKey = KValueConnector.getStringHash(key);
@@ -118,8 +120,11 @@ public class KTransfer {
 				
 				List<User> userList = database.getUsers();   
 				List<Order> orderList;
+				List<Integer> orderIdList = new ArrayList<>();
+				
 				User user;
 				Order order;
+				int idorder;
 				
 				String key, hashKey;
 				Gson gson = new Gson();
@@ -129,12 +134,14 @@ public class KTransfer {
 					user = userList.get(i);
 					
 					orderList = database.getOrders(user.getUsername()); 
+					orderIdList = database.getOrdersId(user.getUsername());
 					
 					for( int j=0; j < orderList.size(); j++ ) {
 						
 						order = orderList.get(j);
+						idorder = orderIdList.get(j);
 						
-						key = "user:" + user.getUsername() + ":order:" + order.getOrderID(); //order deve avere qualcosa per tornare l'id
+						key = "user:" + user.getUsername() + ":order:" + idorder; //order deve avere qualcosa per tornare l'id
 						hashKey = KValueConnector.getStringHash(key);
 						
 						if( KValueConnector.getIntHash(hashKey) <= 0 ) {
@@ -147,6 +154,7 @@ public class KTransfer {
 					}
 					
 				}
+				return true;
 			}
 			
 			public static boolean importProducts() {
