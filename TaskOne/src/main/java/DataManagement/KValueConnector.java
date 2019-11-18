@@ -17,7 +17,7 @@ public class KValueConnector extends DataConnector{
 		public static DB levelDBStore1;
 		public static DB levelDBStore2;
 		
-	/*	static {
+		static {
 			
 			Options options = new Options();
 			
@@ -29,7 +29,7 @@ public class KValueConnector extends DataConnector{
 				e.printStackTrace();
 			}
 			
-		}*/
+		}
 		
 		 //  ONLY FOR DETERMINE THE DATABASE
 	    static int getIntHash( String key ) {
@@ -476,22 +476,27 @@ public class KValueConnector extends DataConnector{
 				levelDBStore2.put(hashKey.getBytes(),gson.toJson(product).getBytes());
 			}
 	    	
-	    	//aggiungo stock id
-	    	int new_id = getNextIDStock();
 	    	
-	    	JSONidStocks stocks = getIDStocks(PRODUCTNAME);
-	    	stocks.getidStocksList().add(new_id);
+	    	if( ADDED_AVAILABILITY == 1 ) {
+	    		
+	    		//aggiungo stock id
+		    	int new_id = getNextIDStock();
+		    	
+		    	JSONidStocks stocks = getIDStocks(PRODUCTNAME);
+		    	stocks.getidStocksList().add(new_id);
+		    	
+		    	key = "prod:" + PRODUCTNAME + ":idstocks";
+		    	hashKey = getStringHash(key);
+		    	
+		    	if( getIntHash(key) <= 0 ) {
+					
+					levelDBStore1.put(hashKey.getBytes(),gson.toJson(stocks).getBytes());
+				} else {
+					
+					levelDBStore2.put(hashKey.getBytes(),gson.toJson(stocks).getBytes());
+				}
+	    	}
 	    	
-	    	key = "prod:" + PRODUCTNAME + ":idstocks";
-	    	hashKey = getStringHash(key);
-	    	
-	    	if( getIntHash(key) <= 0 ) {
-				
-				levelDBStore1.put(hashKey.getBytes(),gson.toJson(stocks).getBytes());
-			} else {
-				
-				levelDBStore2.put(hashKey.getBytes(),gson.toJson(stocks).getBytes());
-			}
 	    	
 	    	return true;
 	    }
