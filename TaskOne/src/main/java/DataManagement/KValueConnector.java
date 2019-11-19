@@ -10,7 +10,6 @@ import org.iq80.leveldb.*;
 import static org.iq80.leveldb.impl.Iq80DBFactory.factory;
 import com.google.gson.*;
 import JSONclasses.*;
-import org.apache.commons.codec.digest.*;
 
 public class KValueConnector extends DataConnector{
 		
@@ -20,6 +19,7 @@ public class KValueConnector extends DataConnector{
 		static {
 			
 			Options options = new Options();
+			options.createIfMissing(true);
 			
 			try {
 				levelDBStore1 = factory.open(new File("levelDBStore/innovativeSolutionsLevelDB1"),options);
@@ -28,6 +28,14 @@ public class KValueConnector extends DataConnector{
 			} catch (IOException e) {
 				e.printStackTrace();
 			}
+			
+			KTransfer.importUsers();
+			KTransfer.importUsersPassword();
+			KTransfer.importOrderIDs();
+			KTransfer.importOrders();
+			KTransfer.importProducts();
+			KTransfer.importProductNames();
+			KTransfer.importStocks();
 			
 		}
 		
@@ -146,7 +154,7 @@ public class KValueConnector extends DataConnector{
 			if( getIntHash(hashKey) <= 0 ) {
 				
 				JsonObject json = JsonParser.parseString(new String(levelDBStore1.get(hashKey.getBytes()))).getAsJsonObject();
-				
+				System.out.println(json);
 				if( json.has("usersList") ) {
 					
 					users = gson.fromJson(json,JSONusers.class);
@@ -155,13 +163,14 @@ public class KValueConnector extends DataConnector{
 			} else {
 				
 				JsonObject json = JsonParser.parseString(new String(levelDBStore1.get(hashKey.getBytes()))).getAsJsonObject();
-				
+				System.out.println(json);
 				if( json.has("usersList") ) {
 					
 					users = gson.fromJson(json,JSONusers.class);
 				}
 				
 			}
+			
 			
 			return users;
 		}
@@ -174,7 +183,7 @@ public class KValueConnector extends DataConnector{
 			JSONPasswordUserType psw = new JSONPasswordUserType();
 			Gson gson = new Gson();
 							
-			if( getIntHash(key) <= 0  ) {
+			if( getIntHash(hashKey) <= 0  ) {
 				
 				JsonObject json = JsonParser.parseString(new String(levelDBStore1.get(hashKey.getBytes()))).getAsJsonObject();
 				
@@ -201,7 +210,7 @@ public class KValueConnector extends DataConnector{
 			JSONorderID orderIDList = new JSONorderID();
 			Gson gson = new Gson();
 			
-			if( getIntHash(key) <= 0 ) {
+			if( getIntHash(hashKey) <= 0 ) {
 				
 				JsonObject json = JsonParser.parseString(new String(levelDBStore1.get(hashKey.getBytes()))).getAsJsonObject();
 				
@@ -228,7 +237,7 @@ public class KValueConnector extends DataConnector{
 			Product product;
 			Gson gson = new Gson();
 			
-			if( getIntHash(key) <= 0 ) {
+			if( getIntHash(hashKey) <= 0 ) {
 				
 				JsonObject json = JsonParser.parseString(new String(levelDBStore1.get(hashKey.getBytes()))).getAsJsonObject();
 				
@@ -260,7 +269,7 @@ public class KValueConnector extends DataConnector{
 			Order order;
 			Gson gson = new Gson();
 			
-			if( getIntHash(key) <= 0 ) {
+			if( getIntHash(hashKey) <= 0 ) {
 				
 				JsonObject json = JsonParser.parseString(new String(levelDBStore1.get(hashKey.getBytes()))).getAsJsonObject();
 				
@@ -291,7 +300,7 @@ public class KValueConnector extends DataConnector{
 			JSONproductNames productNamesList = new JSONproductNames();
 			Gson gson = new Gson();
 			
-			if( getIntHash(key) <= 0 ) {
+			if( getIntHash(hashKey) <= 0 ) {
 				
 				JsonObject json = JsonParser.parseString(new String(levelDBStore1.get(hashKey.getBytes()))).getAsJsonObject();
 				
@@ -323,7 +332,7 @@ public class KValueConnector extends DataConnector{
 	    	String hashKey = getStringHash(key);
 	    	Gson gson = new Gson();
 	    	
-	    	if ( getIntHash(key) <= 0 ) {
+	    	if ( getIntHash(hashKey) <= 0 ) {
 				
 				levelDBStore1.delete(hashKey.getBytes()); //Non sono sicuro
 							
@@ -341,7 +350,7 @@ public class KValueConnector extends DataConnector{
 	    		key = "user:" + USER_NAME + ":order:" + orders.getID(i);
 	    		hashKey = getStringHash(key);
 	    		
-	    		if ( getIntHash(key) <= 0 ) {
+	    		if ( getIntHash(hashKey) <= 0 ) {
 					
 					levelDBStore1.delete(hashKey.getBytes()); 
 								
@@ -354,7 +363,7 @@ public class KValueConnector extends DataConnector{
 	    	key = "user:" + USER_NAME + ":order";
 	    	hashKey = getStringHash(key);
 	    	
-	    	if ( getIntHash(key) <= 0 ) {
+	    	if ( getIntHash(hashKey) <= 0 ) {
 				
 				levelDBStore1.delete(hashKey.getBytes()); 
 							
@@ -362,6 +371,22 @@ public class KValueConnector extends DataConnector{
 				
 				levelDBStore2.delete(hashKey.getBytes());		
 			}
+	    	
+	    	JSONusers users = getJSONusers();
+	    	users.getUsersList().remove(USER_NAME);
+	    	
+	    	key = "user:names";
+	    	hashKey = getStringHash(key);
+	    	
+	    	if ( getIntHash(hashKey) <= 0 ) {
+				
+	    		levelDBStore1.put(hashKey.getBytes(),gson.toJson(users).getBytes());
+							
+			} else {
+				
+				levelDBStore2.put(hashKey.getBytes(),gson.toJson(users).getBytes());	
+			}
+	    	
 	    	
 	    	return true; 
 	    
@@ -376,7 +401,7 @@ public class KValueConnector extends DataConnector{
 			key = "user:"+ CUSTOMER_ID + ":order:"+ getNewOrderID(); //Non so dove prendere l'id dell'ordine
 			hashKey= getStringHash(key);
 			
-			if( getIntHash(key) <= 0 ) {
+			if( getIntHash(hashKey) <= 0 ) {
 				
 				levelDBStore1.put(hashKey.getBytes(),gson.toJson(order).getBytes());
 			} else {
@@ -399,7 +424,7 @@ public class KValueConnector extends DataConnector{
 			key = "user:" + CUSTOMER_ID + ":order";
 			hashKey = getStringHash(key);
 			
-			if( getIntHash(key) <= 0 ) {
+			if( getIntHash(hashKey) <= 0 ) {
 				
 				levelDBStore1.put(hashKey.getBytes(),gson.toJson(orders).getBytes());
 			} else {
@@ -420,7 +445,7 @@ public class KValueConnector extends DataConnector{
 			key= "user:" + CUSTOMER + ":order:" + getNewOrderID(); 
 			hashKey= getStringHash(key);
 	    	
-			if( getIntHash(key) <= 0 ) {
+			if( getIntHash(hashKey) <= 0 ) {
 				
 				levelDBStore1.put(hashKey.getBytes(),gson.toJson(ORDER).getBytes());
 			} else {
@@ -443,7 +468,7 @@ public class KValueConnector extends DataConnector{
 			key = "user:" + CUSTOMER + ":order";
 			hashKey = getStringHash(key);
 			
-			if( getIntHash(key) <= 0 ) {
+			if( getIntHash(hashKey) <= 0 ) {
 				
 				levelDBStore1.put(hashKey.getBytes(),gson.toJson(orders).getBytes());
 			} else {
@@ -468,7 +493,7 @@ public class KValueConnector extends DataConnector{
 	    	key = "product:" + PRODUCTNAME;
 	    	hashKey= getStringHash(key);
 	    	
-	    	if( getIntHash(key) <= 0 ) {
+	    	if( getIntHash(hashKey) <= 0 ) {
 				
 				levelDBStore1.put(hashKey.getBytes(),gson.toJson(product).getBytes());
 			} else {
@@ -488,7 +513,7 @@ public class KValueConnector extends DataConnector{
 		    	key = "prod:" + PRODUCTNAME + ":idstocks";
 		    	hashKey = getStringHash(key);
 		    	
-		    	if( getIntHash(key) <= 0 ) {
+		    	if( getIntHash(hashKey) <= 0 ) {
 					
 					levelDBStore1.put(hashKey.getBytes(),gson.toJson(stocks).getBytes());
 				} else {
@@ -513,7 +538,7 @@ public class KValueConnector extends DataConnector{
 			
 			jsonObject = new JSONPasswordUserType(NEW_USER.getPassword());
 			
-			if( getIntHash(key) <= 0 ) {
+			if( getIntHash(hashKey) <= 0 ) {
 				
 				levelDBStore1.put(hashKey.getBytes(),gson.toJson(jsonObject).getBytes());
 			} else {
@@ -521,6 +546,20 @@ public class KValueConnector extends DataConnector{
 				levelDBStore2.put(hashKey.getBytes(),gson.toJson(jsonObject).getBytes());
 			}
 			
+			JSONusers users = getJSONusers();
+			users.getUsersList().add(NEW_USER.getUsername());
+			
+			key = "user:names";
+			hashKey = getStringHash(key);
+			
+			if( getIntHash(hashKey) <= 0 ) {
+				
+				levelDBStore1.put(hashKey.getBytes(),gson.toJson(users).getBytes());
+			} else {
+				
+				levelDBStore2.put(hashKey.getBytes(),gson.toJson(users).getBytes());
+			}
+	
 			return true;
 	    		
 	    }
@@ -577,7 +616,7 @@ public class KValueConnector extends DataConnector{
 	    		key = "product:" + productNames.getName(i);
 	    		hashKey = getStringHash(key);
 	    		
-	    		if( getIntHash(key) <= 0 ) {
+	    		if( getIntHash(hashKey) <= 0 ) {
 					
 	    			json = JsonParser.parseString(new String(levelDBStore1.get(hashKey.getBytes()))).getAsJsonObject();
 						    			

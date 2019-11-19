@@ -1,21 +1,16 @@
 package DataManagement;
 
-import java.sql.ResultSet;
-import java.sql.Timestamp;
 import java.util.*;
-import org.apache.commons.codec.digest.*;
 import com.google.gson.*;
-
-import DataManagement.Hibernate.*;
 import JSONclasses.*;
 import beans.*;
-import javafx.beans.property.SimpleObjectProperty;
 
 
 public class KTransfer {
 			
 	private static DatabaseConnector database = new DatabaseConnector();
-			
+		
+	
 	public static boolean importUsers() {
 		
 		List<User> userList = database.getUsers(); 
@@ -34,7 +29,7 @@ public class KTransfer {
 		
 		JSONusers jsonObject = new JSONusers(namesList);
 		
-		if( KValueConnector.getIntHash(key) <= 0 ) {
+		if( KValueConnector.getIntHash(hashKey) <= 0 ) {
 			
 			KValueConnector.levelDBStore1.put(hashKey.getBytes(),gson.toJson(jsonObject).getBytes());
 		} else {
@@ -64,7 +59,7 @@ public class KTransfer {
 					
 					jsonObject = new JSONPasswordUserType(user.getPassword());
 					
-					if( KValueConnector.getIntHash(key) <= 0 ) {
+					if( KValueConnector.getIntHash(hashKey) <= 0 ) {
 						
 						KValueConnector.levelDBStore1.put(hashKey.getBytes(),gson.toJson(jsonObject).getBytes());
 					} else {
@@ -183,7 +178,7 @@ public class KTransfer {
 				return true;
 			}
 			
-			public boolean importProductNames() {
+			public static boolean importProductNames() {
 				
 				List<Product> productList = database.getAvailableProducts(); //va bene prendere anche solo gli available?
 				List<String> namesList = new ArrayList<>();
@@ -213,7 +208,7 @@ public class KTransfer {
 				
 			}
 			
-			public boolean importStocks() {
+			public static boolean importStocks() {
 				
 				List<Product> productList = database.getAvailableProducts(); //va bene prendere anche solo gli available?
 				String key, hashKey;
