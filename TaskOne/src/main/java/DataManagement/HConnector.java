@@ -703,7 +703,7 @@ public class HConnector extends DataConnector{
     	
     	EntityManager manager = null;
     	List<HProductStock> hstocks = null;
-    	
+    	List<HProductStock> retStocks = new ArrayList<>();
     	try {
    		
     		manager = FACTORY.createEntityManager();      		
@@ -719,6 +719,10 @@ public class HConnector extends DataConnector{
     		return new ArrayList<>(); 		
     	}
     	
-    	return hstocks;
+    	for( int a = 0; a<hstocks.size(); a++ )
+    		if( hstocks.get(a).getProduct().getProductName().compareTo(PRODUCT_NAME) == 0 )
+    			retStocks.add(hstocks.get(a));
+    	
+    	return retStocks;
     }
 }
