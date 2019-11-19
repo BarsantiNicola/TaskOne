@@ -112,7 +112,7 @@ public class HProductStock {
 	
 	//  USED BY TEAMLEADER INTERFACE  
 	//  It gives the last used stock ID
-	public static int getLastStockID() {
+	public static int getLastStockID( String PRODUCT_NAME ) {
 		
 		if( HConnector.FACTORY == null ) //  Firstable we verify there is an active connection
 			if( !HConnector.createConnection()) return -1;
@@ -123,7 +123,7 @@ public class HProductStock {
 		try {
 		
 			manager = HConnector.FACTORY.createEntityManager();  //  C'è UN ERRORE QUA  SELEZIONARE PRIMA I FREE STOCKS => p.IDstock NOT IN ( select p.stockID from orders )
-			lastStock = (HProductStock)manager.createQuery("SELECT p FROM HProductStock p WHERE p = ( SELECT max(h.IDstock) FROM HProductStock h )").getSingleResult();
+			lastStock = (HProductStock)manager.createQuery("SELECT p FROM HProductStock p WHERE p.product = ( SELECT h FROM HProduct h WHERE h.productName = ?1)").setParameter(1, PRODUCT_NAME ).getSingleResult();
 			manager.close();
 			
 		}catch( Exception e ) {

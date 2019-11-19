@@ -208,7 +208,7 @@ public class HProduct {
 		try {
 			
 			manager = HConnector.FACTORY.createEntityManager();
-			productStock = new HProductStock(  HProductStock.getLastStockID()+1 , product );
+			productStock = new HProductStock(  HProductStock.getLastStockID( productName )+1 , product );
 			manager.getTransaction().begin();
 			//  we update the availability by update the product and save the new stock
 			product.setProductAvailability( availability+1);  

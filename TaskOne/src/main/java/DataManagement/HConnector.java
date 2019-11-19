@@ -363,7 +363,7 @@ public class HConnector extends DataConnector{
     	
     	}
     	
-    	return product.decreaseAvailability( HProductStock.getLastStockID() ); 	
+    	return product.decreaseAvailability( HProductStock.getLastStockID( PRODUCT_NAME ) ); 	
 		
 	}
 
@@ -720,7 +720,7 @@ public class HConnector extends DataConnector{
     	}
     	
     	for( int a = 0; a<hstocks.size(); a++ )
-    		if( hstocks.get(a).getProduct().getProductName().compareTo(PRODUCT_NAME) == 0 )
+    		if( hstocks.get(a).getProduct().getProductName().compareTo( PRODUCT_NAME ) == 0 )
     			retStocks.add(hstocks.get(a));
     	
     	return retStocks;

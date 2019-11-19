@@ -22,6 +22,7 @@ public class KValueConnector extends DataConnector{
 			options.createIfMissing(true);
 			
 			try {
+				
 				levelDBStore1 = factory.open(new File("levelDBStore/innovativeSolutionsLevelDB1"),options);
 				levelDBStore2 = factory.open(new File("levelDBStore/innovativeSolutionsLevelDB2"),options);
 				

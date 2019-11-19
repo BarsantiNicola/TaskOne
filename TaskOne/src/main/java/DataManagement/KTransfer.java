@@ -232,6 +232,8 @@ public class KTransfer {
 			public static boolean importStocks() {
 				
 				List<Product> productList = hibernate.getAvailableProducts();
+				List<HProductStock> stockList = null;
+				List<Integer> stockIds = new ArrayList<>();
 				String key, hashKey;
 				Gson gson = new Gson();
 				
@@ -239,8 +241,10 @@ public class KTransfer {
 					
 					key = "prod:" + productList.get(i).getProductName() + ":idstocks";
 					hashKey = KValueConnector.getStringHash(key);
-					
-					JSONidStocks ids = new JSONidStocks(hibernate.getFreeStocks(productList.get(i).getProductName()));
+					stockList = hibernate.getFreeStocks(productList.get(i).getProductName());
+					for( HProductStock s : stockList )
+						stockIds.add( s.getIDstock());
+					JSONidStocks ids = new JSONidStocks( stockIds );
 					
 					if( KValueConnector.getIntHash(key) <= 0 ) {
 						
@@ -249,7 +253,6 @@ public class KTransfer {
 						
 						KValueConnector.levelDBStore2.put(hashKey.getBytes(),gson.toJson(ids).getBytes());
 					}
-					
 				}
 				
 				return true;
