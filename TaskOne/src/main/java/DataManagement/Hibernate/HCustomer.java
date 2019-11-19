@@ -19,15 +19,9 @@ import java.util.*;
 
 @Entity
 public class HCustomer extends HUser{
-
- /*
-	@OneToMany( fetch = FetchType.EAGER ,  cascade = {CascadeType.PERSIST, CascadeType.REFRESH, CascadeType.MERGE})
-	@JoinTable(name = "myOrders",joinColumns = {@JoinColumn(name = "username")},
-            inverseJoinColumns = {@JoinColumn(name = "IDorder")})
-	List<HOrder> myOrders; */
 	
- @OneToMany(mappedBy = "customer", cascade = {CascadeType.PERSIST, CascadeType.REFRESH, CascadeType.MERGE})
- List<HOrder> myOrders;
+	@OneToMany(mappedBy = "customer", cascade = {CascadeType.PERSIST, CascadeType.REFRESH, CascadeType.MERGE})
+	List<HOrder> myOrders;
 	
 
 	@Column( name = "address", nullable = false )
@@ -87,6 +81,7 @@ public class HCustomer extends HUser{
 	public void setAddress( String addr ) {
 		this.address = addr;
 	}
+	
 	//----------------------------------------------------------------------------------------------------------
 	//										FUNCTIONS
 	//----------------------------------------------------------------------------------------------------------
@@ -95,6 +90,7 @@ public class HCustomer extends HUser{
 	//  USED FROM CUSTOMER INTERFACE
 	//  Gets the user's orders which match with the key from the database. 
 	//  It is used also for get all the user's orders. 
+	
 	public List<Order> searchOrders( String SEARCHED_VALUE ){
 		
 		List<Order> orderList = new ArrayList<>();
@@ -120,120 +116,105 @@ public class HCustomer extends HUser{
 	// add a new customer to the database
 	public static boolean addCustomer( HCustomer customer ){
 		
-		System.out.println("Adding Customer: " + customer.toString());
-		EntityManager manager = HConnector.FACTORY.createEntityManager();
-		boolean ret = true;	
+		if( HConnector.FACTORY == null ) //  Firstable we verify there is an active connection
+			if( !HConnector.createConnection()) return false;
+		
+		System.out.println("-----> Adding Customer: " + customer.toString());
+		EntityManager manager = null;
 
 		try {
 			
+			manager = HConnector.FACTORY.createEntityManager();
 			manager.getTransaction().begin();
 			manager.persist( customer );
 			manager.getTransaction().commit();
+			manager.close();
 			
 		}catch( IllegalStateException | RollbackException e ) {
 			
-			ret = false;
+    		System.out.println( "---->Error, Connection Rejected" );
+			manager.close();
+			HConnector.FACTORY.close();
+			HConnector.FACTORY = null;
+			return false;
 			
 		}
-		
-		manager.close();
-		
-		return ret;
+			
+		return true;
 		
 	}
 	
 
-//USED BY CUSTOMER INTERFACE 
-//add a new order to the customer list and save it in the database
-
-public boolean addOrder( HOrder order )
- {
-  EntityManager manager = HConnector.FACTORY.createEntityManager();
-  List<HOrder> orders = this.getMyHOrders();
-
-  
-  try
-   {
-
-    manager.getTransaction().begin();
-    manager.persist(order);
-    System.out.println("++++++++++++ IDorder: " + order.getIDorder());
-   // manager.merge(this);
-    manager.getTransaction().commit();
-    manager.close();
-
-    return true;
-   }
-  catch( IllegalStateException | RollbackException e )
-   {
-    System.out.println("++++++++++++ IDorder: " + order.getIDorder());
-    System.out.println("Error: " + e.getMessage());
-    return false;
-   }
- 
-}
-	
-	/*
-	//  USED BY CUSTOMER INTERFACE 
-	//  add a new order to the customer list and save it in the database
+	//USED BY CUSTOMER INTERFACE 
+	//add a new order to the customer list and save it in the database
 
 	public boolean addOrder( HOrder order ){
+		
+		if( HConnector.FACTORY == null ) //  Firstable we verify there is an active connection
+			if( !HConnector.createConnection()) return false;
+		
+		EntityManager manager = null;
+    	System.out.println( "----->[ ADD ORDER " + order.getIDorder() + " ]<-----");
+		try{
 
-		EntityManager manager = HConnector.FACTORY.createEntityManager();
-
-		HCustomer customer = this;
-		boolean ret = true;
-
-		List<HOrder> orderList = customer.getMyHOrders();
-	
-		try {
-			
+			manager = HConnector.FACTORY.createEntityManager();
 			manager.getTransaction().begin();
-			
 			manager.persist(order);
-			orderList.add(order);
-			
-			setMyOrders( orderList );
-			manager.merge(customer);
 			manager.getTransaction().commit();
+			manager.close();
+	    	System.out.println( "-----> Order correctly saved" );
+			return true;
 			
-		}catch( IllegalStateException | RollbackException e ) {
+		}catch( IllegalStateException | RollbackException e ){
 			
-			ret = false;
+    		System.out.println( "-----> Error, Connection Rejected" );
+			manager.close();
+			HConnector.FACTORY.close();
+			HConnector.FACTORY = null;
+			return false;
 			
 		}
-		
-		manager.close();
-		
-		return ret;
-		
-	}*/
+ 
+	}
 	
- public static boolean removeCustomer(HCustomer customer)
- {
-  EntityManager manager = HConnector.FACTORY.createEntityManager();
-  try
-   {
-    manager.getTransaction().begin();
-    for (HOrder o : customer.myOrders) 
-     o.removeFromCustomer();
-    if(manager.contains(customer))
-     manager.remove(customer);
-    else
-     manager.remove(manager.merge(customer));
+	//USED BY CUSTOMER INTERFACE 
+	//add a new order to the customer list and save it in the database
+
+	public static boolean removeCustomer( HCustomer customer ){
+		
+		System.out.println("---->[DELETING CUSTOMER " + customer.getUsername() + "]<----");
+		if( HConnector.FACTORY == null ) //  Firstable we verify there is an active connection
+			if( !HConnector.createConnection()) return false;
+		
+		EntityManager manager = null;
+  
+		try{
+			
+			manager = HConnector.FACTORY.createEntityManager();
+			manager.getTransaction().begin();
+			
+			for ( HOrder o : customer.myOrders ) 
+				o.removeFromCustomer();
+			
+			if(manager.contains( customer ))
+				manager.remove( customer );
+			else
+				manager.remove( manager.merge( customer ));
     
-    manager.getTransaction().commit();
-    manager.close();
-    return true;
-   }
-  catch( IllegalStateException | RollbackException e )
-   {
-    System.out.println("Error: " + e.getMessage());
-    return false;
-   } 
- }
-	
-	
+			manager.getTransaction().commit();
+			manager.close();
+			return true;
+		 
+		}catch( IllegalStateException | RollbackException e ){
+			
+    		System.out.println( "----> Error, Connection Rejected" );
+    		manager.close();
+    		HConnector.FACTORY.close();
+    		HConnector.FACTORY = null;
+			return false;
+			
+		} 
+	}
 	
 	@Override
 	public String toString() {

@@ -1,16 +1,9 @@
 package DataManagement.Hibernate;
 
-
-import javax.persistence.CascadeType;
 import javax.persistence.Entity;
-import javax.persistence.EntityManager;
-import javax.persistence.JoinColumn;
-import javax.persistence.JoinTable;
 import javax.persistence.OneToOne;
-import javax.persistence.RollbackException;
-
-import DataManagement.HConnector;
-
+import javax.persistence.JoinColumn;
+import javax.persistence.CascadeType;
 
 //----------------------------------------------------------------------------------------------------------
 //												HTeamLeader
@@ -74,32 +67,6 @@ public class HTeamLeader extends HEmployee{
 	//----------------------------------------------------------------------------------------------------------
 	//										FUNCTIONS
 	//----------------------------------------------------------------------------------------------------------
-
-	
-	//  USED BY TeamLeader INTERFACE 
-	//  the function saves a TeamLeader entity into the database.
-	public static boolean addTeamLeader( HTeamLeader headManager ) {
-		
-		EntityManager manager = HConnector.FACTORY.createEntityManager();
-		boolean ret = true;
-		manager.getTransaction().begin();
-		manager.persist( headManager );
-		
-		try {
-			
-			manager.getTransaction().commit();
-			
-		}catch( IllegalStateException | RollbackException e ) {
-			
-			ret = false;
-			
-		}
-		
-		manager.close();
-		
-		return ret;
-		
-	}
 	
 	
 	@Override

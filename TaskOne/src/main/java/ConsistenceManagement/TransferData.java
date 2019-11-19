@@ -4,9 +4,6 @@ import java.util.HashMap;
 
 import DataManagement.Hibernate.HOrder;
 import beans.Order;
-import beans.Product;
-
-
 
 public class TransferData {
 	

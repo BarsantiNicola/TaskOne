@@ -11,7 +11,7 @@ import javafx.scene.control.*;
 import javafx.scene.control.cell.*;
 
 //----------------------------------------------------------------------------------------------------------
-//											HAdministrator
+//											AdminController
 //
 //    Class for manage the administrator interface, the interface has one table for show the user
 //    and three popups to permit the user to add/update and remove users in the database
@@ -45,8 +45,6 @@ class AdminController extends InterfaceController{
         
         TableColumn column;
         List<User> values;
-
-        System.out.print( "Starting creating Administrator interface" );
         
         //  searching of all the needed elements into the javafx object node tree
         myInterface =  (AnchorPane)app.lookup("#ADMINUsersTable" );  // SECTION FOR THE TABLE
@@ -83,7 +81,7 @@ class AdminController extends InterfaceController{
         }
         System.out.println("->Administrator'user table configurated");
         
-        values = DataManager.getUsers();           //////////////// DA CONTROLLARE LIVELLO SOTTO
+        values = DataManager.getUsers();         
         userTable.addAll( values );
         System.out.println("->Administrator Data correctly loaded");
         myInterface.getChildren().add( userTableView );
@@ -200,7 +198,7 @@ class AdminController extends InterfaceController{
     	String value = searchInput.getText();
         System.out.print( "Searching a user. Parameter: " + value );
         userTable.removeAll(userTable);
-        userTable.addAll( DataManager.searchUsers( value ));  //////////////// DA CONTROLLARE LIVELLO SOTTO
+        userTable.addAll( DataManager.searchUsers( value ));  
 
         undoButton.setVisible( true );
 
@@ -213,12 +211,9 @@ class AdminController extends InterfaceController{
         searchInput.setText("");
         undoButton.setVisible( false );
         userTable.removeAll( userTable );      
-        userTable.addAll( DataManager.getUsers() );    //////////////// DA CONTROLLARE LIVELLO SOTTO
+        userTable.addAll( DataManager.getUsers() );    
 
     }
-
-
-    
    
 	//----------------------------------------------------------------------------------------------------------
 	//									DATA MANAGEMENT FUNCTIONS
@@ -278,7 +273,7 @@ class AdminController extends InterfaceController{
         
         System.out.print( "->Trying to save the object");
         //  we give persistence to the new object
-        if( DataManager.insertUser( newUser )) {     //////////////// DA CONTROLLARE LIVELLO SOTTO
+        if( DataManager.insertUser( newUser )) {     
             System.out.print( "User correctly saved" );
             userTable.add(newUser);  //  if the operation is been correctly executed we update the user interface
         }else
@@ -312,7 +307,7 @@ class AdminController extends InterfaceController{
 
         System.out.print( "->Trying to update a currently existing object");
         //  we give persistence to the change made to the user
-        if( DataManager.updateSalary( salary , username )){     //////////////// DA CONTROLLARE LIVELLO SOTTO
+        if( DataManager.updateSalary( salary , username )){    
         	//  if the operation is a success we update the information into the interface
             System.out.print( "Update of the salary of the employee " + username + " correctly done");
         	userTable.removeAll( userTable );
@@ -344,17 +339,17 @@ class AdminController extends InterfaceController{
         }
    
         System.out.print( "->Trying to delete a currently existing object");
-        if( DataManager.deleteUser( username ) ){ //////////////// DA CONTROLLARE LIVELLO SOTTO
+        if( DataManager.deleteUser( username ) ){ 
 
             System.out.print( "Delete of the user " + username + " correctly done");
         	userTable.removeAll( userTable );
-        	userTable.addAll( DataManager.getUsers()); //////////////// DA CONTROLLARE LIVELLO SOTTO
+        	userTable.addAll( DataManager.getUsers()); 
         	closePopups();
 
         }else
             System.out.print( "Error trying to delete user " + username );
 
-    }
+    } 
 
 
 

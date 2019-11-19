@@ -97,7 +97,8 @@ public class DataTransfer {
     	
     }
     
-    public void saveHTeamLeader( List<HTeamLeader> managers ) {
+    @SuppressWarnings("static-access")
+	public void saveHTeamLeader( List<HTeamLeader> managers ) {
     	System.out.println("Starting saving HTeamLeader...");
     	DatabaseConnector conn = new DatabaseConnector();
     	entityManager = factory.createEntityManager(); 

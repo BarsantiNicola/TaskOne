@@ -1,36 +1,36 @@
 package DataManagement;
 
-import java.io.IOException;
-import java.io.PrintWriter;
+import beans.User;
+import beans.Order;
 import java.net.Socket;
-import java.sql.Timestamp;
 import java.util.HashMap;
 import java.util.Scanner;
-
+import java.sql.Timestamp;
+import java.io.IOException;
+import java.io.PrintWriter;
 import com.google.gson.Gson;
-
-import ConsistenceManagement.RequestedCommand;
 import ConsistenceManagement.TransferData;
-import DataManagement.Hibernate.HOrder;
-import DataManagement.Hibernate.HProductStock;
-import beans.Order;
-import beans.User;
+import ConsistenceManagement.RequestedCommand;
+
 
 public class ConsistenceTransfer {
 	
-	boolean giveOrderConsistence( String customer , Object obj ) {
+	boolean giveOrderConsistence( String customer , String product , int stock , int price , Timestamp date , Object obj ) {
 		
 		TransferData order = null;
 		HashMap<String,Object> values = new HashMap<>();
 		
 		values.put( "username", customer );
 		values.put( "order" , obj );
+		values.put( "product" , product );
+		values.put( "stock" , stock ); 
+		values.put( "price" , price );
+		values.put( "date", date );
 		
 		if( obj instanceof Order ) 
 			order = new TransferData( values , null , (Order)obj , RequestedCommand.ADDORDER );
 		else 
-			if( obj instanceof HOrder )
-				order = new TransferData( values , (HOrder)obj , null ,  RequestedCommand.ADDHORDER );	
+			order = new TransferData( values , null , null ,  RequestedCommand.ADDHORDER );	
 		
 		return sendMessage( order );
 	}
@@ -148,14 +148,15 @@ public class ConsistenceTransfer {
 		
 		try {
 			ConsistenceTransfer t = new ConsistenceTransfer();
-		/*	HOrder order = new HOrder( new Timestamp( System.currentTimeMillis()), 5000, "delivered" , "Nicola" , null );
-			Order order2 = new Order( 5 , "marcella" , 100 , new Timestamp( System.currentTimeMillis()) , 200 , "received");
-			System.out.println( t.giveOrderConsistence( "marcella" , order2 ));
-			System.out.println( t.giveOrderConsistence( "marcella" , order ));
-		
-			System.out.println( t.giveUserConsistence( new User("marcy" , "marcella" , "Bosco" , "marcy123" , "" , "" , 1 , "" , 2 )));
-			System.out.println( t.giveProductConsistence("fava", 5));
-*/
+			//HOrder order = new HOrder( new Timestamp( System.currentTimeMillis()), 5000, "delivered" , "Nicola" , null );
+		//	Order order2 = new Order( 5 , "marcella" , 100 , new Timestamp( System.currentTimeMillis()) , 200 , "received");
+		//	System.out.println( t.giveOrderConsistence( "marcella" , order2 ));
+			System.out.println( t.giveOrderConsistence( "adri" , "ISmartBand" , 22 , 500 , null, null ));
+
+				
+		//	System.out.println( t.giveUserConsistence( new User("marcy" , "marcella" , "Bosco" , "marcy123" , "" , "" , 1 , "" , 2 )));
+		//	System.out.println( t.giveProductConsistence("fava", 5));
+
 			System.out.println(t.forceUpdate());
 		}catch( Exception e ) {
 			

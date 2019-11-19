@@ -1,10 +1,9 @@
 package DataManagement.Hibernate;
 
-import java.util.*;
-import javax.persistence.*;
-
-import DataManagement.HConnector;
 import beans.*;
+import javax.persistence.*;
+import DataManagement.HConnector;
+
 
 //----------------------------------------------------------------------------------------------------------
 //												HEmployee
@@ -45,7 +44,7 @@ public class HEmployee extends HUser{
 		
 		super(user);
 		this.salary = user.getSalary();
-		this.role = user.getRole();
+		this.role = user.getRole(); 
 		
 	}
 
@@ -65,7 +64,6 @@ public class HEmployee extends HUser{
 		return role;
 
 	}
-
 
 
 	//----------------------------------------------------------------------------------------------------------
@@ -91,59 +89,72 @@ public class HEmployee extends HUser{
 	
 	//  USED BY ADMINISTRATOR INTERFACE 
 	//  the function saves an entity HEmployee into the database
+	
 	public boolean addEmployee() {
 		
-		System.out.println("Adding Employee: " + this.toString());
-		boolean ret = true;
-		EntityManager manager = HConnector.FACTORY.createEntityManager();
+		if( HConnector.FACTORY == null ) //  Firstable we verify there is an active connection
+			if( !HConnector.createConnection()) return false;
 		
-		manager.getTransaction().begin();
-		manager.persist( this );
+		System.out.println("--->[ADDING EMPLOYEE " + getUsername() + "]<---");
+		boolean ret = true;
+		EntityManager manager = null;
+
 		try {
 			
+			manager = HConnector.FACTORY.createEntityManager();
+			manager.getTransaction().begin();
+			manager.persist( this );
 			manager.getTransaction().commit();
-			
+			manager.close();
+	    	System.out.println( "-----> Employee " + getUsername() + " correctly added" );
 		}catch( IllegalStateException | RollbackException e ) {
 			
+	    	System.out.println( "-----> Error, Connection Rejected" );
+			manager.close();
+			HConnector.FACTORY.close();
+			HConnector.FACTORY = null;
 			ret = false;
 			
 		}
 		
-		manager.close();
-		
 		return ret;
 		
 	}
-	
 	
 	//  USED BY ADMINISTRATOR INTERFACE 
 	//  the function updates the salary of the employee and saves it into the database
+	
 	public boolean updateSalary( int SALARY ) {
 		
-		System.out.println("Updating Salary: user ");
-		EntityManager manager = HConnector.FACTORY.createEntityManager();
-		boolean ret = true;
+		System.out.println("--->[UPDATE SALARY OF " + getUsername() + "]<---");
+		if( HConnector.FACTORY == null ) //  Firstable we verify there is an active connection
+			if( !HConnector.createConnection()) return false;
 		
-		this.setSalary(SALARY);
-        
-		manager.getTransaction().begin();
-		manager.merge(this);
+		EntityManager manager = null;
+		
 		try {
 			
+			manager = HConnector.FACTORY.createEntityManager();	
+			manager.getTransaction().begin();
+			this.setSalary(SALARY);
+			manager.merge(this);
 			manager.getTransaction().commit();
+			manager.close();
+	    	System.out.println( "-----> Salary of employee " + getUsername() + "Correctly updated to " + SALARY );
+			return true;
 			
 		}catch( IllegalStateException | RollbackException e ) {
 			
-			ret = false;
+	    	System.out.println( "-----> Error, Connection Rejected" );
+			manager.close();
+			HConnector.FACTORY.close();
+			HConnector.FACTORY = null;
+			return false;
 			
 		}
 		
-		manager.close();
-		
-		return ret;
 	}
-	
-	
+		
 	@Override
 	public String toString() { return super.toString() + "\tSalary: " + salary + "\tRole: " + role; }
 

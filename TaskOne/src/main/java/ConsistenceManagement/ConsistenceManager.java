@@ -8,19 +8,13 @@ import java.io.IOException;
 import java.io.PrintWriter;
 import java.net.ServerSocket;
 import java.net.Socket;
-import java.nio.file.Files;
-import java.nio.file.Path;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Scanner;
-
 import com.google.gson.Gson;
-
+import DataManagement.DatabaseConnector;
 import DataManagement.HConnector;
 import DataManagement.KValueConnector;
-import DataManagement.Hibernate.HOrder;
-import beans.Order;
 import beans.User;
 
 public class ConsistenceManager {
@@ -28,9 +22,12 @@ public class ConsistenceManager {
 	private ServerSocket     server;
 	private final HConnector hibernateDatabase;
 	private final KValueConnector keyValueDatabase;
+	@SuppressWarnings("unused")
+	private final DatabaseConnector databaseData;
 	
 	ConsistenceManager(){
 		
+		databaseData = new DatabaseConnector();
 		hibernateDatabase = new HConnector();
 		keyValueDatabase = new KValueConnector();
 		
@@ -47,7 +44,7 @@ public class ConsistenceManager {
 	}
 	
 	TransferData getDatas( ConsistenceManager data ) {
-		
+		 
 		Socket inputSocket = null;
 		Scanner inputData = null;
 		PrintWriter outputData = null;
@@ -90,6 +87,9 @@ public class ConsistenceManager {
 				}
 				outputData.println("DONE");
 				outputData.close();
+				inputData.close();
+				inputSocket.close();
+				return null;
 
 			}
 			inputData.close();
@@ -257,18 +257,13 @@ public class ConsistenceManager {
 	public static void main( String[] args ) {
 		
 		ConsistenceManager data = new ConsistenceManager();
-		HConnector hibernateData = new HConnector();
-		KValueConnector keyValueData = new KValueConnector();
 		TransferData receivedData;
-		HashMap<String,Object> values;
-
-
+		
 		while( true ) {
 			
 			receivedData = data.getDatas( data );
 			if(receivedData == null )
 				continue;
-			values = receivedData.getValues();
 
 			System.out.println("received: " + receivedData.getCommand());
 			if( !data.makeUpdate(receivedData)) 
@@ -286,18 +281,21 @@ public class ConsistenceManager {
 		
 			case ADDORDER:
 				return keyValueDatabase.insertOrder( (String)data.getValues().get("username"), data.getOrder());
-			case ADDHORDER:
-				return hibernateDatabase.insertHOrder( (String)data.getValues().get("username"), data.getHorder());
+			case ADDHORDER:                                                             
+				return hibernateDatabase.insertOrder( (String)data.getValues().get("username"), 
+						((Double)data.getValues().get("stock")).intValue() , (String)data.getValues().get("product") , 
+						((Double)data.getValues().get("price")).intValue());
 			case ADDPRODUCT:
-				return keyValueDatabase.updateProductAvailability((String)data.getValues().get("product"), ((Double)data.getValues().get("availability")).intValue());	
+				return keyValueDatabase.updateProductAvailability((String)data.getValues().get("product"), 
+						((Double)data.getValues().get("availability")).intValue());	
 			case ADDCUSTOMER:
-				return  keyValueDatabase.insertUser( new User( (String)data.getValues().get("username") , null , null , (String)data.getValues().get("password") , null , null , 0 , null , 0 ));
+				return  keyValueDatabase.insertUser( new User( (String)data.getValues().get("username") , null , null , 
+						(String)data.getValues().get("password") , null , null , 0 , null , 0 ));
 			case REMOVECUSTOMER:
 				return  keyValueDatabase.deleteUser((String)data.getValues().get("username"));
+			default: return false;
 		
 		}
-		
-		return false;
 		
 	}
 	

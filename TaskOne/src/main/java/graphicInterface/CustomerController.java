@@ -16,8 +16,15 @@ import javafx.scene.layout.AnchorPane;
 
 import java.sql.Timestamp;
 import java.util.Iterator;
-import java.util.List;
 
+
+//----------------------------------------------------------------------------------------------------------
+//											HCustomer
+//
+//  Class for manage the customer' interface, the interface has one table for show the orders and one for
+//	see the available products. There is a popup to permits the customer to add a new order 
+//
+//----------------------------------------------------------------------------------------------------------
 
 public class CustomerController extends InterfaceController {
 
@@ -34,31 +41,41 @@ public class CustomerController extends InterfaceController {
     private ImageView undoButton;
     private AnchorPane myInterface[];
 
-
+	//----------------------------------------------------------------------------------------------------------
+	//										CONSTRUCTOR
+    //        The costructor searches the used elements in the interface and initializes the tables
+	//----------------------------------------------------------------------------------------------------------
+    
     @SuppressWarnings({ "unchecked", "rawtypes" })
 	CustomerController( Scene app , String cId ){
 
-        String[][] productFields = { { "Name" , "productName"} , { "Price" , "productPrice" } , { "Description" , "productDescription"} , { "Availability" , "productAvailability"} };
-        String[][] orderFields = { { "productID" , "productId" } ,  { "ProductName" , "productName" } , { "ProductPrice" , "productPrice" } , { "Purchase Date" , "purchaseDate" } ,  { "Purchased Price" , "purchasedPrice" }  , { "Status" , "orderStatus" }};
+        String[][] productFields = { { "Name" , "productName"} , { "Price" , "productPrice" } ,
+        		{ "Description" , "productDescription"} , { "Availability" , "productAvailability"} };
+        String[][] orderFields = { { "productID" , "productId" } ,  { "ProductName" , "productName" } , 
+        		{ "ProductPrice" , "productPrice" } , { "Purchase Date" , "purchaseDate" } , 
+        		{ "Purchased Price" , "purchasedPrice" }  , { "Status" , "orderStatus" }};
+        
         TableColumn column;
         myInterface = new AnchorPane[2];
         customerId = cId;
 
-        searchInput = (TextField)app.lookup( "#CUSTOMERSearch" );
+        System.out.print( "Starting creating Customer interface" );
+        
+        ordersTableView =  new TableView<>();
+        productsTableView = new TableView<>();
+        ordersTable = FXCollections.observableArrayList();
+        productsTable = FXCollections.observableArrayList();
+        
         undoButton = (ImageView)app.lookup( "#CUSTOMERUndo" );
-        insertPopup = (AnchorPane)app.lookup( "#CUSTOMERInsertPopUp" );
-
+        searchInput = (TextField)app.lookup( "#CUSTOMERSearch" );
         ordersSection = (AnchorPane)app.lookup( "#CUSTOMEROrders" );
+        insertPopup = (AnchorPane)app.lookup( "#CUSTOMERInsertPopUp" );
         productsSection = (AnchorPane)app.lookup( "#CUSTOMERProducts" );
-
         myInterface[0] = (AnchorPane)app.lookup("#CUSTOMEROrdersTable");
         myInterface[1] = (AnchorPane)app.lookup("#CUSTOMERProductsTable");
 
-        ordersTableView =  new TableView<>();
-        productsTableView = new TableView<>();
-
-        ordersTable = FXCollections.observableArrayList();
-        productsTable = FXCollections.observableArrayList();
+        
+        System.out.println("->Elements of the interface loaded");
 
         ordersTableView.setMinWidth( 498 );
         productsTableView.setMinWidth( 498 );
@@ -71,7 +88,10 @@ public class CustomerController extends InterfaceController {
         currentSection = false;  //  set productTable for initial table showed
 
         for( int a = 0; a<orderFields.length; a++ ){
-            column = new TableColumn( orderFields[a][0] );
+        	
+            column = new TableColumn( orderFields[a][0] ); //  [a][0] contains the name of the column'field
+            
+            // [a][1] contains the name of the associated class'variable
             column.setCellValueFactory( new PropertyValueFactory<>( orderFields[a][1] ));
             column.setMinWidth( 53 );
             column.setMaxWidth( 233 );
@@ -79,8 +99,13 @@ public class CustomerController extends InterfaceController {
 
         }
 
+        System.out.println("->Customer'order table configurated");
+        
         for( int a = 0; a<productFields.length; a++ ){
-            column = new TableColumn( productFields[a][0] );
+        	
+            column = new TableColumn( productFields[a][0] ); //  [a][0] contains the name of the column'field
+            
+            // [a][1] contains the name of the associated class'variable
             column.setCellValueFactory( new PropertyValueFactory<>( productFields[a][1] ));
             column.setMinWidth( 53 );
             column.setMaxWidth( 233 );
@@ -88,89 +113,127 @@ public class CustomerController extends InterfaceController {
 
         }
 
-        long startTime = System.currentTimeMillis();
-        List<Order> orders =  DataManager.getOrder( customerId );
-        LOG.println( "QUERY: getCustomerOrder;\t TIME: " + (System.currentTimeMillis() - startTime) + "ms");
-        startTime = System.currentTimeMillis();
-        List<Product> products = DataManager.getAvailableProducts();
-        LOG.println( "QUERY: getAvailableProduct;\t TIME: " + (System.currentTimeMillis() - startTime) + "ms");
-
-        ordersTable.addAll( orders );
-        productsTable.addAll( products );
-
+        ordersTable.addAll( DataManager.getOrder( customerId )); /////////////////////// LIVELLO SOTTO
+        System.out.println("->Customer'orders Data correctly loaded");
+        productsTable.addAll( DataManager.getAvailableProducts() ); /////////////////////// LIVELLO SOTTO
+        System.out.println("->Customer'product table configurated");
+        
         myInterface[0].getChildren().add( ordersTableView );
         myInterface[1].getChildren().add( productsTableView );
+        
+        System.out.println( "->Customer interface created" );
 
     }
 
+    
+	//----------------------------------------------------------------------------------------------------------
+	//									INTEFACE MANAGEMENT FUNCTION
+	//----------------------------------------------------------------------------------------------------------
+    
+    
     void showInsertPopup(){
 
         insertPopup.setVisible( true );
-
     }
 
     void closePopups(){
 
+    	clearInputs();
         insertPopup.setVisible( false );
-
     }
 
-    void insertNewElement(){
+    //  reset the interface to the default form and reshows the access page
+    void reset(){
+    	
+    	clearInputs();
+        closePopups();
+        myInterface[0].getChildren().remove( ordersTableView );
+        myInterface[1].getChildren().remove( productsTableView );
+        ordersTable.removeAll( ordersTable );
+        productsTable.removeAll( productsTable );
 
+    }
+    
+    //  the function clears all the inputs of the interface
+    void clearInputs(){
+    	
         Iterator<Node> it = insertPopup.getChildren().iterator();
-        Iterator<Product> productList = productsTable.iterator();
         Node app;
-        Product product;
-        Order newOrder;
-
-
-        String productName = "";
+    	
+        searchInput.setText("");
+    	
         while( it.hasNext()){
             app = it.next();
             if( app instanceof TextField ) {
-
-                productName = ((TextField) app).getText();
                 ((TextField) app).setText("");
-                break;
+                break;  //  for now we have only one textfield
             }
         }
-
-        long startTime = System.currentTimeMillis();
-
-        LOG.println( "QUERY: getProductType;\t TIME: " + (System.currentTimeMillis() - startTime) + "ms");
-        startTime = System.currentTimeMillis();
-        int myProductId = DataManager.getMinIDProduct( productName );
-        System.out.println( "IDstock " + myProductId);
-        LOG.println( "QUERY: getProductId;\t TIME: " + (System.currentTimeMillis() - startTime) + "ms");
-        System.out.println("INSERT NEW ORDER");
-        while( productList.hasNext() ) {
-
-            product = productList.next();
-            if( product.getProductName().compareTo(productName) == 0 ){
-            	if( product.getProductAvailability() < 1 ) return;
-                newOrder = new Order( myProductId , product.getProductName() , product.getProductPrice() , new Timestamp(System.currentTimeMillis())  , product.getProductPrice() ,"received"  );
-
-                startTime = System.currentTimeMillis();
-                boolean result = DataManager.insertOrder( customerId , myProductId, productName , product.getProductPrice() );
-                LOG.println( "QUERY: insertNewOrder;\t TIME: " + (System.currentTimeMillis() - startTime) + "ms");
-                System.out.println("RISULTATO INSERIMENTO ORDINE: " + result );
-                if( result ){
-
-                    ordersTable.add( newOrder );
-                    product.setProductAvailability( product.getProductAvailability()-1);
-                    productsTable.remove( product );
-                    if( product.getProductAvailability() > 0 )
-                    	productsTable.add(product);
-                    break;
-
-                }
-
-            }
-        }
-        System.out.println("INSERT NEW ORDER");
-        closePopups();
     }
+    
+    // the function changes the table showed to the user
+    void changeTable( String table ){
 
+        if( table.compareTo( "Products") == 0 && currentSection ){
+
+            currentSection = false;
+            ordersSection.setVisible( false );
+
+            if( undoButton.isVisible()){
+            	
+                ordersTable.removeAll( ordersTable );
+                ordersTable.addAll( DataManager.getOrder( customerId ));    
+                
+            }
+            
+            productsSection.setVisible( true );
+            return;
+
+        }
+        
+        if( table.compareTo("Orders") == 0 && !currentSection ){
+
+            currentSection = true;
+            productsSection.setVisible( false );
+
+            if( undoButton.isVisible()){
+            	
+                productsTable.removeAll( productsTable );
+                productsTable.addAll( DataManager.getAvailableProducts()); 
+                
+            }
+
+            ordersSection.setVisible( true );
+
+        }
+    }
+    
+    
+	//----------------------------------------------------------------------------------------------------------
+	//									TABLE MANAGEMENT FUNCTIONS
+	//----------------------------------------------------------------------------------------------------------
+    
+    
+    // clear the table and restore the default behavior of the interface
+    void undoSearch(){
+
+        undoButton.setVisible( false );
+        clearInputs();
+        if( currentSection == true ) {
+        	
+            ordersTable.removeAll( ordersTable );
+            ordersTable.addAll( DataManager.getOrder( customerId ));
+            
+        }else{
+        	
+            productsTable.removeAll( productsTable );
+            productsTable.addAll( DataManager.getAvailableProducts() );
+        
+        }
+
+    }
+    
+    //  the function do a search in the table based on the input given in the searchInput
     void searchValue(){
 
         String value = searchInput.getText();
@@ -178,93 +241,97 @@ public class CustomerController extends InterfaceController {
         if( !currentSection ){
 
             productsTable.removeAll( productsTable );
-
-            long startTime = System.currentTimeMillis();
-            List<Product> products = DataManager.searchProducts( value );
-            LOG.println( "QUERY: searchForProducts;\t TIME: " + (System.currentTimeMillis() - startTime) + "ms");
-
-            productsTable.addAll( products) ;
+            productsTable.addAll( DataManager.searchProducts( value )) ; /////////////////////// LIVELLO SOTTO
             undoButton.setVisible( true );
 
         }else{
 
             ordersTable.removeAll(ordersTable);
-
-            long startTime = System.currentTimeMillis();
-            List<Order> products =  DataManager.searchOrders( value , customerId );
-            LOG.println( "QUERY: searchForOrders;\t TIME: " + (System.currentTimeMillis() - startTime) + "ms");
-
-            ordersTable.addAll( products );
+            ordersTable.addAll( DataManager.searchOrders( value , customerId )); /////////////////////// LIVELLO SOTTO
             undoButton.setVisible( true );
 
         }
-    };
+    }
+    
+    
+	//----------------------------------------------------------------------------------------------------------
+	//									DATA MANAGEMENT FUNCTIONS
+	//----------------------------------------------------------------------------------------------------------
+    
+    
+    //  add a new order to the customer' list. For do this the function need to decrease
+    //  the availability of the chosen product and allocate a stock for the builded order
+    void insertNewElement(){
 
-    void changeTable( String table ){
-
-        if( table.compareTo( "Products") == 0 ){
-
-            if( currentSection == false ) return;
-
-            currentSection = false;
-            ordersSection.setVisible( false );
-
-            if( undoButton.isVisible()){
-                ordersTable.removeAll( ordersTable );
-                long startTime = System.currentTimeMillis();
-                List<Order> orders =  DataManager.getOrder( customerId );
-                LOG.println( "QUERY: getUserOrders;\t TIME: " + (System.currentTimeMillis() - startTime) + "ms");
-                ordersTable.addAll( orders );
+        Iterator<Node> it = insertPopup.getChildren().iterator();
+        Iterator<Product> productList = productsTable.iterator();
+        ObservableList<Product> prod = FXCollections.observableArrayList();
+        
+        Node app;
+        Product product;
+        Order newOrder;
+        String productName = null;
+        int myProductId;
+        System.out.println( "Trying to add a new order for the customer" );
+        
+        while( it.hasNext()){
+            app = it.next();
+            if( app instanceof TextField ) {
+                productName = ((TextField) app).getText();
+                break;
             }
+        }
+        if( productName != null )
+        	System.out.println( "-> Data correctly taken from the interface" );
+        else {
+        	System.out.println("-> No data found");
+        	return;
+        }
+        
+        System.out.println( "-> Searching for an available stock for product " + productName );
+        
+        myProductId = DataManager.getMinIDProduct( productName ); /////////////////////// LIVELLO SOTTO
+        if( myProductId < 0 ) {
+        	System.out.println("-> Error, no available product");
+        	return;
+        }
+        
+        System.out.println("-> Found available stock " + myProductId );
+        System.out.println("-> Searching product' information to make an order" );        
+        while( productList.hasNext() ) {
 
-            productsSection.setVisible( true );
+            product = productList.next();
+            if( product.getProductName().compareTo(productName) == 0 ){
+            	
+                System.out.println( "-> Product Found" );
+            	if( product.getProductAvailability() < 1 ){
+            		System.out.println("-> No Availability" );
+            		return;
+            	}
+            	
+                newOrder = new Order( myProductId , product.getProductName() , product.getProductPrice() , 
+                		new Timestamp(System.currentTimeMillis())  , product.getProductPrice() ,"received"  );
+                
+                System.out.println("-> Order maked\nTrying to give persistence to the order" );   /////////////////////// LIVELLO SOTTO
+                if( DataManager.insertOrder( customerId , myProductId, productName , product.getProductPrice())){
+                    System.out.println("Order correctly saved" );   
+                	//  strange passage, but without the update of the table doesn't work well
+                    ordersTable.add( newOrder );
+                    productsTable.remove( product );
+                    prod.addAll(productsTable);
+                    productsTable.removeAll( productsTable );
+                    product.setProductAvailability( product.getProductAvailability()-1);
+                    if( product.getProductAvailability() > 0 ) //  we show only available products
+                    	prod.add(product);
+                    productsTable.addAll(prod);  
+                    closePopups();
+                    return;
 
-        }else{
+                }
 
-            if( currentSection == true ) return;
-
-            currentSection = true;
-            productsSection.setVisible( false );
-
-            if( undoButton.isVisible()){
-                productsTable.removeAll( productsTable );
-                long startTime = System.currentTimeMillis();
-                List<Product> products =  DataManager.getAvailableProducts();
-                LOG.println( "QUERY: getAvailableProducts;\t TIME: " + (System.currentTimeMillis() - startTime) + "ms");
-                productsTable.addAll( products );
             }
-
-            ordersSection.setVisible( true );
-
-
         }
+        System.out.println("Product Not Found" );   
     }
 
-    void undoSearch(){
-
-        undoButton.setVisible( false );
-        if( currentSection == true ) {
-            ordersTable.removeAll(ordersTable);
-            long startTime = System.currentTimeMillis();
-            List<Order> orders =  DataManager.getOrder(customerId);
-            LOG.println( "QUERY: getUserOrders;\t TIME: " + (System.currentTimeMillis() - startTime) + "ms");
-            ordersTable.addAll(orders);
-        }else{
-            productsTable.removeAll(productsTable);
-            long startTime = System.currentTimeMillis();
-            List<Product> products =  DataManager.getAvailableProducts();
-            LOG.println( "QUERY: getAvailableProducts;\t TIME: " + (System.currentTimeMillis() - startTime) + "ms");
-            productsTable.addAll( products );
-        }
-
-    }
-
-    void reset(){
-        closePopups();
-        myInterface[0].getChildren().remove( ordersTableView );
-        myInterface[1].getChildren().remove( productsTableView );
-        ordersTable.removeAll(ordersTable);
-        productsTable.removeAll(productsTable);
-
-    }
 }

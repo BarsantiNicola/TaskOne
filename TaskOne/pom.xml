@@ -15,37 +15,6 @@
         <version>5.4.4.Final</version>
     </dependency>
  
- 	<dependency>
-    <groupId>org.openjfx</groupId>
-    <artifactId>javafx</artifactId>
-    <version>11</version>
-    <type>pom</type>
-	</dependency>
-	<dependencies>
-    <dependency>
-        <groupId>org.openjfx</groupId>
-        <artifactId>javafx-controls</artifactId>
-        <version>11</version>
-    </dependency>
-    <dependency>
-        <groupId>org.openjfx</groupId>
-        <artifactId>javafx-fxml</artifactId>
-        <version>11</version>
-    </dependency>
-</dependencies>
-	<dependency>
-    <groupId>javax.servlet</groupId>
-    <artifactId>javax.servlet-api</artifactId>
-    <version>3.1.0</version>
-	</dependency>
-	
-	<dependency>
-    <groupId>org.openjfx</groupId>
-    <artifactId>javafx</artifactId>
-    <version>11</version>
-    <type>pom</type>
-	</dependency>
-	
 	<dependency>
     	<groupId>mysql</groupId>
     	<artifactId>mysql-connector-java</artifactId>

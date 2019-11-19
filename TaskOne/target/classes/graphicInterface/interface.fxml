@@ -96,7 +96,7 @@
         </AnchorPane>
         <AnchorPane id="CustomerPage" prefHeight="200.0" prefWidth="200.0" visible="false">
           <children>
-            <ImageView fitHeight="400.0" fitWidth="600.0" layoutX="0.0" layoutY="0.0" pickOnBounds="true" preserveRatio="true">
+            <ImageView fitHeight="400.0" fitWidth="600.0" pickOnBounds="true" preserveRatio="true">
               <image>
                 <Image url="file:data/main_background.jpg" />
               </image>
@@ -124,14 +124,14 @@
               <children>
                 <AnchorPane id="CUSTOMEROrders" focusTraversable="false" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="233.0" minWidth="498.0" prefHeight="233.0" prefWidth="498.0000999999975" visible="false">
                   <children>
-                    <ScrollPane fitToHeight="true" fitToWidth="true" layoutX="0.0" layoutY="0.0" maxWidth="-1.0" prefHeight="233.0" prefWidth="498.0">
+                    <ScrollPane fitToHeight="true" fitToWidth="true" minHeight="-Infinity" minWidth="-Infinity" prefHeight="233.0" prefWidth="485.0">
                       <content>
-                        <AnchorPane id="CUSTOMEROrdersTable" maxHeight="-1.0" maxWidth="-1.0" minHeight="0.0" minWidth="0.0" prefHeight="233.0" prefWidth="486.0" />
+                        <AnchorPane id="CUSTOMEROrdersTable" maxHeight="-1.0" maxWidth="-1.0" minHeight="227.0" minWidth="485.0" prefHeight="233.0" prefWidth="486.0" />
                       </content>
                     </ScrollPane>
                   </children>
                 </AnchorPane>
-                <AnchorPane id="CUSTOMERProducts" focusTraversable="false" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="233.0" minWidth="485.0" prefHeight="300.0" prefWidth="485.0" visible="true">
+                <AnchorPane id="CUSTOMERProducts" focusTraversable="false" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="233.0" minWidth="485.0" prefHeight="300.0" prefWidth="485.0">
                   <children>
                     <ScrollPane fitToHeight="true" fitToWidth="true" layoutX="0.0" layoutY="0.0" maxHeight="-1.0" maxWidth="-1.0" minHeight="-Infinity" minWidth="-Infinity" prefHeight="233.0" prefWidth="485.0">
                       <content>

@@ -1,15 +1,10 @@
 package DataManagement.Hibernate;
 
-import javax.persistence.*;
-
-import DataManagement.HConnector;
 import beans.*;
-import javafx.beans.property.SimpleIntegerProperty;
-import javafx.beans.property.SimpleObjectProperty;
-import javafx.beans.property.SimpleStringProperty;
-
 import java.sql.*;
 import java.util.*;
+import javax.persistence.*;
+import DataManagement.HConnector;
 
 
 //----------------------------------------------------------------------------------------------------------
@@ -49,8 +44,8 @@ public class HOrder {
 	@JoinColumn(name = "productStock")
 	private HProductStock productStock;
 	
- @ManyToOne
- @JoinColumn(name = "customer")
+	@ManyToOne
+	@JoinColumn(name = "customer")
 	private HCustomer customer;
 
 	//-----------------------------------------
@@ -77,55 +72,47 @@ public class HOrder {
     // parameter
     //------------------------------------------
 	
-public HOrder(int IDorder, Timestamp purchaseDate, int price, String status , HCustomer customer , HProductStock stock ){
+    public HOrder(int IDorder, Timestamp purchaseDate, int price, String status , HCustomer customer , HProductStock stock ){
 
-     this.IDorder = IDorder;
-     this.purchaseDate = purchaseDate;
-     this.price = price;
-     this.status = status;
-     this.customer = customer;
-     this.productStock = stock;
+    	this.IDorder = IDorder;
+    	this.purchaseDate = purchaseDate;
+    	this.price = price;
+    	this.status = status;
+    	this.customer = customer;
+    	this.productStock = stock;
 
     }
     
-//UNUSED
-public HOrder( Timestamp purchaseDate, int price, String status , String Customer , HProductStock stock ){
 
-this.purchaseDate = purchaseDate;
-this.price = price;
-this.status = status;
-this.customer = customer;
-this.productStock = stock;
+    public HOrder( Timestamp purchaseDate, int price, String status , String Customer , HProductStock stock ){
 
-}
-
-//UNUSED
-public HOrder( Timestamp purchaseDate, int price, String status , HCustomer customer , HProductStock stock ){
-
-		this.purchaseDate = purchaseDate;
-		this.price = price;
-		this.status = status;
-		this.customer = customer;
-		this.productStock = stock;
-
-	}
-	
-	public HOrder( Order order ) {
+		EntityManager manager = null;
 		
-		//  WE HAVE TO USE KEY-VALUE DATABASE TO BUILD THE COSTRUCTOR
-		this.purchaseDate = order.getPurchaseDate();
-		this.price = order.getProductPrice(); 
-		this.status = order.getOrderStatus();
-		//this.productStock = new HProductStock( this.)
-	/*	HProduct product = order.getProductStock().getProduct();
-		productId = new SimpleIntegerProperty(order.getProductStock().getIDstock());
-		productName = new SimpleStringProperty( product.getProductName());
-		productPrice = new SimpleIntegerProperty( product.getProductPrice() );
-		purchaseDate = new SimpleObjectProperty( order.getPurchaseDate());
-		purchasedPrice = new SimpleIntegerProperty( order.getPrice() );
-		orderStatus = new SimpleStringProperty( order.getStatus() );*/
-		
-	}
+    	this.purchaseDate = purchaseDate;
+    	this.price = price;
+    	this.status = status;
+    	this.productStock = stock;
+    	this.customer = null;
+    	
+		if( HConnector.FACTORY == null ) //  Firstable we verify there is an active connection
+			if( !HConnector.createConnection()) return;
+			
+    	try {
+    		
+    		manager = HConnector.FACTORY.createEntityManager();
+        	this.customer = manager.find( HCustomer.class, Customer );
+        	manager.close();
+    	
+    	}catch( Exception e ) {
+
+	    	System.out.println( "-----> Error, Connection Rejected" );
+			manager.close();
+			HConnector.FACTORY.close();
+			HConnector.FACTORY = null;
+    		
+    	}
+
+    }
 
 	//----------------------------------------------------------------------------------------------------------
 	//										           GETTERS
@@ -192,6 +179,7 @@ public HOrder( Timestamp purchaseDate, int price, String status , HCustomer cust
 	
 	//  USED BY CUSTOMER INTERFACE 
 	//  the function gives a list of Order classes compatible with the graphic interface
+	
 	public static List<Order> toOrderList( List<HOrder> HORDERLIST ){
 		
 		List<Order> orderList = new ArrayList<>();
@@ -203,38 +191,12 @@ public HOrder( Timestamp purchaseDate, int price, String status , HCustomer cust
 		
 		return orderList;
 	}
-	
-	
-	//  USED BY CUSTOMER INTERFACE 
-	//  the function saves a new order of the customer into the database
-	public boolean insertOrder() {
-		
-		EntityManager manager = HConnector.FACTORY.createEntityManager();
-		boolean ret = true;
-		
-		manager.getTransaction().begin();
-        manager.persist(this);
-		try {
-			
-			manager.getTransaction().commit();
-			
-		}catch( IllegalStateException | RollbackException e ) {
-			
-			ret = false;
-			
-		}
-		
-		manager.close();
-		
-		return ret;
-	}
 
-	
 	//Called when a customer is deleted to maintain the order in the database
- public void removeFromCustomer(){
+	public void removeFromCustomer(){
 
-  customer = null;
- }
+		customer = null;
+	}
 	
 	
 	@Override

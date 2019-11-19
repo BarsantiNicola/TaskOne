@@ -23,7 +23,6 @@ public class HProductStock {
 	@ManyToOne
 	@JoinColumn(name = "product" , nullable = false )
 	HProduct product;
-	
 
 	//-------------------------------------------
 	// The @ManyToOne annotation tells us that a Product
@@ -31,8 +30,6 @@ public class HProductStock {
 	// setted to false means that it is not possible to 
 	// save a ProductStock without specifying the Product
 	//-------------------------------------------
-
-
 
 	//----------------------------------------------------------------------------------------------------------
 	//										        CONSTRUCTORS
@@ -85,41 +82,63 @@ public class HProductStock {
 	// add a new available stock to the product
 	public static boolean addProductStock( HProductStock stock ) {
 		
-		System.out.println("Adding ProductStock: " + stock.toString());
-		EntityManager manager = HConnector.FACTORY.createEntityManager();
-		boolean ret = true;
+    	System.out.println( "----->[ ADD STOCK " + stock.getIDstock() + " ]<-----");
+		if( HConnector.FACTORY == null ) //  Firstable we verify there is an active connection
+			if( !HConnector.createConnection()) return false;
 		
-		manager.getTransaction().begin();
-		manager.persist( stock );
+		EntityManager manager = null;
+		
 		try {
 			
+			manager = HConnector.FACTORY.createEntityManager();
 			manager.getTransaction().commit();
+			manager.getTransaction().begin();
+			manager.persist( stock );
+			manager.close();
+	    	System.out.println( "-----> Stock correctly added" );
+			return true;
 			
 		}catch( IllegalStateException | RollbackException e ) {
 			
-			ret = false;
+	    	System.out.println( "-----> Error, Connection Rejected" );
+			manager.close();
+			HConnector.FACTORY.close();
+			HConnector.FACTORY = null;
+			return false;
 			
 		}
 		
-		manager.close();
-		
-		return ret;
-		
 	}
-	
 	
 	//  USED BY TEAMLEADER INTERFACE  
 	//  It gives the last used stock ID
 	public static int getLastStockID() {
 		
-		EntityManager manager = HConnector.FACTORY.createEntityManager();
-
-		HProductStock lastStock = (HProductStock)manager.createQuery("SELECT p FROM HProductStock p WHERE p = ( SELECT max(h.IDstock) FROM HProductStock h )").getSingleResult();
-		manager.close();
+		if( HConnector.FACTORY == null ) //  Firstable we verify there is an active connection
+			if( !HConnector.createConnection()) return -1;
 		
-		System.out.println("STOCK: " + lastStock.IDstock);
+    	System.out.println( "-----> Getting last Stock Available" );
+		EntityManager manager = null;
+		HProductStock lastStock = null;
+		try {
 		
+			manager = HConnector.FACTORY.createEntityManager();
+			lastStock = (HProductStock)manager.createQuery("SELECT p FROM HProductStock p WHERE p = ( SELECT max(h.IDstock) FROM HProductStock h )").getSingleResult();
+			manager.close();
+			
+		}catch( Exception e ) {
+			
+	    	System.out.println( "-----> Error, Connection Rejected" );
+			manager.close();
+			HConnector.FACTORY.close();
+			HConnector.FACTORY = null;
+			return -1;
+		
+		}		
+		
+    	System.out.println( "-----> Last stock found: " + lastStock.IDstock );
 		return lastStock.IDstock;
+	
 	}
 	
 	

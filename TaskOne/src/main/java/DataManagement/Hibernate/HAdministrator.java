@@ -1,9 +1,7 @@
 package DataManagement.Hibernate;
 
 import javax.persistence.Entity;
-import javax.persistence.EntityManager;
 
-import DataManagement.HConnector;
 
 //----------------------------------------------------------------------------------------------------------
 //										HAdministrator
@@ -34,18 +32,6 @@ public class HAdministrator extends HEmployee{
 	//										 FUNCTIONS
 	//----------------------------------------------------------------------------------------------------------
 
-	
-	//  the function saves an entity Administrator" into the database
-	public static void addAdministrator( HAdministrator administrator ) {
-		
-		System.out.println("Adding Administrator: " + administrator.toString());
-		EntityManager manager = HConnector.FACTORY.createEntityManager();
-		manager.getTransaction().begin();
-		manager.persist( administrator );
-		manager.getTransaction().commit();
-		manager.close();
-		
-	}
 	
 	@Override
 	public String toString() { return super.toString(); }

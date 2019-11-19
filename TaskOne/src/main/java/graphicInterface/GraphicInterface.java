@@ -14,8 +14,6 @@ import javafx.scene.control.PasswordField;
 import javafx.scene.control.TextField;
 import javafx.scene.layout.AnchorPane;
 import javafx.stage.Stage;
-
-import java.io.PrintWriter;
 import java.net.URL;
 import java.util.ResourceBundle;
 
@@ -29,7 +27,6 @@ public class GraphicInterface extends Application implements Initializable {
     private static Scene myApplication;  //  used to locate the elements in the interface
     private static UserType userType = UserType.NOUSER;  //  define the type of interface the user will access
     private static InterfaceController myInterface;   //  module of management of the current interface
-    private static PrintWriter LOG = new PrintWriter( System.out );
     private static DataManager dataManager = new DataManager();
     private static AnchorPane accessPage, adminPage, customerPage, managerPage;
 
