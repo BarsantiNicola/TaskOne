@@ -693,7 +693,8 @@ public class HConnector extends DataConnector{
     	
     	return map;
     }
-
+    
+    //function that returns all the available id stock for a given product name
     @SuppressWarnings("unchecked")
 	List<HProductStock> getFreeStocks( String PRODUCT_NAME ){
     	

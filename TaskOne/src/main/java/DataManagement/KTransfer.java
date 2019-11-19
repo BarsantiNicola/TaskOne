@@ -5,13 +5,15 @@ import com.google.gson.*;
 import DataManagement.Hibernate.*;
 import JSONclasses.*;
 import beans.*;
+import org.iq80.leveldb.*;
+import static org.iq80.leveldb.impl.Iq80DBFactory.*;
 
 public class KTransfer {
 			
 	private static HConnector hibernate = new HConnector();
 		
 	//import the users into the k-value database (the list of username)
-	public static boolean importUsers() {
+	private static boolean importUsers() {
 		
 		List<User> userList = hibernate.getUsers(); 
 		List<String> namesList = new ArrayList<String>();
@@ -28,13 +30,16 @@ public class KTransfer {
 		}
 		
 		JSONusers jsonObject = new JSONusers(namesList);
+		String object = gson.toJson(jsonObject);
 		
 		if( KValueConnector.getIntHash(key) <= 0 ) {
 			
-			KValueConnector.levelDBStore1.put(hashKey.getBytes(),gson.toJson(jsonObject).getBytes());
+			System.out.println("Oggetto " + object + " stored in levelDBStore1");
+			KValueConnector.levelDBStore1.put(bytes(hashKey),bytes(object));
 		} else {
 			
-			KValueConnector.levelDBStore2.put(hashKey.getBytes(),gson.toJson(jsonObject).getBytes());
+			System.out.println("Oggetto " + object + " stored in levelDBStore2");
+			KValueConnector.levelDBStore2.put(bytes(hashKey),bytes(object));
 		}
 		
 		return true;
@@ -42,7 +47,7 @@ public class KTransfer {
 	}
 	
 	//import the user into the k-value database (username->password)
-	public static boolean importUsersPassword() {
+	private static boolean importUsersPassword() {
 				
 				List<User> userList = hibernate.getUsers(); 
 				
@@ -62,10 +67,10 @@ public class KTransfer {
 					
 					if( KValueConnector.getIntHash(key) <= 0 ) {
 						
-						KValueConnector.levelDBStore1.put(hashKey.getBytes(),gson.toJson(jsonObject).getBytes());
+						KValueConnector.levelDBStore1.put(bytes(hashKey),bytes(gson.toJson(jsonObject)));
 					} else {
 						
-						KValueConnector.levelDBStore2.put(hashKey.getBytes(),gson.toJson(jsonObject).getBytes());
+						KValueConnector.levelDBStore2.put(bytes(hashKey),bytes(gson.toJson(jsonObject)));
 					}
 				}
 				
@@ -73,7 +78,7 @@ public class KTransfer {
 			}
 						
 	//import order ids into the k-value database (list of order ids)	
-	public static boolean importOrderIDs() {
+	private static boolean importOrderIDs() {
 				
 				List<User> userList = hibernate.getUsers(); 
 				JSONorderID idList;
@@ -105,10 +110,10 @@ public class KTransfer {
 					
 					if( KValueConnector.getIntHash(key) <= 0 ) {
 						
-						KValueConnector.levelDBStore1.put(hashKey.getBytes(),gson.toJson(idList).getBytes());
+						KValueConnector.levelDBStore1.put(bytes(hashKey),bytes(gson.toJson(idList)));
 					} else {
 						
-						KValueConnector.levelDBStore2.put(hashKey.getBytes(),gson.toJson(idList).getBytes());
+						KValueConnector.levelDBStore2.put(bytes(hashKey),bytes(gson.toJson(idList)));
 					}
 				}
 				
@@ -117,7 +122,7 @@ public class KTransfer {
 			}
 			
 	//import the orders into the k-value database (user,idorder->order)
-			public static boolean importOrders() {
+	private static boolean importOrders() {
 				
 				List<User> userList = hibernate.getUsers();   
 				List<Order> orderList = new ArrayList<>();
@@ -159,10 +164,10 @@ public class KTransfer {
 						
 						if( KValueConnector.getIntHash(key) <= 0 ) {
 							
-							KValueConnector.levelDBStore1.put(hashKey.getBytes(),gson.toJson(order).getBytes());
+							KValueConnector.levelDBStore1.put(bytes(hashKey),bytes(gson.toJson(order)));
 						} else {
 							
-							KValueConnector.levelDBStore2.put(hashKey.getBytes(),gson.toJson(order).getBytes());
+							KValueConnector.levelDBStore2.put(bytes(hashKey),bytes(gson.toJson(order)));
 						}
 					}
 					
@@ -171,7 +176,7 @@ public class KTransfer {
 			}
 			
 			//import products into the k-value database (productName->product)
-			public static boolean importProducts() {
+			private static boolean importProducts() {
 				
 				List<Product> productList = hibernate.getAvailableProducts(); 
 				String key, hashKey;
@@ -187,10 +192,10 @@ public class KTransfer {
 					
 					if( KValueConnector.getIntHash(key) <= 0 ) {
 						
-						KValueConnector.levelDBStore1.put(hashKey.getBytes(),gson.toJson(product).getBytes());
+						KValueConnector.levelDBStore1.put(bytes(hashKey),bytes(gson.toJson(product)));
 					} else {
 						
-						KValueConnector.levelDBStore2.put(hashKey.getBytes(),gson.toJson(product).getBytes());
+						KValueConnector.levelDBStore2.put(bytes(hashKey),bytes(gson.toJson(product)));
 					}
 				}
 				
@@ -198,7 +203,7 @@ public class KTransfer {
 			}
 			
 			//import product names into the k-Value database (list of all product names)
-			public static boolean importProductNames() {
+			private static boolean importProductNames() {
 				
 				List<Product> productList = hibernate.getAvailableProducts(); //va bene prendere anche solo gli available?
 				List<String> namesList = new ArrayList<>();
@@ -218,10 +223,10 @@ public class KTransfer {
 				
 				if( KValueConnector.getIntHash(key) <= 0 ) {
 					
-					KValueConnector.levelDBStore1.put(hashKey.getBytes(),gson.toJson(jsonObject).getBytes());
+					KValueConnector.levelDBStore1.put(bytes(hashKey),bytes(gson.toJson(jsonObject)));
 				} else {
 					
-					KValueConnector.levelDBStore2.put(hashKey.getBytes(),gson.toJson(jsonObject).getBytes());
+					KValueConnector.levelDBStore2.put(bytes(hashKey),bytes(gson.toJson(jsonObject)));
 				}
 				
 				return true;
@@ -229,7 +234,7 @@ public class KTransfer {
 			}
 			
 			//import the free stocks id into the k-value database (productName->List of free stocks)
-			public static boolean importStocks() {
+			private static boolean importStocks() {
 				
 				List<Product> productList = hibernate.getAvailableProducts();
 				List<HProductStock> stockList = null;
@@ -248,18 +253,30 @@ public class KTransfer {
 					
 					if( KValueConnector.getIntHash(key) <= 0 ) {
 						
-						KValueConnector.levelDBStore1.put(hashKey.getBytes(),gson.toJson(ids).getBytes());
+						KValueConnector.levelDBStore1.put(bytes(hashKey),bytes(gson.toJson(ids)));
 					} else {
 						
-						KValueConnector.levelDBStore2.put(hashKey.getBytes(),gson.toJson(ids).getBytes());
+						KValueConnector.levelDBStore2.put(bytes(hashKey),bytes(gson.toJson(ids)));
 					}
 				}
 				
+						
 				return true;
 				
-			}
+			}			
 			
+		public static boolean transferIntoKValue() {
 			
+			boolean user = importUsers();
+			boolean psw = importUsersPassword();
+			boolean ordid = importOrderIDs();
+			boolean ord = importOrders();
+			boolean prod = importProducts();
+			boolean nam = importProductNames();
+			boolean sto = importStocks();
+			
+			return user && psw && ordid && ord && prod && nam && sto;
+		}
 			
 }
 
