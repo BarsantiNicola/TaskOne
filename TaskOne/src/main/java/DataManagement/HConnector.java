@@ -452,7 +452,83 @@ public class HConnector extends DataConnector{
     	return orders;
     	
     }
+    
+    //function that return all the orders of a customer, and their order id
+    public HashMap<List<Integer>,List<Order>> getMyOrders(String CUSTOMER_ID){
+    	
+    //  Firstable we control the status connection
+    	if( FACTORY == null ) 
+			if( !createConnection()) return new HashMap<>();
+    	
+    	EntityManager manager = FACTORY.createEntityManager();
+    	List<Order> orders = new ArrayList<Order>();
+    	List<Integer> ids = new ArrayList<Integer>();
+    	List<HOrder> horders = null;
+    	
+    	try {
+    		
+    		manager = FACTORY.createEntityManager();
+    		horders = manager.find( HCustomer.class , CUSTOMER_ID ).getMyHOrders();
+        	for( HOrder o : horders ) {
+        		orders.add(new Order(o));
+        		ids.add(o.getIDorder());
+        	}
+        		
+        	manager.close();
+        	
+    	}catch( Exception e ) {
+    		
+        	System.out.println( "----> Error, connection rejected" );
+    		manager.close();
+			FACTORY.close();
+    		FACTORY = null;
+    		return new HashMap<>(); 		
+    	}
+    	
+    	HashMap map = new HashMap<List<Integer>,List<Order>>();
+    	map.put(ids,orders);
+    	
+    	return map;
+    }
 
+    List<Integer> getFreeStocks( String PRODUCT_NAME ){
+    	
+    //  Firstable we control the status connection
+    	if( FACTORY == null ) 
+			if( !createConnection()) return new ArrayList<>();
+    	
+    	EntityManager manager = FACTORY.createEntityManager();
+    	List<Integer> allIDStocks = new ArrayList<Integer>();
+    	List<Integer> idInOrder = new ArrayList<Integer>();
+    	List<HOrder> horders = null;
+    	List<HProductStock> hstocks = null;
+    	
+    	try {
+    		
+    		manager = FACTORY.createEntityManager();
+    		horders = manager.find( HCustomer.class ,  ).getMyHOrders();
+    			
+        	for( HOrder o : horders ) {
+        		
+        		hstocks = manager.find( HProductStock.class , primaryKey);
+        	}
+        	
+        	
+        		
+        	manager.close();
+        	
+    	}catch( Exception e ) {
+    		
+        	System.out.println( "----> Error, connection rejected" );
+    		manager.close();
+			FACTORY.close();
+    		FACTORY = null;
+    		return new ArrayList<>(); 		
+    	}
+    	
+    	return ids;
+    }
+    
     //  the function gives the products available for the user(availability>0)
     public List<Product> getAvailableProducts(){ 
     	
