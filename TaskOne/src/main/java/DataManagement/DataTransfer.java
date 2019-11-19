@@ -280,8 +280,9 @@ public class DataTransfer {
         manager.saveHProductStock(conn.getHProductStock());
 
         manager.saveHOrder(conn.getHOrder());*/
-
-        manager.saveHCustomer(conn.getHCustomer());
+        HConnector hconn = new HConnector();
+        hconn.getFreeStocks("ISmartBand");
+     //   manager.saveHCustomer(conn.getHCustomer());
        // manager.entityManager = manager.factory.createEntityManager();
        // new HConnector();
        // List<HOrder> customerOrders = manager.entityManager.find(HCustomer.class, "adri").getMyHorders();

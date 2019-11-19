@@ -122,7 +122,7 @@ public class HProductStock {
 		HProductStock lastStock = null;
 		try {
 		
-			manager = HConnector.FACTORY.createEntityManager();
+			manager = HConnector.FACTORY.createEntityManager();  //  C'è UN ERRORE QUA  SELEZIONARE PRIMA I FREE STOCKS => p.IDstock NOT IN ( select p.stockID from orders )
 			lastStock = (HProductStock)manager.createQuery("SELECT p FROM HProductStock p WHERE p = ( SELECT max(h.IDstock) FROM HProductStock h )").getSingleResult();
 			manager.close();
 			
