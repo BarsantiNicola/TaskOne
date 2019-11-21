@@ -27,7 +27,7 @@ public class GraphicInterface extends Application implements Initializable {
     private static Scene myApplication;  //  used to locate the elements in the interface
     private static UserType userType = UserType.NOUSER;  //  define the type of interface the user will access
     private static InterfaceController myInterface;   //  module of management of the current interface
-    private static DataManager dataManager = new DataManager();
+    private static DataClient dataManager = new DataClient();
     private static AnchorPane accessPage, adminPage, customerPage, managerPage;
 
     //  STARTING POINT
@@ -38,23 +38,28 @@ public class GraphicInterface extends Application implements Initializable {
 
         Parent root = FXMLLoader.load(getClass().getResource( "interface.fxml" ));
         System.out.println( "Loading graphic interface by FXML file" );
-        System.out.println( "Establishing Database Connection" );
 
+        System.out.println( "-> Linking interface elements to the logic layer" );
         myApplication = new Scene( root , 590 , 390 );
         accessPage = (AnchorPane)myApplication.lookup( "#AccessPage" );
         adminPage = (AnchorPane)myApplication.lookup( "#AdminPage" );
         customerPage = (AnchorPane)myApplication.lookup( "#CustomerPage" );
         managerPage = (AnchorPane)myApplication.lookup( "#HeadPage" );
 
+        System.out.println( "-> Building graphic interface" );
+        
         primaryStage.setTitle( "Innovative Solutions" );
         primaryStage.setScene( myApplication );
         primaryStage.setResizable( false );
+        
         System.out.println( "Starting graphic interface" );
+        
         primaryStage.setOnCloseRequest(event -> {
             if( myInterface != null )
                 myInterface.LOG.flush();
             // Save file
         });
+        
         primaryStage.show();
 
     }
@@ -145,45 +150,54 @@ public class GraphicInterface extends Application implements Initializable {
     @FXML
     private void accessRequest(){
 
+    	System.out.println( "[USER LOGIN REQUEST]" );
+
         TextField nameField = (TextField)myApplication.lookup( "#FormName");
         PasswordField passwordField = (PasswordField)myApplication.lookup( "#FormPassword");
+        
         String name = nameField.getText();
         nameField.setText("");
         String password = passwordField.getText();
         passwordField.setText("");
-
+    	System.out.println( "-> Data extracted from the interface (" + name + "," + password + ")" );
+    	
         userType = dataManager.login( name , password );
         myApplication.lookup("#AlertMessage" ).setVisible( false );
 
         System.out.println( "User: " + name + " trying to obtain access with grant-type: " + userType );
 
         switch( userType ) {
+        
             case CUSTOMER:
 
+            	System.out.println( "-> Build of the Customer interface" );
                 myInterface = new CustomerController( myApplication , name );
                 customerPage.setVisible( true );
                 break;
 
             case ADMINISTRATOR:
 
+            	System.out.println( "-> Build of the Administrator interface" );
                 myInterface = new AdminController( myApplication );
                 adminPage.setVisible( true );
                 break;
 
             case TEAMLEADER:
 
+            	System.out.println( "-> Build of the Team Leader interface" );
                 myInterface = new TeamLeaderController( myApplication , dataManager.getTeam( name ) );
                 managerPage.setVisible( true );
                 break;
 
             default:
 
+                System.out.println( "[LOGIN ERROR]" );
                 myApplication.lookup("#AlertMessage").setVisible(true);
                 return;
 
         }
 
-        System.out.println( "Loading of user interface completed" );
+        System.out.println( "[LOGIN COMPLETED]" );
         myApplication.lookup( "#AccessPage" ).setVisible( false );
 
     }
@@ -191,13 +205,13 @@ public class GraphicInterface extends Application implements Initializable {
     @FXML
     public void logout(){
 
+    	System.out.println("[LOGOUT]");
         myInterface.reset();
         myInterface = null;
         adminPage.setVisible(false);
         customerPage.setVisible(false);
         managerPage.setVisible(false);
         accessPage.setVisible(true);
-
 
     }
 

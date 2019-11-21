@@ -15,61 +15,7 @@ import ConsistenceManagement.RequestedCommand;
 
 public class ConsistenceTransfer {
 	
-	boolean giveOrderConsistence( String customer , String product , int stock , int price , Timestamp date , Object obj ) {
-		
-		TransferData order = null;
-		HashMap<String,Object> values = new HashMap<>();
-		
-		values.put( "username", customer );
-		values.put( "order" , obj );
-		values.put( "product" , product );
-		values.put( "stock" , stock ); 
-		values.put( "price" , price );
-		values.put( "date", date );
-		
-		if( obj instanceof Order ) 
-			order = new TransferData( values , null , (Order)obj , RequestedCommand.ADDORDER );
-		else 
-			order = new TransferData( values , null , null ,  RequestedCommand.ADDHORDER );	
-		
-		return sendMessage( order );
-	}
-	
-	boolean giveUserConsistence( User customer ) { 
-		TransferData data = null;
-		HashMap<String,Object> values = new HashMap<>();
-		
-		values.put( "username", customer.getUsername() );
-		values.put( "password" , customer.getPassword() );
-		data = new TransferData( values , null , null , RequestedCommand.ADDCUSTOMER );
-		return sendMessage(data); 
-	}
-	
-	boolean giveDeleteUserConsistence( String USERNAME ) {
-		
-		TransferData data = null;
-		HashMap<String,Object> values = new HashMap<>();
-		
-		values.put( "username", USERNAME );
-		data = new TransferData( values , null , null , RequestedCommand.REMOVECUSTOMER );
-		return sendMessage(data);
-	}
-	
-	boolean giveProductConsistence( String PRODUCT_NAME , int ADDED_AVAILABILITY ) {
-		
-		TransferData data = null;
-		HashMap<String,Object> values = new HashMap<>();
-		
-		values.put( "product", PRODUCT_NAME );
-		values.put( "availability" , ADDED_AVAILABILITY );
-		
-		data = new TransferData( values , null , null , RequestedCommand.ADDPRODUCT );
-		return sendMessage(data);
-
-	}
-	
-	
-	boolean sendMessage( TransferData data ) {
+	/*boolean sendMessage( TransferData data ) {
 		
 		Socket server = null;
 		PrintWriter toServer = null;
@@ -164,5 +110,5 @@ public class ConsistenceTransfer {
 		}
 
 	
-	}
+	}*/
 }

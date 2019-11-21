@@ -321,12 +321,15 @@ public class HConnector extends DataConnector{
     		
     		manager = FACTORY.createEntityManager();
     		product = manager.getReference( HProduct.class , PRODUCT_NAME );
-    		ret = product.addProductAvailability( ADDED_AVAILABILITY ); 
+    		manager.getTransaction().begin();
+    		ret = product.addProductAvailability( manager , ADDED_AVAILABILITY ); 
+    		manager.getTransaction().commit();
     		manager.close();
     		
     	}catch( Exception e ) {
     		
         	System.out.println( "----> Error, connection rejected" );
+        	e.printStackTrace();
     		manager.close();
 			FACTORY.close();
     		FACTORY = null;
@@ -345,12 +348,14 @@ public class HConnector extends DataConnector{
 			if( !createConnection()) return false;
 		
 		EntityManager manager = null;
+		boolean ret;
     	HProduct product = null;
     	
     	try {
     		
     		manager = FACTORY.createEntityManager();
     		product = manager.getReference( HProduct.class , PRODUCT_NAME );
+    		ret = product.decreaseAvailability( HProductStock.getMaxStock( manager , PRODUCT_NAME ) );
     		manager.close();
     		
     	}catch( Exception e ) {
@@ -363,7 +368,7 @@ public class HConnector extends DataConnector{
     	
     	}
     	
-    	return product.decreaseAvailability( HProductStock.getLastStockID( PRODUCT_NAME ) ); 	
+    	return ret;	
 		
 	}
 
@@ -643,7 +648,7 @@ public class HConnector extends DataConnector{
     }
 	
 	@Override
-	int getMinIDProduct(int PRODUCT_TYPE) {
+	public int getMinIDProduct(int PRODUCT_TYPE) {
 		// TODO Auto-generated method stub
 		return 0;
 	}

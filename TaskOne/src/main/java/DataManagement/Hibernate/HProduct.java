@@ -191,43 +191,27 @@ public class HProduct {
 	//  USED BY TEAMLEADER INTERFACE 
 	//  the function ADDS the number given to the current availability of the object
 	
-	public boolean addProductAvailability( int number ) {
+	public boolean addProductAvailability( EntityManager manager , int number ) {
 		
-		System.out.println("-----> Trying to change the availability of the product " + productName );		
-		if( HConnector.FACTORY == null ) 
-			if( !HConnector.createConnection()) return false;
-		
-		EntityManager manager = null;
         int availability = productAvailability;
     	HProduct product = this; 
-    	HProductStock productStock = null;
+    	HProductStock productStock = new HProductStock(  HProductStock.getMaxStock( manager , productName )+1 , product );
     	
         //  increasing the availability of a product consist to insert
         //  new stocks available for users orders.
+			
 
-		try {
-			
-			manager = HConnector.FACTORY.createEntityManager();
-			productStock = new HProductStock(  HProductStock.getLastStockID( productName )+1 , product );
-			manager.getTransaction().begin();
+
 			//  we update the availability by update the product and save the new stock
-			product.setProductAvailability( availability+1);  
-			manager.persist(productStock);
-			manager.merge(product);
-			manager.getTransaction().commit();
-			System.out.println( "-----> Availability updated" + (availability-1) + " -> " + availability );
-			manager.close();		
-			return true;
+		product.setProductAvailability( availability+1);  
+		manager.persist(productStock);
+		manager.merge(product);
+
+		System.out.println( "-----> Availability updated" + (availability-1) + " -> " + availability );
+	
+		return true;
 			
-		}catch( IllegalStateException | RollbackException e ) {
-			
-    		System.out.println( "-----> Error, Connection Rejected" );
-    		manager.close();
-			HConnector.FACTORY.close();
-    		HConnector.FACTORY = null;
-    		return false;
-			
-		}
+		
 		
 	}
 	

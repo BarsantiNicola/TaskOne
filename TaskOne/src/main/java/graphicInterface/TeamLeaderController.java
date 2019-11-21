@@ -61,7 +61,7 @@ public class TeamLeaderController extends InterfaceController{
         		{ "Email" , "mail" } , {"Role" , "role"} };
 
 
-        System.out.print( "Starting creating TeamLeader interface" );
+        System.out.println( "--> Creating TeamLeader interface" );
 
         //  searching of all the needed elements into the javafx object node tree
         myInterface = new AnchorPane[2];
@@ -75,7 +75,7 @@ public class TeamLeaderController extends InterfaceController{
         productsTable = FXCollections.observableArrayList(); //  COLLECTION OF BEANS-CLASS LINKED TO THE TABLE
         employeesTable = FXCollections.observableArrayList();
         
-        System.out.println("->Elements of the interface loaded");
+        System.out.println("--> Elements of the interface loaded");
         
         //  configuration of the viewed table
         productsTableView.setMaxWidth( 485 );
@@ -88,7 +88,7 @@ public class TeamLeaderController extends InterfaceController{
         productsTableView.setItems( productsTable );
         employeesTableView.setItems( employeesTable );
 
-        currentSection = false; //  set the table to  team products table
+        setDefault(); //  sets the initial table
 
         for( int a = 0; a<productFields.length; a++ ){
 
@@ -102,7 +102,7 @@ public class TeamLeaderController extends InterfaceController{
 
         }
 
-        System.out.println("->TeamLeader'product table configurated");
+        System.out.println("--> TeamLeader'product table configurated");
         
         for( int a = 0; a<employeeFields.length; a++ ){
 
@@ -115,12 +115,12 @@ public class TeamLeaderController extends InterfaceController{
             employeesTableView.getColumns().add( column );
 
         }
-        System.out.println("->TeamLeader team members table configurated");
+        System.out.println("--> TeamLeader team members table configurated");
 
         products =  dataManager.getTeamProducts( managedTeam );   
-        System.out.println("->TeamLeader Products Data correctly loaded");
+        System.out.println("--> TeamLeader Products Data correctly loaded");
         employees =  dataManager.getTeamEmployees( managedTeam );  
-        System.out.println("->TeamLeader Team Members data correctly loaded");
+        System.out.println("--> TeamLeader Team Members data correctly loaded");
 
         productsTable.addAll( products );
         employeesTable.addAll( employees );
@@ -130,7 +130,7 @@ public class TeamLeaderController extends InterfaceController{
         myInterface[0].getChildren().add( productsTableView );
         myInterface[1].getChildren().add( employeesTableView );
         
-        System.out.println( "->TeamLeader interface created" );
+        System.out.println( "--> TeamLeader interface created" );
 
     }
 
@@ -190,6 +190,14 @@ public class TeamLeaderController extends InterfaceController{
 
     }
     
+    void setDefault(){
+    	
+    	currentSection = false;
+    	productsSection.setVisible(false);
+    	employeesSection.setVisible(true);
+    	
+    }
+    
     @SuppressWarnings({ "unlikely-arg-type", "static-access" })
 	void changeTable( String table ){
 
@@ -246,12 +254,12 @@ public class TeamLeaderController extends InterfaceController{
         String value = searchInput.getText();
 
         if( currentSection == false){
-
+            System.out.println( "--> Searching employees with key: " + value );
             employeesTable.removeAll( employeesTable );
             employeesTable.addAll( dataManager.searchTeamEmployees( managedTeam , value ) );
 
         }else{
-
+            System.out.println( "--> Searching products with key: " + value );
             productsTable.removeAll( productsTable );
             productsTable.addAll( dataManager.searchTeamProducts( managedTeam , value ) ); 
         }
@@ -287,7 +295,7 @@ public class TeamLeaderController extends InterfaceController{
 	@SuppressWarnings("static-access")
     void insertNewElement(){
 
-        System.out.print( "Trying to increase the availability of a product" );
+        System.out.println( "--> Trying to increase the availability of a product" );
         Iterator<Node> it = insertPopup.getChildren().iterator();
         Iterator<Product> product = productsTable.iterator();
         ObservableList<Product> prod = FXCollections.observableArrayList();
@@ -307,8 +315,8 @@ public class TeamLeaderController extends InterfaceController{
             }
 
         }
-        System.out.print( "->Data correctly taken from the interface" );
-        System.out.print( "->Searching for the product" );
+        System.out.println( "--> Data correctly taken from the interface" );
+        System.out.println( "--> Searching for the product" );
         Product p;
         String name = values.get( "ProductName" );  //  we search the product name inserted into the interface
 
@@ -318,8 +326,8 @@ public class TeamLeaderController extends InterfaceController{
         	
             p = product.next();
             if( p.getProductName().compareTo( name ) == 0 ) {
-                System.out.print( "->Product Found" );
-                System.out.print( "->Updating availability of the product" );
+                System.out.println( "--> Product Found" );
+                System.out.println( "--> Updating availability of the product" );
             	 //  after we found the object we update is availability and add a new stock of the element
                  if ( dataManager.updateProductAvailability( p.getProductName() , 1 ) ){  
 
@@ -331,7 +339,7 @@ public class TeamLeaderController extends InterfaceController{
                     productsTable.addAll( prod );
                     closePopups();
                     clearInputs();
-                    System.out.print( "Product updated" );
+                    System.out.println( "--> Product updated" );
                     return;
 
                 }
@@ -340,7 +348,7 @@ public class TeamLeaderController extends InterfaceController{
 
             }
         }
-        System.out.print( "Product Not Found" );
+        System.out.println( "--> Product Not Found" );
         
     }
 

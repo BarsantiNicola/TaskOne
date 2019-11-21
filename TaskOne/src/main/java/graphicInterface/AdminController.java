@@ -28,6 +28,7 @@ class AdminController extends InterfaceController{
     private TableView<User> userTableView;
     private ObservableList<User> userTable = FXCollections.observableArrayList();
     private AnchorPane insertPopup, updatePopup, deletePopup, userForm , employeeForm; 
+    private static DataClient client = new DataClient();
 
 	//----------------------------------------------------------------------------------------------------------
 	//										CONSTRUCTOR
@@ -55,7 +56,8 @@ class AdminController extends InterfaceController{
         employeeForm = (AnchorPane)app.lookup( "#EmployeeForm" );  // FORM FOR INSERT EMPLOYEE IN INSERT POPUP
         searchInput =  (TextField)app.lookup( "#ADMINSearch" );  //  TEXT INPUT FOR SEARCH INFORMATION
         undoButton =   (ImageView)app.lookup( "#ADMINUndo" );     //  BUTTON FOR CLOSE THE SEARCHING TABLE
-        System.out.println("->Elements of the interface loaded");
+        System.out.println( "--> Interface elements linked to the logic layer" );
+        System.out.println( "--> Building of the Administrator interface" );
         //  configuration of the viewed table
         userTableView =  new TableView<>();
         userTableView.setEditable(true);
@@ -79,13 +81,13 @@ class AdminController extends InterfaceController{
             userTableView.getColumns().add( column );
 
         }
-        System.out.println("->Administrator'user table configurated");
+        System.out.println("-->Administrator'user table configurated");
         
-        values = DataManager.getUsers();         
+        values = client.getUsers();         
         userTable.addAll( values );
-        System.out.println("->Administrator Data correctly loaded");
+        System.out.println("-->Administrator interface information loaded");
         myInterface.getChildren().add( userTableView );
-        System.out.println( "->Administrator interface created" );
+        System.out.println( "-->Administrator interface created" );
         
     }
 
@@ -155,6 +157,7 @@ class AdminController extends InterfaceController{
         }
     }
     
+    
     //  it reset the interface reshowing the initial login interface
     void reset(){
 
@@ -196,9 +199,9 @@ class AdminController extends InterfaceController{
     void searchValue() {
 
     	String value = searchInput.getText();
-        System.out.print( "Searching a user. Parameter: " + value );
-        userTable.removeAll(userTable);
-        userTable.addAll( DataManager.searchUsers( value ));  
+        System.out.println( "--> Searching users with key: " + value );
+        userTable.removeAll( userTable );
+        userTable.addAll( client.searchUsers( value ));  
 
         undoButton.setVisible( true );
 
@@ -211,7 +214,7 @@ class AdminController extends InterfaceController{
         searchInput.setText("");
         undoButton.setVisible( false );
         userTable.removeAll( userTable );      
-        userTable.addAll( DataManager.getUsers() );    
+        userTable.addAll( client.getUsers() );    
 
     }
    
@@ -227,15 +230,15 @@ class AdminController extends InterfaceController{
         User newUser;
         Iterator<Node> it;      
         HashMap<String , String> values = new HashMap<>();
-        System.out.print( "Insert of a new user" );
-        System.out.print( "->Determining the type of user" );
+        System.out.println( "--> Insert of a new user" );
+        System.out.println( "--> Determining the type of user" );
         //  we get what form is currently selected controlling its visibility(only one can be visible a time)
     	if( userForm.isVisible())
     		it = userForm.getChildren().iterator();
     	else
     		it = employeeForm.getChildren().iterator();
 
-        System.out.print( "->Getting all the data from the interface" );
+        System.out.println( "--> Getting all the data from the interface" );
         //  we get all the data inserted into the textfield of the current form
         while (it.hasNext()){
         	
@@ -245,7 +248,7 @@ class AdminController extends InterfaceController{
           
         }
        
-        System.out.print( "->Creating a new user object for persistence" );
+        System.out.println( "--> Creating a new user object for persistence" );
         // using the getted information we build an user object to be saved      
         // using the visibility of the current form we choose the correct user to insert(CUSTOMER/EMPLOYEE)  
         if( !userForm.isVisible() ) {  //  EMPLOYEE
@@ -271,13 +274,13 @@ class AdminController extends InterfaceController{
                     "" , 0 , values.get( "Address" ) , 0 );
         }
         
-        System.out.print( "->Trying to save the object");
+        System.out.println( "--> Trying to save the object");
         //  we give persistence to the new object
-        if( DataManager.insertUser( newUser )) {     
-            System.out.print( "User correctly saved" );
+        if( client.insertUser( newUser )) {     
+            System.out.println( "--> User correctly saved" );
             userTable.add(newUser);  //  if the operation is been correctly executed we update the user interface
         }else
-            System.out.print( "Error during the save of the user" );
+            System.out.println( "--> Error during the save of the user" );
         
         closePopups();
 
@@ -291,8 +294,8 @@ class AdminController extends InterfaceController{
         String username = null;
         
         Iterator<Node> it = updatePopup.getChildren().iterator();
-        System.out.print( "Update of the salary of an employee" );
-        System.out.print( "->Getting all the needed data from the interface" );
+        System.out.println( "--> Update of the salary of an employee" );
+        System.out.println( "--> Getting all the needed data from the interface" );
         //  we get all the values inserted into the update form( USERNAME/SALARY )
         while ( it.hasNext() ) {
         	
@@ -305,17 +308,17 @@ class AdminController extends InterfaceController{
                         salary = Integer.parseInt((( TextField ) app).getText());
         }
 
-        System.out.print( "->Trying to update a currently existing object");
+        System.out.println( "--> Trying to update a currently existing object");
         //  we give persistence to the change made to the user
-        if( DataManager.updateSalary( salary , username )){    
+        if( client.updateSalary( salary , username )){    
         	//  if the operation is a success we update the information into the interface
-            System.out.print( "Update of the salary of the employee " + username + " correctly done");
+            System.out.println( "--> Update of the salary of the employee " + username + " correctly done");
         	userTable.removeAll( userTable );
         	userTable.addAll( DataManager.getUsers());
         	closePopups();
         	
         }else
-            System.out.print( "Error trying to update the salary of the employee " + username );       
+            System.out.println( "--> Error trying to update the salary of the employee " + username );       
 
     }
 
@@ -326,8 +329,8 @@ class AdminController extends InterfaceController{
         String username = null;
         Iterator<Node> node = deletePopup.getChildren().iterator();
 
-        System.out.print( "Update of the salary of an employee" );
-        System.out.print( "->Getting all the needed data from the interface" );
+        System.out.println( "--> Update of the salary of an employee" );
+        System.out.println( "--> Getting all the needed data from the interface" );
         //  we get the information from the delete form
         while( node.hasNext() ){
 
@@ -338,16 +341,16 @@ class AdminController extends InterfaceController{
             }
         }
    
-        System.out.print( "->Trying to delete a currently existing object");
-        if( DataManager.deleteUser( username ) ){ 
+        System.out.println( "--> Trying to delete a currently existing object");
+        if( client.deleteUser( username ) ){ 
 
-            System.out.print( "Delete of the user " + username + " correctly done");
+            System.out.println( "--> Delete of the user " + username + " correctly done");
         	userTable.removeAll( userTable );
         	userTable.addAll( DataManager.getUsers()); 
         	closePopups();
 
         }else
-            System.out.print( "Error trying to delete user " + username );
+            System.out.println( "--> Error trying to delete user " + username );
 
     } 
 

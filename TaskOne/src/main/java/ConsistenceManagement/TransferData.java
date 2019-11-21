@@ -21,21 +21,21 @@ public class TransferData {
 		
 	}
 	
-	RequestedCommand getCommand() {
+	public RequestedCommand getCommand() {
 		
 		return command;
 	}
 	
-	HashMap<String,Object> getValues(){
+	public HashMap<String,Object> getValues(){
 		
 		return values;
 	}
 	
-	HOrder getHorder() {
+	public HOrder getHorder() {
 		return horder;
 	}
 	
-	Order getOrder() {
+	public Order getOrder() {
 		return order;
 	}
 

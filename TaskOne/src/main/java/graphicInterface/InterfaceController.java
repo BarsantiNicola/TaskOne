@@ -8,7 +8,7 @@ import java.io.PrintWriter;
 abstract class InterfaceController {
 
     public PrintWriter LOG = new PrintWriter( System.out );
-    protected DataManager dataManager = new DataManager();
+    protected static DataClient dataManager = new DataClient();
 
     abstract void searchValue();
     abstract void undoSearch();

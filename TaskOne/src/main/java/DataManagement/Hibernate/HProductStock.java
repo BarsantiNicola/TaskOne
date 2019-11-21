@@ -112,29 +112,32 @@ public class HProductStock {
 	
 	//  USED BY TEAMLEADER INTERFACE  
 	//  It gives the last used stock ID
-	public static int getLastStockID( String PRODUCT_NAME ) {
+	public static int getLastStockID( EntityManager manager ,String PRODUCT_NAME ) {
 		
-		if( HConnector.FACTORY == null ) //  Firstable we verify there is an active connection
-			if( !HConnector.createConnection()) return -1;
-		
-    	System.out.println( "-----> Getting last Stock Available" );
-		EntityManager manager = null;
+
 		HProductStock lastStock = null;
-		try {
 		
-			manager = HConnector.FACTORY.createEntityManager();  //  C'è UN ERRORE QUA  SELEZIONARE PRIMA I FREE STOCKS => p.IDstock NOT IN ( select p.stockID from orders )
-			lastStock = (HProductStock)manager.createQuery("SELECT p FROM HProductStock p WHERE p.product = ( SELECT h FROM HProduct h WHERE h.productName = ?1)").setParameter(1, PRODUCT_NAME ).getSingleResult();
-			manager.close();
+		lastStock = (HProductStock)manager.createQuery("SELECT max(p) FROM HProductStock p WHERE p.product = ( SELECT h FROM HProduct h WHERE h.productName = ?1)").setParameter(1, PRODUCT_NAME ).getSingleResult();
+
 			
-		}catch( Exception e ) {
 			
-	    	System.out.println( "-----> Error, Connection Rejected" );
-			manager.close();
-			HConnector.FACTORY.close();
-			HConnector.FACTORY = null;
-			return -1;
 		
-		}		
+    	System.out.println( "-----> Last stock found: " + lastStock.IDstock );
+		return lastStock.IDstock;
+	
+	}
+	
+//  USED BY TEAMLEADER INTERFACE  
+	//  It gives the last stockID(indipently if it is used or not FOR INSERT NEW STOCKS)
+	public static int getMaxStock( EntityManager manager ,String PRODUCT_NAME ) {
+		
+
+		HProductStock lastStock = null;
+		
+		lastStock = (HProductStock)manager.createQuery("SELECT MAX(p) FROM HProductStock p").getSingleResult();
+
+			
+			
 		
     	System.out.println( "-----> Last stock found: " + lastStock.IDstock );
 		return lastStock.IDstock;

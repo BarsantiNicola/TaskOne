@@ -7,6 +7,10 @@ import java.util.List;
 import beans.Employee;
 import java.sql.Timestamp;
 import javax.persistence.EntityManager;
+
+import ConsistenceManagement.ConsistenceManager;
+import ConsistenceManagement.RequestedCommand;
+import ConsistenceManagement.TransferData;
 import DataManagement.Hibernate.HProduct;
 import DataManagement.Hibernate.HCustomer;
 
@@ -29,7 +33,7 @@ public class DataManager{
 	private final static DatabaseConnector MYSQL = new DatabaseConnector();
     private final static HConnector HIBERNATE = new HConnector();
     private final static KValueConnector KEYVALUE = new KValueConnector(); 
-    private final static ConsistenceTransfer CONSISTENCE = new ConsistenceTransfer();
+    private final static ConsistenceManager CONSISTENCE = new ConsistenceManager();
     
 
 	//------------------------------------------------------------ ----------------------------------------------
@@ -82,7 +86,7 @@ public class DataManager{
     	//  To mantein consistance, before we could make a change into the database
     	//  we need to ensure that there aren't pending updates
     	System.out.println("-->Management of Customer\nForcing databases to refresh");
-    	CONSISTENCE.forceUpdate();
+    	updateDatabase();
     	System.out.println("-->Trying to persist data using hibernate ");
     	
 		if( HIBERNATE.insertUser( NEW_USER )){ //  if the data is correctly insertend into hibernate we need to make a replica
@@ -144,7 +148,7 @@ public class DataManager{
     	//  otherwise if the user is a customer we have firstable to update the databases
     	//  before changing something to ensure consistance
     	System.out.println("-->Management of Customer\nForcing databases to refresh");
-    	CONSISTENCE.forceUpdate();
+    	updateDatabase();
     	System.out.println("-->Trying to persist data using hibernate ");
     	
     	//  keyvalue database have only the customer's access informations
@@ -198,9 +202,10 @@ public class DataManager{
     public static boolean updateProductAvailability( String PRODUCT_NAME , int ADDED_AVAILABILITY ){ 
     	
     	System.out.println("-->Management of Customer\nForcing databases to refresh");
-    	CONSISTENCE.forceUpdate();
+    	updateDatabase();
     	
 		System.out.println( "-->Trying to persist data using Hibernate" );
+		System.out.println("PRODUCT NAME: " + PRODUCT_NAME + " ADD: " + ADDED_AVAILABILITY );
     	if( HIBERNATE.updateProductAvailability( PRODUCT_NAME , ADDED_AVAILABILITY )){
 			
     		System.out.println("-->Trying to persist data using LevelDB");
@@ -255,8 +260,9 @@ public class DataManager{
     //  Firstable we search into the keyvalue then if fails into mysql
     
     public static List<Order> searchOrders( String SEARCHED_VALUE , String CUSTOMER_ID ){ 
-    	
+    	System.out.println("OK " + SEARCHED_VALUE + "\t" + CUSTOMER_ID);
     	List<Order> ret = KEYVALUE.searchOrders( SEARCHED_VALUE , CUSTOMER_ID ); 	
+    	System.out.println("OK CI SONO" + SEARCHED_VALUE + "\t" + CUSTOMER_ID);
     	if( ret.size() == 0 ) ret = HIBERNATE.searchOrders( SEARCHED_VALUE , CUSTOMER_ID );    	
     	return ret;
 
@@ -281,8 +287,9 @@ public class DataManager{
     
     public static boolean insertOrder( String CUSTOMER_ID , int PRODUCT_ID , String PRODUCT_NAME , int PRICE ){ 
     	
+    	System.out.println("ORDINE: " + CUSTOMER_ID + " " + PRODUCT_ID + " " + PRODUCT_NAME + " " + PRICE );
     	//  firstable we update the pending updates
-    	CONSISTENCE.forceUpdate();
+    	updateDatabase();
     	//  for give consistence to the data we try to save the order in all databases 
     	boolean kValueResult = KEYVALUE.insertOrder( CUSTOMER_ID , PRODUCT_ID , PRODUCT_NAME , PRICE );
     	boolean hibernateResult = HIBERNATE.insertOrder( CUSTOMER_ID, PRODUCT_ID, PRODUCT_NAME , PRICE );
@@ -345,7 +352,7 @@ public class DataManager{
       		else {
       			//  if the save has fail we undo the operation
       			System.out.println("--->Error on give consistence, undo operation");
-      			KValueConnector.removeLastOrder( CUSTOMER_ID );
+      		//	KValueConnector.removeLastOrder( CUSTOMER_ID );
       			return false;
       		
       		}
@@ -374,6 +381,47 @@ public class DataManager{
   		//  if KEYVALUE has success, we return everytime CUSTOMER
   		return UserType.CUSTOMER;
   	}
+  	
+	static boolean makeUpdate( TransferData data ) {
+		
+		switch( data.getCommand() ) {
+		
+			case ADDORDER:
+				return KEYVALUE.insertOrder( (String)data.getValues().get("username"), data.getOrder());
+			case ADDHORDER:                                                             
+				return HIBERNATE.insertOrder( (String)data.getValues().get("username"), 
+						((Double)data.getValues().get("stock")).intValue() , (String)data.getValues().get("product") , 
+						((Double)data.getValues().get("price")).intValue());
+			case ADDPRODUCT:
+				return KEYVALUE.updateProductAvailability((String)data.getValues().get("product"), 
+						((Double)data.getValues().get("availability")).intValue());	
+			case ADDCUSTOMER:
+				return  KEYVALUE.insertUser( new User( (String)data.getValues().get("username") , null , null , 
+						(String)data.getValues().get("password") , null , null , 0 , null , 0 ));
+			case REMOVECUSTOMER:
+				return  KEYVALUE.deleteUser((String)data.getValues().get("username"));
+			default: return false;
+		
+		}
+		
+	}
+	
+	static void updateDatabase() { 
+		
+		TransferData[] updates = CONSISTENCE.loadHibernateUpdates();
+		
+		if( updates != null )
+			for( TransferData update : updates ) 		
+				if( !makeUpdate(update))
+					CONSISTENCE.saveHibernateState( update );
+		
+		updates = CONSISTENCE.loadKeyValueUpdates();
+		if( updates != null )
+			for( TransferData update : updates ) 		
+				if( !makeUpdate(update))
+					CONSISTENCE.saveKeyValueState( update );
+			
+	}
   	
   	@SuppressWarnings("static-access")
 	public static int getMinIDProduct( String PRODUCT_NAME ){ return HIBERNATE.getNextStock(PRODUCT_NAME ); }

@@ -368,7 +368,7 @@ public class KValueConnector extends DataConnector{
 		
 		//  TODO
 		
-	    int getMinIDProduct( int PRODUCT_TYPE ){ return -1; } //Da fare
+	    public int getMinIDProduct( int PRODUCT_TYPE ){ return -1; } //Da fare
 	    
 	    //  CONSISTENCE IF ADMINISTRATOR DELETE A CUSTOMER
 	    public boolean deleteUser( String USER_NAME ){ 
@@ -438,7 +438,7 @@ public class KValueConnector extends DataConnector{
 	    } 
 	    
 	    
-	    boolean insertOrder( String CUSTOMER_ID , int PRODUCT_ID , String PRODUCT_NAME , int PRICE ){ 
+	    public boolean insertOrder( String CUSTOMER_ID , int PRODUCT_ID , String PRODUCT_NAME , int PRICE ){ 
 	    	
 	    	String key, hashKey;
 			Gson gson = new Gson();
@@ -650,7 +650,7 @@ public class KValueConnector extends DataConnector{
 	    	
 	    }
 	    
-	    List<Product> getAvailableProducts(){ 
+	    public List<Product> getAvailableProducts(){ 
 	    	
 	    	List<Product> productList = new ArrayList<Product>();
 	    	
@@ -690,7 +690,7 @@ public class KValueConnector extends DataConnector{
 	    	
 	    }
 
-	    List<Product> searchProducts( String SEARCHED_STRING ){ 
+	    public List<Product> searchProducts( String SEARCHED_STRING ){ 
 	    	
 	    	List<Product> productList = new ArrayList<Product>();
 	    	
@@ -737,7 +737,7 @@ public class KValueConnector extends DataConnector{
 	    	
 	    }
 	    
-	    List<Order> searchOrders( String SEARCHED_VALUE , String CUSTOMER_ID ){ 
+	    public List<Order> searchOrders( String SEARCHED_VALUE , String CUSTOMER_ID ){ 
 	    	
 	    	List<Order> orderList = new ArrayList<Order>();
 	    	
@@ -778,7 +778,7 @@ public class KValueConnector extends DataConnector{
 	    	
 	    }
 	    
-	    List<Order> getOrders( String CUSTOMER_ID ){ 
+	    public List<Order> getOrders( String CUSTOMER_ID ){ 
 	    	
 	    	List<Order> orderList = new ArrayList<Order>();
 	    	
@@ -894,21 +894,21 @@ public class KValueConnector extends DataConnector{
 			
 		}
 				
-	    List<User> searchUsers( String SEARCHED_STRING ){ return null; }
+		 public List<User> searchUsers( String SEARCHED_STRING ){ return null; }
 
-	    List<User> getUsers(){ return null; }
+		 public List<User> getUsers(){ return null; }
 
-	    boolean updateSalary(int SALARY , String USER_ID  ){ return false; }
+		 public boolean updateSalary(int SALARY , String USER_ID  ){ return false; }
 
-	    int getProductType( String PRODUCT_NAME ){ return -1; }
+		 public int getProductType( String PRODUCT_NAME ){ return -1; }
 	    
-	    List<Product> getTeamProducts( int TEAM_ID ){ return null; }
+		 public List<Product> getTeamProducts( int TEAM_ID ){ return null; }
 
-	    List<Employee> getTeamEmployees( int TEAM_ID ){ return null; }
+		 public List<Employee> getTeamEmployees( int TEAM_ID ){ return null; }
 
-	    List<Employee> searchTeamEmployees( int TEAM_ID , String SEARCHED_VALUE ){ return null; }
+		 public List<Employee> searchTeamEmployees( int TEAM_ID , String SEARCHED_VALUE ){ return null; }
 
-	    List<Product> searchTeamProducts( int TEAM_ID , String SEARCHED_VALUE ){ return null; }
+		 public List<Product> searchTeamProducts( int TEAM_ID , String SEARCHED_VALUE ){ return null; }
 
 }
 

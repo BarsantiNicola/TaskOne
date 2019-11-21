@@ -40,6 +40,7 @@ public class CustomerController extends InterfaceController {
     private String customerId;
     private ImageView undoButton;
     private AnchorPane myInterface[];
+    private static DataClient client = new DataClient();
 
 	//----------------------------------------------------------------------------------------------------------
 	//										CONSTRUCTOR
@@ -59,7 +60,7 @@ public class CustomerController extends InterfaceController {
         myInterface = new AnchorPane[2];
         customerId = cId;
 
-        System.out.print( "Starting creating Customer interface" );
+        System.out.println( "--> Creating Customer interface" );
         
         ordersTableView =  new TableView<>();
         productsTableView = new TableView<>();
@@ -73,10 +74,10 @@ public class CustomerController extends InterfaceController {
         productsSection = (AnchorPane)app.lookup( "#CUSTOMERProducts" );
         myInterface[0] = (AnchorPane)app.lookup("#CUSTOMEROrdersTable");
         myInterface[1] = (AnchorPane)app.lookup("#CUSTOMERProductsTable");
-
         
-        System.out.println("->Elements of the interface loaded");
-
+        System.out.println( "--> Interface elements linked to the logic layer" );
+        System.out.println( "--> Building of the Customer interface" );
+        
         ordersTableView.setMinWidth( 498 );
         productsTableView.setMinWidth( 498 );
         ordersTableView.setMinHeight( 233 );
@@ -85,7 +86,7 @@ public class CustomerController extends InterfaceController {
         ordersTableView.setItems( ordersTable );
         productsTableView.setItems( productsTable );
 
-        currentSection = false;  //  set productTable for initial table showed
+        setDefault();  //  set the initial table showed
 
         for( int a = 0; a<orderFields.length; a++ ){
         	
@@ -99,7 +100,7 @@ public class CustomerController extends InterfaceController {
 
         }
 
-        System.out.println("->Customer'order table configurated");
+        System.out.println("--> Customer'order table configurated");
         
         for( int a = 0; a<productFields.length; a++ ){
         	
@@ -113,15 +114,15 @@ public class CustomerController extends InterfaceController {
 
         }
 
-        ordersTable.addAll( DataManager.getOrder( customerId )); /////////////////////// LIVELLO SOTTO
-        System.out.println("->Customer'orders Data correctly loaded");
-        productsTable.addAll( DataManager.getAvailableProducts() ); /////////////////////// LIVELLO SOTTO
-        System.out.println("->Customer'product table configurated");
+        ordersTable.addAll( client.getOrders( customerId )); /////////////////////// LIVELLO SOTTO
+        System.out.println("--> Customer'orders Data correctly loaded");
+        productsTable.addAll( client.getAvailableProducts() ); /////////////////////// LIVELLO SOTTO
+        System.out.println("--> Customer'product table configurated");
         
         myInterface[0].getChildren().add( ordersTableView );
         myInterface[1].getChildren().add( productsTableView );
         
-        System.out.println( "->Customer interface created" );
+        System.out.println( "--> Customer interface created" );
 
     }
 
@@ -171,6 +172,14 @@ public class CustomerController extends InterfaceController {
         }
     }
     
+    void setDefault() {
+    	
+    	currentSection = false;
+        ordersSection.setVisible( false );
+        productsSection.setVisible( true );
+    	
+    }
+    
     // the function changes the table showed to the user
     void changeTable( String table ){
 
@@ -199,7 +208,7 @@ public class CustomerController extends InterfaceController {
             if( undoButton.isVisible()){
             	
                 productsTable.removeAll( productsTable );
-                productsTable.addAll( DataManager.getAvailableProducts()); 
+                productsTable.addAll( client.getAvailableProducts()); 
                 
             }
 
@@ -222,12 +231,12 @@ public class CustomerController extends InterfaceController {
         if( currentSection == true ) {
         	
             ordersTable.removeAll( ordersTable );
-            ordersTable.addAll( DataManager.getOrder( customerId ));
+            ordersTable.addAll( client.getOrders( customerId ));
             
         }else{
         	
             productsTable.removeAll( productsTable );
-            productsTable.addAll( DataManager.getAvailableProducts() );
+            productsTable.addAll( client.getAvailableProducts() );
         
         }
 
@@ -236,18 +245,21 @@ public class CustomerController extends InterfaceController {
     //  the function do a search in the table based on the input given in the searchInput
     void searchValue(){
 
+
         String value = searchInput.getText();
 
         if( !currentSection ){
-
+        	
+            System.out.println( "--> Searching products with key: " + value );
             productsTable.removeAll( productsTable );
-            productsTable.addAll( DataManager.searchProducts( value )) ; /////////////////////// LIVELLO SOTTO
+            productsTable.addAll( client.searchProducts( value )) ; /////////////////////// LIVELLO SOTTO
             undoButton.setVisible( true );
 
         }else{
-
+        	
+            System.out.println( "--> Searching orders with key: " + value );
             ordersTable.removeAll(ordersTable);
-            ordersTable.addAll( DataManager.searchOrders( value , customerId )); /////////////////////// LIVELLO SOTTO
+            ordersTable.addAll( client.searchOrders( value , customerId )); /////////////////////// LIVELLO SOTTO
             undoButton.setVisible( true );
 
         }
@@ -272,7 +284,7 @@ public class CustomerController extends InterfaceController {
         Order newOrder;
         String productName = null;
         int myProductId;
-        System.out.println( "Trying to add a new order for the customer" );
+        System.out.println( "--> Trying to add a new order for the customer" );
         
         while( it.hasNext()){
             app = it.next();
@@ -282,39 +294,39 @@ public class CustomerController extends InterfaceController {
             }
         }
         if( productName != null )
-        	System.out.println( "-> Data correctly taken from the interface" );
+        	System.out.println( "--> Data correctly taken from the interface" );
         else {
-        	System.out.println("-> No data found");
+        	System.out.println("--> No data found");
         	return;
         }
         
-        System.out.println( "-> Searching for an available stock for product " + productName );
+        System.out.println( "--> Searching for an available stock for product " + productName );
         
-        myProductId = DataManager.getMinIDProduct( productName ); /////////////////////// LIVELLO SOTTO
+        myProductId = client.getMinIDProduct( productName ); /////////////////////// LIVELLO SOTTO
         if( myProductId < 0 ) {
-        	System.out.println("-> Error, no available product");
+        	System.out.println("--> Error, no available product");
         	return;
         }
         
-        System.out.println("-> Found available stock " + myProductId );
-        System.out.println("-> Searching product' information to make an order" );        
+        System.out.println("--> Found available stock " + myProductId );
+        System.out.println("--> Searching product' information to make an order" );        
         while( productList.hasNext() ) {
 
             product = productList.next();
             if( product.getProductName().compareTo(productName) == 0 ){
             	
-                System.out.println( "-> Product Found" );
+                System.out.println( "--> Product Found" );
             	if( product.getProductAvailability() < 1 ){
-            		System.out.println("-> No Availability" );
+            		System.out.println("--> No Availability" );
             		return;
             	}
             	
                 newOrder = new Order( myProductId , product.getProductName() , product.getProductPrice() , 
                 		new Timestamp(System.currentTimeMillis())  , product.getProductPrice() ,"received"  );
                 
-                System.out.println("-> Order maked\nTrying to give persistence to the order" );   /////////////////////// LIVELLO SOTTO
-                if( DataManager.insertOrder( customerId , myProductId, productName , product.getProductPrice())){
-                    System.out.println("Order correctly saved" );   
+                System.out.println("--> Order maked\nTrying to give persistence to the order" );   /////////////////////// LIVELLO SOTTO
+                if( client.insertOrder( customerId , myProductId, productName , product.getProductPrice())){
+                    System.out.println("--> Order correctly saved" );   
                 	//  strange passage, but without the update of the table doesn't work well
                     ordersTable.add( newOrder );
                     productsTable.remove( product );
@@ -331,7 +343,7 @@ public class CustomerController extends InterfaceController {
 
             }
         }
-        System.out.println("Product Not Found" );   
+        System.out.println("--> Product Not Found" );   
     }
 
 }
