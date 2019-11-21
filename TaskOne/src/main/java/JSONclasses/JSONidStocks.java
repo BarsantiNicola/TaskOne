@@ -28,9 +28,5 @@ public class JSONidStocks {
 		return idStocksList.get(index);
 	}
 
-	public void deleteFirstElement() {
-		
-		idStocksList.remove(0);
-	}
 }
 

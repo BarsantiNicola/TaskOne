@@ -714,7 +714,7 @@ public class HConnector extends DataConnector{
    		
     		manager = FACTORY.createEntityManager();      		
         	hstocks = manager.createQuery("SELECT p FROM HProductStock p WHERE p NOT IN ( SELECT productStock FROM HOrder )").getResultList();	
-        	manager.close();
+    		manager.close();
         	
     	}catch( Exception e ) {
     		

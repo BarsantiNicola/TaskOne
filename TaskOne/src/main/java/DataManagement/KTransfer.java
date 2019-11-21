@@ -36,11 +36,9 @@ public class KTransfer {
 		
 		if( KValueConnector.getIntHash(key) <= 0 ) {
 			
-			System.out.println(key + " stored in levelDBStore1");
 			KValueConnector.levelDBStore1.put(bytes(hashKey),bytes(object));
 		} else {
 			
-			System.out.println(key + " stored in levelDBStore2");
 			KValueConnector.levelDBStore2.put(bytes(hashKey),bytes(object));
 		}
 		
@@ -71,11 +69,9 @@ public class KTransfer {
 					
 			if( KValueConnector.getIntHash(key) <= 0 ) {
 				
-				System.out.println(key + " stored in levelDBStore1");
 				KValueConnector.levelDBStore1.put(bytes(hashKey),bytes(gson.toJson(jsonObject)));
 			} else {
 						
-				System.out.println(key + " stored in levelDBStore1");
 				KValueConnector.levelDBStore2.put(bytes(hashKey),bytes(gson.toJson(jsonObject)));
 			}
 		}	
@@ -118,12 +114,10 @@ public class KTransfer {
 			hashKey = KValueConnector.getStringHash(key);
 					
 			if( KValueConnector.getIntHash(key) <= 0 ) {
-					
-				System.out.println(key + " stored in levelDBStore1");
+
 				KValueConnector.levelDBStore1.put(bytes(hashKey),bytes(gson.toJson(idList)));
 			} else {
 				
-				System.out.println(key + " stored in levelDBStore2");
 				KValueConnector.levelDBStore2.put(bytes(hashKey),bytes(gson.toJson(idList)));
 			}
 		}
@@ -177,11 +171,9 @@ public class KTransfer {
 						
 				if( KValueConnector.getIntHash(key) <= 0 ) {
 					
-					System.out.println(key + " stored in levelDBStore1");
 					KValueConnector.levelDBStore1.put(bytes(hashKey),bytes(gson.toJson(order)));
 				} else {
 						
-					System.out.println(key + " stored in levelDBStore2");
 					KValueConnector.levelDBStore2.put(bytes(hashKey),bytes(gson.toJson(order)));
 				}
 			}
@@ -210,11 +202,9 @@ public class KTransfer {
 					
 			if( KValueConnector.getIntHash(key) <= 0 ) {
 				
-				System.out.println(key + " stored in levelDBStore1");
 				KValueConnector.levelDBStore1.put(bytes(hashKey),bytes(gson.toJson(product)));
 			} else {
 				
-				System.out.println(key + " stored in levelDBStore2");
 				KValueConnector.levelDBStore2.put(bytes(hashKey),bytes(gson.toJson(product)));
 			}
 		}
@@ -246,15 +236,11 @@ public class KTransfer {
 				
 		if( KValueConnector.getIntHash(key) <= 0 ) {
 					
-			System.out.println(key + " stored in levelDBStore1");
 			KValueConnector.levelDBStore1.put(bytes(hashKey),bytes(gson.toJson(jsonObject)));
 		} else {
 					
-			System.out.println(key + " stored in levelDBStore2");
 			KValueConnector.levelDBStore2.put(bytes(hashKey),bytes(gson.toJson(jsonObject)));
 		}
-				
-		JSONproductNames jjj = gson.fromJson(asString(KValueConnector.levelDBStore2.get(bytes(KValueConnector.getStringHash("prod:names")))), JSONproductNames.class);
 				
 		return true;
 				
@@ -276,21 +262,19 @@ public class KTransfer {
 			key = "prod:" + productList.get(i).getProductName() + ":idstocks";
 			hashKey = KValueConnector.getStringHash(key);
 			stockList = hibernate.getFreeStocks(productList.get(i).getProductName());
+			stockIds = new ArrayList<>();
 			for( HProductStock s : stockList ) {
 				stockIds.add( s.getIDstock());
 			}
 				
 			JSONidStocks ids = new JSONidStocks( stockIds );
 			String json = gson.toJson(ids);
-			System.out.println(productList.get(i).getProductName() + " "+json);
 			
 			if( KValueConnector.getIntHash(key) <= 0 ) {
 					
-				System.out.println(key + " stored in levelDBStore1");
 				KValueConnector.levelDBStore1.put(bytes(hashKey),bytes(json));
 			} else {
 						
-				System.out.println(key + " stored in levelDBStore2");
 				KValueConnector.levelDBStore2.put(bytes(hashKey),bytes(json));
 			}
 		}

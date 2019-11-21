@@ -36,8 +36,102 @@ public class KValueConnector extends DataConnector{
 			System.out.println(KTransfer.transferIntoKValue()?"Data transferred into K-Value Database successfully":
 				"Error during the data transfer into the K-Value Database");
 			
-			System.out.println("AVAILABLE STOCKS FOR THERMO:");
-			System.out.println(asString(levelDBStore1.get(bytes("prod:ISmartThermo:idstocks"))));
+			printKValueDB();
+		}
+		
+		static void printKValueDB() {
+			
+			String key = "user:names";
+			String hashKey = getStringHash(key);
+			
+			if( getIntHash(key) <= 0 ) {
+				
+				System.out.println(key + " "  + asString(levelDBStore1.get(bytes(hashKey))));
+			} else {
+				
+				System.out.println(key + " "  + asString(levelDBStore2.get(bytes(hashKey))));
+			}
+			
+			JSONusers users = getJSONusers();
+			
+			for( int i=0; i<users.getUsersList().size(); i++ ) {
+				
+				key = "user:" + users.getUsername(i);
+				hashKey = getStringHash(key);
+				
+				if( getIntHash(key) <= 0 ) {
+					
+					System.out.println(key + " "  + asString(levelDBStore1.get(bytes(hashKey))));
+				} else {
+					
+					System.out.println(key + " "  + asString(levelDBStore2.get(bytes(hashKey))));
+				}
+				
+				key = "user:" + users.getUsername(i) + ":order";
+				hashKey = getStringHash(key);
+				
+				if( getIntHash(key) <= 0 ) {
+					
+					System.out.println(key + " "  + asString(levelDBStore1.get(bytes(hashKey))));
+				} else {
+					
+					System.out.println(key + " "  + asString(levelDBStore2.get(bytes(hashKey))));
+				}
+				
+				JSONorderID orders = getJSONOrders(users.getUsername(i));
+				
+				for( int j=0; j < orders.getOrderIDList().size(); j++ ) {
+					
+					key = "user:" + users.getUsername(i) + ":order:" + orders.getID(j);
+					hashKey = getStringHash(key);
+					
+					if( getIntHash(key) <= 0 ) {
+						
+						System.out.println(key + " "  + asString(levelDBStore1.get(bytes(hashKey))));
+					} else {
+						
+						System.out.println(key + " "  + asString(levelDBStore2.get(bytes(hashKey))));
+					}
+				}
+			}
+			
+			key = "prod:names";
+			hashKey = getStringHash(key);
+			
+			if( getIntHash(key) <= 0 ) {
+				
+				System.out.println(key + " "  + asString(levelDBStore1.get(bytes(hashKey))));
+			} else {
+				
+				System.out.println(key + " "  + asString(levelDBStore2.get(bytes(hashKey))));
+			}
+			
+			JSONproductNames productNames = getJSONProducts();
+			
+			for( int i=0; i < productNames.getProductNamesList().size(); i++ ) {
+				
+				key = "prod:" + productNames.getName(i);
+				hashKey = getStringHash(key);
+				
+				if( getIntHash(key) <= 0 ) {
+					
+					System.out.println(key + " "  + asString(levelDBStore1.get(bytes(hashKey))));
+				} else {
+					
+					System.out.println(key + " "  + asString(levelDBStore2.get(bytes(hashKey))));
+				}
+				
+				key = "prod:" + productNames.getName(i) + ":idstocks";
+				hashKey = getStringHash(key);
+				
+				if( getIntHash(key) <= 0 ) {
+					
+					System.out.println(key + " "  + asString(levelDBStore1.get(bytes(hashKey))));
+				} else {
+					
+					System.out.println(key + " "  + asString(levelDBStore2.get(bytes(hashKey))));
+				}
+			}
 		}
 		
 		 //  ONLY FOR DETERMINE THE DATABASE: <= 0 -> levelDBStore1, > 0 levelDBStore2
@@ -135,7 +229,7 @@ public class KValueConnector extends DataConnector{
 	    			
 	    		} else {
 	    			
-	    			json = JsonParser.parseString(asString(levelDBStore2.get(hashKey.getBytes()))).getAsJsonObject();
+	    			json = JsonParser.parseString(asString(levelDBStore2.get(bytes(hashKey)))).getAsJsonObject();
 	    			
 	    			if( json.has("idStocksList") ) {
 	    				
@@ -333,7 +427,7 @@ public class KValueConnector extends DataConnector{
 		//HOW: use the key prod:names to get the list
 		//WHY: used in different scenarios
 		
-		public JSONproductNames getJSONProducts() {
+		public static JSONproductNames getJSONProducts() {
 			
 			String key = "prod:names";
 			String hashKey = getStringHash(key);
@@ -343,16 +437,12 @@ public class KValueConnector extends DataConnector{
 			
 			if( getIntHash(key) <= 0 ) {
 				
-				System.out.println("Getting prod:names from levelDBStore1");
-				
 				JsonObject json = JsonParser.parseString(asString(levelDBStore1.get(bytes(hashKey)))).getAsJsonObject();
 				
 				if ( json.has("productNamesList") )
 					productNamesList = gson.fromJson(asString(levelDBStore1.get(bytes(hashKey))),JSONproductNames.class);
 						
 			} else {
-				
-				System.out.println("Getting prod:names from levelDBStore2");
 				
 				JsonObject json = JsonParser.parseString(asString(levelDBStore2.get(bytes(hashKey)))).getAsJsonObject();
 				
@@ -417,6 +507,8 @@ public class KValueConnector extends DataConnector{
 				levelDBStore2.delete(bytes(hashKey));		
 			}
 	    	
+	    	//rimuovo l'utente dalla lista degli utenti
+	    	
 	    	JSONusers users = getJSONusers();
 	    	users.getUsersList().remove(USER_NAME);
 	    	
@@ -432,6 +524,7 @@ public class KValueConnector extends DataConnector{
 				levelDBStore2.put(bytes(hashKey),bytes(gson.toJson(users)));	
 			}
 	    	
+	    	printKValueDB();
 	    	
 	    	return true; 
 	    
@@ -460,7 +553,7 @@ public class KValueConnector extends DataConnector{
 			updateProductAvailability(PRODUCT_NAME,-1);
 			
 			//tolgo il product id da quelli disponibili 
-			deleteProductID(PRODUCT_NAME);
+			deleteProductID(PRODUCT_NAME,PRODUCT_ID);
 			
 			//aggiungo order id al customer
 			
@@ -478,8 +571,7 @@ public class KValueConnector extends DataConnector{
 				levelDBStore2.put(bytes(hashKey),bytes(gson.toJson(orders)));
 			}
 			
-			System.out.println("AVAILABLE STOCKS FOR THERMO:");
-			System.out.println(asString(levelDBStore1.get(bytes("prod:ISmartThermo:idstocks"))));
+			printKValueDB();
 			
 			return true;
 	    	
@@ -506,7 +598,7 @@ public class KValueConnector extends DataConnector{
 			updateProductAvailability(ORDER.getProductName(),-1);
 			
 			//tolgo il product id da quelli disponibili 
-			deleteProductID(ORDER.getProductName());
+			deleteProductID(ORDER.getProductName(),ORDER.getProductId());
 			
 			//aggiungo order id al customer
 			
@@ -847,7 +939,7 @@ public class KValueConnector extends DataConnector{
 	    	return idList;
 	    }
 	    
-	    public void deleteProductID( String PRODUCT_NAME ) {
+	    public void deleteProductID( String PRODUCT_NAME, int PRODUCT_ID ) {
 	    	
 	    	String key = "prod:" + PRODUCT_NAME + ":idstocks";
 	    	String hashKey = getStringHash(key);
@@ -874,7 +966,7 @@ public class KValueConnector extends DataConnector{
 	    		}
 	    	}
 	    	
-	    	stocks.deleteFirstElement();
+	    	stocks.getidStocksList().remove(Integer.valueOf(PRODUCT_ID));
 	    	
 	    	if( getIntHash(key) <= 0 ) {
 	    		
