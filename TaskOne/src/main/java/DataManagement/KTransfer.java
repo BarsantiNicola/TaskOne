@@ -5,7 +5,6 @@ import com.google.gson.*;
 import DataManagement.Hibernate.*;
 import JSONclasses.*;
 import beans.*;
-import org.iq80.leveldb.*;
 import static org.iq80.leveldb.impl.Iq80DBFactory.*;
 
 public class KTransfer {
@@ -16,7 +15,7 @@ public class KTransfer {
 	//user:names -> [list of users]
 	
 	private static boolean importUsers() {
-		
+		System.out.println("---> Import of users" );
 		List<User> userList = hibernate.getUsers(); 
 		List<String> namesList = new ArrayList<String>();
 		
@@ -53,6 +52,7 @@ public class KTransfer {
 				
 		List<User> userList = hibernate.getUsers(); 
 				
+		System.out.println("---> Import of users' passwords" );
 		String key, hashKey;
 		User user;
 		JSONPasswordUserType jsonObject;
@@ -84,12 +84,11 @@ public class KTransfer {
 	//user:'username':order -> [list of order ids of that user]
 	
 	private static boolean importOrderIDs() {
-				
+		System.out.println("---> Import of ordersID" );
 		List<User> userList = hibernate.getUsers(); 
 		JSONorderID idList;
 		List<Integer> orderIdList = new ArrayList<>();
-		HashMap<List<Integer>,List<Order>> map = new HashMap<List<Integer>,List<Order>>();				
-				
+		HashMap<Integer,Order> map = new HashMap<>();				
 		User user;
 						
 		String key, hashKey;
@@ -101,14 +100,15 @@ public class KTransfer {
 			idList = new JSONorderID();
 
 			map = hibernate.getMyOrders(user.getUsername());
-					
-			for( List<Integer> intList : map.keySet() ) {
+
+			for( Integer intList : map.keySet() ) {
 						
-				orderIdList = intList;
+				orderIdList.add( intList);
 				break;
 			}
 					
-			idList = new JSONorderID(orderIdList);
+			
+			idList = new JSONorderID( orderIdList );
 					
 			key = "user:" + user.getUsername() + ":order";
 			hashKey = KValueConnector.getStringHash(key);
@@ -130,12 +130,13 @@ public class KTransfer {
 	//user:'username':order:'orderID' -> order
 	
 	private static boolean importOrders() {
-				
+		System.out.println("---> Import of orders" );
 		List<User> userList = hibernate.getUsers();   
 		List<Order> orderList = new ArrayList<>();
 		List<Integer> orderIdList = new ArrayList<>();
-		HashMap<List<Integer>,List<Order>> map = new HashMap<>();
-				
+		HashMap<Integer,Order> map = new HashMap<>();
+		Set<Integer> orderIds = null;
+		
 		User user;
 		Order order;
 		int idorder;
@@ -143,29 +144,19 @@ public class KTransfer {
 		String key, hashKey;
 		Gson gson = new Gson();
 				
+		
 		for( int i=0; i < userList.size(); i++ ) {
 					
 			user = userList.get(i);
 					
 			map = hibernate.getMyOrders(user.getUsername());
-					
-			for( List<Integer> intList : map.keySet() ) {
+			orderIds = map.keySet();
+			
+			for( Integer id : orderIds ) {
 						
-				orderIdList = intList;
-				break;
-			}
-					
-			for( List<Order> ordList : map.values() ) {
-						
-				orderList = ordList;
-				break;
-			}
-					
-			for( int j=0; j < orderList.size(); j++ ) {
-						
-				order = orderList.get(j);
-				idorder = orderIdList.get(j);
-						
+				order = map.get(id);
+				idorder = id;
+				System.out.println(order.getProductName());
 				key = "user:" + user.getUsername() + ":order:" + idorder; 
 				hashKey = KValueConnector.getStringHash(key);
 						
@@ -187,7 +178,7 @@ public class KTransfer {
 	//prod:'productName' -> product
 	
 	private static boolean importProducts() {
-				
+		System.out.println("---> Import of products" );
 		List<Product> productList = hibernate.getAvailableProducts(); 
 		String key, hashKey;
 		Product product;
@@ -217,7 +208,7 @@ public class KTransfer {
 	//prod:names->[list of product names]
 	
 	private static boolean importProductNames() {
-				
+		System.out.println("---> Import of products name" );
 		List<Product> productList = hibernate.getAvailableProducts();
 		List<String> namesList = new ArrayList<>();
 				
@@ -250,7 +241,7 @@ public class KTransfer {
 	//product:'productName':idstocks -> [list of idStocks free(existant, but not already ordered) of that product]
 	
 	private static boolean importStocks() {
-				
+		System.out.println("---> Import of stocks" );
 		List<Product> productList = hibernate.getAvailableProducts();
 		List<HProductStock> stockList = null;
 		List<Integer> stockIds = new ArrayList<>();
@@ -286,7 +277,7 @@ public class KTransfer {
 	
 	
 	public static boolean transferIntoKValue() {
-			
+		System.out.println("---> Start transfer of datas");
 		boolean user = importUsers();
 		boolean psw = importUsersPassword();
 		boolean ordid = importOrderIDs();

@@ -3,6 +3,8 @@ package DataManagement;
 import beans.*;
 import java.sql.*;
 import java.util.*;
+import java.util.logging.Level;
+
 import javax.persistence.*;
 import DataManagement.Hibernate.*;
 
@@ -586,6 +588,7 @@ public class HConnector extends DataConnector{
 		
 		try {
 			
+			java.util.logging.Logger.getLogger("org.hibernate").setLevel(Level.OFF);
 			FACTORY = Persistence.createEntityManagerFactory( "taskOne" ); 
 			return true;
 		
@@ -660,42 +663,42 @@ public class HConnector extends DataConnector{
 	//-----------------------------------------------------------------------------------------------------------
     
     //function that return all the orders of a customer, and their order id
-    @SuppressWarnings("unchecked")
-	public HashMap<List<Integer>,List<Order>> getMyOrders(String CUSTOMER_ID){
+    
+	public HashMap<Integer,Order> getMyOrders(String CUSTOMER_ID){
     	
     //  Firstable we control the status connection
     	if( FACTORY == null ) 
 			if( !createConnection()) return new HashMap<>();
     	
     	EntityManager manager = FACTORY.createEntityManager();
-    	List<Order> orders = new ArrayList<Order>();
-    	List<Integer> ids = new ArrayList<Integer>();
     	List<HOrder> horders = null;
-    	
+    	HCustomer customer = null;
+		HashMap<Integer,Order> map = new HashMap<>();
+		
     	try {
     		
     		manager = FACTORY.createEntityManager();
-    		horders = manager.find( HCustomer.class , CUSTOMER_ID ).getMyHOrders();
-        	for( HOrder o : horders ) {
-        		orders.add(new Order(o));
-        		ids.add(o.getIDorder());
-        	}
-        		
+    		customer = manager.find( HCustomer.class , CUSTOMER_ID );
+    		if( customer == null ) { 
+    			System.out.println("ERRORE NULL CUSTOMER");
+    			return map;
+    		}else
+    			horders = customer.getMyHOrders();
+        	for( HOrder o : horders ) 
+        		map.put( o.getIDorder() , new Order(o));	
         	manager.close();
         	
     	}catch( Exception e ) {
     		
         	System.out.println( "----> Error, connection rejected" );
+        	e.printStackTrace();
     		manager.close();
 			FACTORY.close();
     		FACTORY = null;
     		return new HashMap<>(); 		
     	}
     	
-    	@SuppressWarnings("rawtypes")
-		HashMap map = new HashMap<List<Integer>,List<Order>>();
-    	map.put(ids,orders);
-    	
+  	
     	return map;
     }
     

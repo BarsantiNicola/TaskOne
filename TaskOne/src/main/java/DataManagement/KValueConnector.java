@@ -23,6 +23,16 @@ public class KValueConnector extends DataConnector{
 			
 			Options options = new Options();
 			options.createIfMissing(true);
+			File dir = new File("levelDBStore");
+			boolean result = dir.exists();
+			System.out.println(dir.exists());
+			if( !result) {
+				System.out.println("creation of database");
+				dir.mkdir();
+				new File("levelDBStore/innovativeSolutionsLevelDB1").mkdir();
+				new File("levelDBStore/innovativeSolutionsLevelDB2").mkdir();
+				
+			}
 			
 			try {
 				
@@ -33,10 +43,10 @@ public class KValueConnector extends DataConnector{
 				e.printStackTrace();
 			}
 			
-			System.out.println(KTransfer.transferIntoKValue()?"Data transferred into K-Value Database successfully":
-				"Error during the data transfer into the K-Value Database");
-			
-			printKValueDB();
+			if( !result ) {
+				KTransfer.transferIntoKValue();
+				printKValueDB();
+			}
 		}
 		
 		static void printKValueDB() {

@@ -140,6 +140,7 @@ public class DataServer {
 			response = new DataResponse( null , null , null , null , null , null , 
 					MANAGER.updateSalary(((Double)req.getValues().get("SALARY")).intValue(), 
 							(String)req.getValues().get("USER_ID")));
+			break;
 		case GET_MIN_ID_PRODUCT:
 			response = new DataResponse( null , null , null , null , null , MANAGER.getMinIDProduct((String)req.getValues().get("PRODUCT_NAME")) , null );
 			break;
