@@ -65,7 +65,7 @@ public class HProduct {
 			
 		}catch( Exception e ) {
 			
-	    	System.out.println( "-----> Error, Connection Rejected" );
+	    	System.out.println( "----> [HIBERNATE] Error, Connection Rejected" );
 			manager.close();
 			HConnector.FACTORY.close();
 			HConnector.FACTORY = null;
@@ -162,7 +162,7 @@ public class HProduct {
 			
 		}catch( Exception e ) {
 			
-	    	System.out.println( "-----> Error, Connection Rejected" );
+	    	System.out.println( "----> [HIBERNATE] Error, Connection Rejected" );
     		manager.close();
 			HConnector.FACTORY.close();
     		HConnector.FACTORY = null;
@@ -207,7 +207,7 @@ public class HProduct {
 		manager.persist(productStock);
 		manager.merge(product);
 
-		System.out.println( "-----> Availability updated" + (availability-1) + " -> " + availability );
+		System.out.println( "----> [HIBERNATE] Availability updated" + (availability-1) + " -> " + availability );
 	
 		return true;
 			
@@ -219,7 +219,7 @@ public class HProduct {
 	//  the function REMOVE the number given to the current availability of the object
 	public boolean decreaseAvailability( int stockID ) {
 		
-		System.out.println( "-----> Trying to change the availability of the product " + productName );	
+		System.out.println( "----> [HIBERNATE] Trying to change the availability of the product " + productName );	
 		if( HConnector.FACTORY == null ) 
 			if( !HConnector.createConnection()) return false;
 		
@@ -243,11 +243,11 @@ public class HProduct {
 			
 			manager.getTransaction().commit();
 			manager.close();
-			System.out.println( "-----> Availability updated" + (availability+1) + " -> " + availability );
+			System.out.println( "----> [HIBERNATE] Availability updated" + (availability+1) + " -> " + availability );
 			
 		}catch( IllegalStateException | RollbackException e ) {
 			
-    		System.out.println( "-----> Error, Connection Rejected" );
+    		System.out.println( "----> [HIBERNATE] Error, Connection Rejected" );
     		manager.close();
 			HConnector.FACTORY.close();
     		HConnector.FACTORY = null;

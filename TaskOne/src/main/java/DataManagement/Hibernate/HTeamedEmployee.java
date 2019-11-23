@@ -82,7 +82,7 @@ public class HTeamedEmployee extends HEmployee{
 			
 		}catch( Exception e ) {
 			
-			System.out.println( "-----> Error, Connection Rejected" );
+			System.out.println( "----> [HIBERNATE] Error, Connection Rejected" );
 			this.team = new HTeam();
 			manager.close();
 			HConnector.FACTORY.close();
@@ -138,7 +138,7 @@ public class HTeamedEmployee extends HEmployee{
 	
 	public static boolean addTeamedEmployee( HTeamedEmployee employee ){
 		
-		System.out.println("----> [ADDING TEAMED EMPLOYEE " + employee.getUsername() + " ]<----");
+		System.out.println("----> [HIBERNATE] [ADDING TEAMED EMPLOYEE " + employee.getUsername() + " ]<----");
 		
 		if( HConnector.FACTORY == null ) //  Firstable we verify there is an active connection
 			if( !HConnector.createConnection()) return false;
@@ -163,12 +163,12 @@ public class HTeamedEmployee extends HEmployee{
 			manager.persist( team );
 			manager.getTransaction().commit();
 			manager.close();
-			System.out.println( "-----> Teamed Employee " + employee.getUsername() + " correctly added" );
+			System.out.println( "----> [HIBERNATE] Teamed Employee " + employee.getUsername() + " correctly added" );
 			return true;
 			
 		}catch( IllegalStateException | RollbackException e ) {
 			
-			System.out.println("-----> Error, Connection rejected");
+			System.out.println("----> [HIBERNATE] Error, Connection rejected");
 			manager.close();
 			HConnector.FACTORY.close();
 			HConnector.FACTORY = null;
@@ -182,7 +182,7 @@ public class HTeamedEmployee extends HEmployee{
 	//  the function remove a teamed employee from the database 
 	public static boolean removeEmployee( HTeamedEmployee employee ) {
 		
-		System.out.println("----> [DELETING TEAMED EMPLOYEE " + employee.getUsername() + " ]<----");
+		System.out.println("----> [HIBERNATE] [DELETING TEAMED EMPLOYEE " + employee.getUsername() + " ]<----");
 		if( HConnector.FACTORY == null ) //  Firstable we verify there is an active connection
 			if( !HConnector.createConnection()) return false;
 		
@@ -204,7 +204,7 @@ public class HTeamedEmployee extends HEmployee{
 			
 		}catch( IllegalStateException | RollbackException e ){
 			
-    		System.out.println( "----> Error, Connection Rejected" );
+    		System.out.println( "----> [HIBERNATE] Error, Connection Rejected" );
     		manager.close();
 			HConnector.FACTORY.close();
     		HConnector.FACTORY = null;

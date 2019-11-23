@@ -105,7 +105,7 @@ public class HOrder {
     	
     	}catch( Exception e ) {
 
-	    	System.out.println( "-----> Error, Connection Rejected" );
+	    	System.out.println( "----> [HIBERNATE] Error, Connection Rejected" );
 			manager.close();
 			HConnector.FACTORY.close();
 			HConnector.FACTORY = null;

@@ -119,7 +119,7 @@ public class HCustomer extends HUser{
 		if( HConnector.FACTORY == null ) //  Firstable we verify there is an active connection
 			if( !HConnector.createConnection()) return false;
 		
-		System.out.println("-----> Adding Customer: " + customer.toString());
+		System.out.println("----> [HIBERNATE] Adding Customer: " + customer.toString());
 		EntityManager manager = null;
 
 		try {
@@ -132,7 +132,7 @@ public class HCustomer extends HUser{
 			
 		}catch( IllegalStateException | RollbackException e ) {
 			
-    		System.out.println( "---->Error, Connection Rejected" );
+    		System.out.println( "----> [HIBERNATE] Error, Connection Rejected" );
 			manager.close();
 			HConnector.FACTORY.close();
 			HConnector.FACTORY = null;
@@ -154,7 +154,7 @@ public class HCustomer extends HUser{
 			if( !HConnector.createConnection()) return false;
 		
 		EntityManager manager = null;
-    	System.out.println( "----->[ ADD ORDER " + order.getIDorder() + " ]<-----");
+    	System.out.println( "----> [HIBERNATE] [ ADD ORDER " + order.getIDorder() + " ]<-----");
 		try{
 
 			manager = HConnector.FACTORY.createEntityManager();
@@ -162,12 +162,12 @@ public class HCustomer extends HUser{
 			manager.persist(order);
 			manager.getTransaction().commit();
 			manager.close();
-	    	System.out.println( "-----> Order correctly saved" );
+	    	System.out.println( "----> [HIBERNATE] Order correctly saved" );
 			return true;
 			
 		}catch( IllegalStateException | RollbackException e ){
 			
-    		System.out.println( "-----> Error, Connection Rejected" );
+    		System.out.println( "----> [HIBERNATE] Error, Connection Rejected" );
 			manager.close();
 			HConnector.FACTORY.close();
 			HConnector.FACTORY = null;
@@ -182,7 +182,7 @@ public class HCustomer extends HUser{
 
 	public static boolean removeCustomer( HCustomer customer ){
 		
-		System.out.println("---->[DELETING CUSTOMER " + customer.getUsername() + "]<----");
+		System.out.println("----> [HIBERNATE] [DELETING CUSTOMER " + customer.getUsername() + "]<----");
 		if( HConnector.FACTORY == null ) //  Firstable we verify there is an active connection
 			if( !HConnector.createConnection()) return false;
 		
@@ -207,7 +207,7 @@ public class HCustomer extends HUser{
 		 
 		}catch( IllegalStateException | RollbackException e ){
 			
-    		System.out.println( "----> Error, Connection Rejected" );
+    		System.out.println( "----> [HIBERNATE] Error, Connection Rejected" );
     		manager.close();
     		HConnector.FACTORY.close();
     		HConnector.FACTORY = null;

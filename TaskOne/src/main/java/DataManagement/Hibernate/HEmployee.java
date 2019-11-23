@@ -95,7 +95,7 @@ public class HEmployee extends HUser{
 		if( HConnector.FACTORY == null ) //  Firstable we verify there is an active connection
 			if( !HConnector.createConnection()) return false;
 		
-		System.out.println("--->[ADDING EMPLOYEE " + getUsername() + "]<---");
+		System.out.println("----> [HIBERNATE] [ADDING EMPLOYEE " + getUsername() + "]<---");
 		boolean ret = true;
 		EntityManager manager = null;
 
@@ -106,10 +106,10 @@ public class HEmployee extends HUser{
 			manager.persist( this );
 			manager.getTransaction().commit();
 			manager.close();
-	    	System.out.println( "-----> Employee " + getUsername() + " correctly added" );
+	    	System.out.println( "----> [HIBERNATE] Employee " + getUsername() + " correctly added" );
 		}catch( IllegalStateException | RollbackException e ) {
 			
-	    	System.out.println( "-----> Error, Connection Rejected" );
+	    	System.out.println( "----> [HIBERNATE] Error, Connection Rejected" );
 			manager.close();
 			HConnector.FACTORY.close();
 			HConnector.FACTORY = null;
@@ -126,7 +126,7 @@ public class HEmployee extends HUser{
 	
 	public boolean updateSalary( int SALARY ) {
 		
-		System.out.println("--->[UPDATE SALARY OF " + getUsername() + "]<---");
+		System.out.println("----> [HIBERNATE] [UPDATE SALARY OF " + getUsername() + "]<---");
 		if( HConnector.FACTORY == null ) //  Firstable we verify there is an active connection
 			if( !HConnector.createConnection()) return false;
 		
@@ -140,12 +140,12 @@ public class HEmployee extends HUser{
 			manager.merge(this);
 			manager.getTransaction().commit();
 			manager.close();
-	    	System.out.println( "-----> Salary of employee " + getUsername() + "Correctly updated to " + SALARY );
+	    	System.out.println( "----> [HIBERNATE] Salary of employee " + getUsername() + "Correctly updated to " + SALARY );
 			return true;
 			
 		}catch( IllegalStateException | RollbackException e ) {
 			
-	    	System.out.println( "-----> Error, Connection Rejected" );
+	    	System.out.println( "----> [HIBERNATE] Error, Connection Rejected" );
 			manager.close();
 			HConnector.FACTORY.close();
 			HConnector.FACTORY = null;

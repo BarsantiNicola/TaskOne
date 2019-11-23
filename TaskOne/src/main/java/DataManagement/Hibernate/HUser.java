@@ -149,7 +149,7 @@ public class HUser {
 			
 		}catch( Exception e ) {
 			
-			System.out.println( "-----> Error, Connection Rejected" );
+			System.out.println( "----> [HIBERNATE] Error, Connection Rejected" );
 			manager.close();
 			HConnector.FACTORY.close();
 			HConnector.FACTORY = null;
@@ -197,7 +197,7 @@ public class HUser {
 		}catch( Exception e ) {
 			
 			manager.close();
-			System.out.println( "-----> Error, Connection Rejected" );
+			System.out.println( "----> [HIBERNATE] Error, Connection Rejected" );
 			HConnector.FACTORY.close();
 			HConnector.FACTORY = null;
 			return new ArrayList<>();
@@ -235,7 +235,7 @@ public class HUser {
 		boolean ret = true;
 		HUser user = null;
 		
-		System.out.println( "----->Finding the type of user to delete" );
+		System.out.println( "----> [HIBERNATE] Finding the type of user to delete" );
 		
 		//  we search the user using the super class of all types of users
 		try {
@@ -263,7 +263,7 @@ public class HUser {
 			
 		}catch( Exception e ) {
 			
-	    	System.out.println( "-----> Error, Connection Rejected" );
+	    	System.out.println( "----> [HIBERNATE] Error, Connection Rejected" );
 			manager.close();
 			HConnector.FACTORY.close();
 			HConnector.FACTORY = null;
@@ -272,7 +272,7 @@ public class HUser {
 		}
 		
 		//  if the user is an unteamed employee the function delete otherwise it post the problem to the appropriate class
-		System.out.println("-----> [DELETING UNTEAMED EMPLOYEE " + user.getUsername() + " ]<----");
+		System.out.println("----> [HIBERNATE] [DELETING UNTEAMED EMPLOYEE " + user.getUsername() + " ]<----");
 		if( HConnector.FACTORY == null )  //  Firstable we verify there is an active connection
 			if( !HConnector.createConnection()) return false;
 		
@@ -286,7 +286,7 @@ public class HUser {
 			
 		}catch( IllegalStateException | RollbackException e ) {
 			
-	    	System.out.println( "-----> Error, Connection Rejected" );
+	    	System.out.println( "----> [HIBERNATE] Error, Connection Rejected" );
 			manager.close();
 			HConnector.FACTORY.close();
 			HConnector.FACTORY = null;
@@ -307,7 +307,7 @@ public class HUser {
 			if( !HConnector.createConnection()) return false;
 		
 		EntityManager manager = null;
-		System.out.println("-----> [ADD NEW CUSTOMER " + getUsername() + " ]<----");
+		System.out.println("----> [HIBERNATE] [ADD NEW CUSTOMER " + getUsername() + " ]<----");
 		
 		try {
 			
@@ -320,7 +320,7 @@ public class HUser {
 			
 		}catch( IllegalStateException | RollbackException e ) {
 			
-			System.out.println( "----->Error, Connection Rejected" );
+			System.out.println( "----> [HIBERNATE] Error, Connection Rejected" );
 			manager.close();
 			HConnector.FACTORY.close();
 			HConnector.FACTORY = null;

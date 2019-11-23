@@ -82,7 +82,7 @@ public class HProductStock {
 	// add a new available stock to the product
 	public static boolean addProductStock( HProductStock stock ) {
 		
-    	System.out.println( "----->[ ADD STOCK " + stock.getIDstock() + " ]<-----");
+    	System.out.println( "----> [HIBERNATE] [ ADD STOCK " + stock.getIDstock() + " ]<----");
 		if( HConnector.FACTORY == null ) //  Firstable we verify there is an active connection
 			if( !HConnector.createConnection()) return false;
 		
@@ -95,12 +95,12 @@ public class HProductStock {
 			manager.getTransaction().begin();
 			manager.persist( stock );
 			manager.close();
-	    	System.out.println( "-----> Stock correctly added" );
+	    	System.out.println( "----> [HIBERNATE] Stock correctly added" );
 			return true;
 			
 		}catch( IllegalStateException | RollbackException e ) {
 			
-	    	System.out.println( "-----> Error, Connection Rejected" );
+	    	System.out.println( "----> [HIBERNATE] Error, Connection Rejected" );
 			manager.close();
 			HConnector.FACTORY.close();
 			HConnector.FACTORY = null;
@@ -122,7 +122,7 @@ public class HProductStock {
 			
 			
 		
-    	System.out.println( "-----> Last stock found: " + lastStock.IDstock );
+    	System.out.println( "----> [HIBERNATE] Last stock found: " + lastStock.IDstock );
 		return lastStock.IDstock;
 	
 	}
@@ -139,7 +139,7 @@ public class HProductStock {
 			
 			
 		
-    	System.out.println( "-----> Last stock found: " + lastStock.IDstock );
+    	System.out.println( "----> [HIBERNATE] Last stock found: " + lastStock.IDstock );
 		return lastStock.IDstock;
 	
 	}
