@@ -664,29 +664,30 @@ public class HConnector extends DataConnector{
     
     //function that return all the orders of a customer, and their order id
     
-	public HashMap<Integer,Order> getMyOrders(String CUSTOMER_ID){
+	public List<HOrder> getMyOrders(String CUSTOMER_ID){
     	
     //  Firstable we control the status connection
     	if( FACTORY == null ) 
-			if( !createConnection()) return new HashMap<>();
+			if( !createConnection()) return new ArrayList<>();
     	
     	EntityManager manager = FACTORY.createEntityManager();
     	List<HOrder> horders = null;
     	HCustomer customer = null;
-		HashMap<Integer,Order> map = new HashMap<>();
-		
+    	System.out.println("---> Getting all the orders for customer: " + CUSTOMER_ID );
+    	
     	try {
     		
     		manager = FACTORY.createEntityManager();
     		customer = manager.find( HCustomer.class , CUSTOMER_ID );
     		if( customer == null ) { 
-    			System.out.println("ERRORE NULL CUSTOMER");
-    			return map;
+    			System.out.println("---> Error trying to find the customer: " + CUSTOMER_ID );
+    			return new ArrayList<>();
     		}else
     			horders = customer.getMyHOrders();
-        	for( HOrder o : horders ) 
-        		map.put( o.getIDorder() , new Order(o));	
-        	manager.close();
+        	System.out.println("---> Founded " + horders.size() + " orders" );
+    		manager.close();
+
+        	return horders;
         	
     	}catch( Exception e ) {
     		
@@ -695,11 +696,9 @@ public class HConnector extends DataConnector{
     		manager.close();
 			FACTORY.close();
     		FACTORY = null;
-    		return new HashMap<>(); 		
+    		return new ArrayList<>();		
     	}
     	
-  	
-    	return map;
     }
     
     //function that returns all the available id stock for a given product name

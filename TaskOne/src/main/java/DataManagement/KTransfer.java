@@ -16,7 +16,7 @@ public class KTransfer {
 	
 	private static boolean importUsers() {
 		System.out.println("---> Import of users" );
-		List<User> userList = hibernate.getUsers(); 
+		List<User> userList = getCustomers(hibernate.getUsers()); 
 		List<String> namesList = new ArrayList<String>();
 		
 		String key = "user:names";
@@ -50,7 +50,7 @@ public class KTransfer {
 	
 	private static boolean importUsersPassword() {
 				
-		List<User> userList = hibernate.getUsers(); 
+		List<User> userList = getCustomers(hibernate.getUsers()); 
 				
 		System.out.println("---> Import of users' passwords" );
 		String key, hashKey;
@@ -83,34 +83,49 @@ public class KTransfer {
 	//import the list of order ids into the k-value database
 	//user:'username':order -> [list of order ids of that user]
 	
-	private static boolean importOrderIDs() {
+	private static List<User> getCustomers( List<User> genericUsers ){
+		
+		List<User> customers = new ArrayList<>();
+		for( User u: genericUsers )
+			if( u.getRole().length() == 0 && u.getUsername().compareTo("admin") != 0 ) {
+				
+				System.out.println( "---> Customer found: " + u.getUsername() );
+				customers.add(u);
+			}
+		return customers;
+		
+	}
+	private static boolean importOrders() {
+		
 		System.out.println("---> Import of ordersID" );
-		List<User> userList = hibernate.getUsers(); 
+		List<User> userList = getCustomers( hibernate.getUsers() ); 
+
 		JSONorderID idList;
 		List<Integer> orderIdList = new ArrayList<>();
-		HashMap<Integer,Order> map = new HashMap<>();				
-		User user;
+		List<HOrder> orders = null;			
 						
 		String key, hashKey;
 		Gson gson = new Gson();
 				
-		for( int i=0; i<userList.size(); i++ ) {
+		for( User customer: userList ) {
 					
-			user = userList.get(i);
-			idList = new JSONorderID();
-
-			map = hibernate.getMyOrders(user.getUsername());
-
-			for( Integer intList : map.keySet() ) {
+			orders = hibernate.getMyOrders(customer.getUsername());
+			orderIdList = new ArrayList<>();
+			for( HOrder order : orders ) {						
+				orderIdList.add( order.getIDorder());
+				key = "user:" + customer.getUsername() + ":order:" + order.getIDorder(); 
+				hashKey = KValueConnector.getStringHash(key);
 						
-				orderIdList.add( intList);
-				break;
+				if( KValueConnector.getIntHash(key) <= 0 ) 					
+					KValueConnector.levelDBStore1.put(bytes(hashKey),bytes(gson.toJson(new Order(order))));
+				else 					
+					KValueConnector.levelDBStore2.put(bytes(hashKey),bytes(gson.toJson(new Order(order))));
+				
 			}
-					
 			
 			idList = new JSONorderID( orderIdList );
-					
-			key = "user:" + user.getUsername() + ":order";
+			
+			key = "user:" + customer.getUsername() + ":order";
 			hashKey = KValueConnector.getStringHash(key);
 					
 			if( KValueConnector.getIntHash(key) <= 0 ) {
@@ -125,54 +140,7 @@ public class KTransfer {
 		return true;
 						
 	}
-			
-	//import the orders into the k-value database (user,idorder->order)
-	//user:'username':order:'orderID' -> order
 	
-	private static boolean importOrders() {
-		System.out.println("---> Import of orders" );
-		List<User> userList = hibernate.getUsers();   
-		List<Order> orderList = new ArrayList<>();
-		List<Integer> orderIdList = new ArrayList<>();
-		HashMap<Integer,Order> map = new HashMap<>();
-		Set<Integer> orderIds = null;
-		
-		User user;
-		Order order;
-		int idorder;
-				
-		String key, hashKey;
-		Gson gson = new Gson();
-				
-		
-		for( int i=0; i < userList.size(); i++ ) {
-					
-			user = userList.get(i);
-					
-			map = hibernate.getMyOrders(user.getUsername());
-			orderIds = map.keySet();
-			
-			for( Integer id : orderIds ) {
-						
-				order = map.get(id);
-				idorder = id;
-				System.out.println(order.getProductName());
-				key = "user:" + user.getUsername() + ":order:" + idorder; 
-				hashKey = KValueConnector.getStringHash(key);
-						
-				if( KValueConnector.getIntHash(key) <= 0 ) {
-					
-					KValueConnector.levelDBStore1.put(bytes(hashKey),bytes(gson.toJson(order)));
-				} else {
-						
-					KValueConnector.levelDBStore2.put(bytes(hashKey),bytes(gson.toJson(order)));
-				}
-			}
-					
-		}
-		
-		return true;
-	}
 			
 	//import products into the k-value database (productName->product)
 	//prod:'productName' -> product
@@ -280,13 +248,12 @@ public class KTransfer {
 		System.out.println("---> Start transfer of datas");
 		boolean user = importUsers();
 		boolean psw = importUsersPassword();
-		boolean ordid = importOrderIDs();
 		boolean ord = importOrders();
 		boolean prod = importProducts();
 		boolean nam = importProductNames();
 		boolean sto = importStocks();
 			
-		return user && psw && ordid && ord && prod && nam && sto;
+		return user && psw  && ord && prod && nam && sto;
 	}
 			
 }
