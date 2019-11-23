@@ -20,7 +20,7 @@ import java.util.*;
 @Entity
 public class HCustomer extends HUser{
 	
-	@OneToMany(mappedBy = "customer", cascade = {CascadeType.PERSIST, CascadeType.REFRESH, CascadeType.MERGE})
+	@OneToMany( mappedBy = "customer", cascade = { CascadeType.PERSIST, CascadeType.REFRESH, CascadeType.MERGE })
 	List<HOrder> myOrders;
 	
 

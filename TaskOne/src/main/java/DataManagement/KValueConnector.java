@@ -12,7 +12,7 @@ import com.google.gson.*;
 import JSONclasses.*;
 
 public class KValueConnector extends DataConnector{
-		
+
 		public static DB levelDBStore1;
 		public static DB levelDBStore2;
 		
@@ -25,7 +25,7 @@ public class KValueConnector extends DataConnector{
 			options.createIfMissing(true);
 			File dir = new File("levelDBStore");
 			boolean result = dir.exists();
-			System.out.println(dir.exists());
+
 			if( !result) {
 				System.out.println("creation of database");
 				dir.mkdir();

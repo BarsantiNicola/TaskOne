@@ -1,6 +1,8 @@
 package DataManagement;
 
 import java.util.*;
+import java.util.logging.Level;
+
 import com.google.gson.*;
 import DataManagement.Hibernate.*;
 import JSONclasses.*;
@@ -8,7 +10,11 @@ import beans.*;
 import static org.iq80.leveldb.impl.Iq80DBFactory.*;
 
 public class KTransfer {
-			
+	
+	static {
+		java.util.logging.Logger.getLogger("org.hibernate").setLevel(Level.OFF);
+	}	
+	
 	private static HConnector hibernate = new HConnector();
 		
 	//import the list of users into the k-value database 
