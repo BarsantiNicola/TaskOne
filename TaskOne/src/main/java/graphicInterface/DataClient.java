@@ -7,15 +7,16 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Scanner;
 import com.google.gson.Gson;
-import ConsistenceManagement.DataRequest;
-import ConsistenceManagement.DataResponse;
-import ConsistenceManagement.ReqType;
+
 import DataManagement.DataConnector;
 import DataManagement.UserType;
 import beans.Employee;
 import beans.Order;
 import beans.Product;
 import beans.User;
+import connection.DataRequest;
+import connection.DataResponse;
+import connection.ReqType;
 
 //----------------------------------------------------------------------------------------------------------
 //												DataClient

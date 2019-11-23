@@ -7,9 +7,9 @@ import java.util.Scanner;
 
 import com.google.gson.Gson;
 
-import ConsistenceManagement.DataRequest;
-import ConsistenceManagement.DataResponse;
 import beans.User;
+import connection.DataRequest;
+import connection.DataResponse;
 
 //----------------------------------------------------------------------------------------------------------
 //										HConnector

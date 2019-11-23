@@ -1,4 +1,4 @@
-package ConsistenceManagement;
+package connection;
 
 public enum ReqType {
 	

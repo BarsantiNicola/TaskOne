@@ -22,24 +22,29 @@ public class ConsistenceManager {
 		
 		PrintWriter temp = null;
 		Gson gson = new Gson();
+		System.out.println( "---> [CONSISTENCE] Saving new data to the keyValue pending updates queue: " + value.getCommand());
+		if( value.getCommand() == RequestedCommand.ADDHORDER ) { 
+			
+			System.out.println( "---> [CONSISTENCE] Error, wrong database. Abort request");
+			return false;
 		
-		if( value.getCommand() == RequestedCommand.ADDHORDER ) return false;
+		}
 		
 		try {
-			
-			File tempOrder = new File("KeyValueData");
+			System.out.println( "---> [CONSISTENCE] Searching for the data store");
+			File tempOrder = new File("src/main/java/ConsistenceManagement/KeyValueData");
 			if( tempOrder.exists()) 
 				temp = new PrintWriter(new FileOutputStream( tempOrder, true ) , true );
 			else
 				temp = new PrintWriter(new FileOutputStream( tempOrder, false ) , true );
 				
 		}catch( FileNotFoundException ie ) {
-			System.out.println("Error tryin to create a save block: " + ie.getMessage());
+			System.out.println("---> [CONSISTENCE] Error while searching for the data store" );
 			return false;
 		}
 		temp.println(gson.toJson( value ));
 		
-		System.out.println("Saving update for the keyvalue database");
+		System.out.println( "---> [CONSISTENCE] Saving update for the keyvalue database completed");
 		
 		temp.close();
 		return true;
@@ -50,24 +55,24 @@ public class ConsistenceManager {
 		
 		PrintWriter temp = null;
 		Gson gson = new Gson();
-		
+		System.out.println( "---> [CONSISTENCE] Saving new data to the hibernate pending updates queue: " + value.getCommand());
 		if( value.getCommand() != RequestedCommand.ADDHORDER ) return false;
 		
 		try {
 			
-			File tempOrder = new File("HibernateData");
+			File tempOrder = new File("src/main/java/ConsistenceManagement/HibernateData");
 			if( tempOrder.exists()) 
 				temp = new PrintWriter(new FileOutputStream( tempOrder, true ) , true );
 			else
 				temp = new PrintWriter(new FileOutputStream( tempOrder, false ) , true );
 				
 		}catch( FileNotFoundException ie ) {
-			System.out.println("Error trying to create a save block: " + ie.getMessage());
+			System.out.println("---> [CONSISTENCE] Error while searching for the data store");
 			return false;
 		}
 		temp.println(gson.toJson( value ));
 		
-		System.out.println("Saving update to the hibernate database");
+		System.out.println("---> [CONSISTENCE] Saving update to the hibernate database");
 		
 		temp.close();
 		return true;
@@ -78,8 +83,8 @@ public class ConsistenceManager {
 	public TransferData[] loadKeyValueUpdates() { 
 		
 		List<TransferData> updates = new ArrayList<>();
-		File tempK = new File("KeyValueData");	
-
+		File tempK = new File("src/main/java/ConsistenceManagement/KeyValueData");	
+		System.out.println("---> [CONSISTENCE] Loading datas from the keyvalue pending updates queue");
 		Scanner temp = null;
 		Gson gson = new Gson();
 		TransferData[] ret = null;
@@ -95,10 +100,12 @@ public class ConsistenceManager {
 					ret[a] = updates.get(a);
 				
 				temp.close();
+				System.out.println( "---> [CONSISTECE] Loading of data completed" );
+				tempK.delete();
 				return ret;
 			}catch( IOException ie ) {
 				
-				System.out.println("Error during the loading of the informations: " + ie.getMessage());
+				System.out.println( "---> [CONSISTECE] Error during the loading of the informations" );
 			}
 		}
 		
@@ -108,8 +115,8 @@ public class ConsistenceManager {
 	public TransferData[] loadHibernateUpdates() { 
 		
 		List<TransferData> updates = new ArrayList<>();
-		File tempK = new File("HibernateData");	
-
+		File tempK = new File("src/main/java/ConsistenceManagement/HibernateData");	
+		System.out.println("---> [CONSISTENCE] Loading datas from the hibernate pending updates queue");
 		Scanner temp = null;
 		Gson gson = new Gson();
 		TransferData[] ret = null;
@@ -125,10 +132,14 @@ public class ConsistenceManager {
 					ret[a] = updates.get(a);
 				
 				temp.close();
+				System.out.println( "---> [CONSISTECE] Loading of data completed" );
+				tempK.delete();
 				return ret;
+				
 			}catch( IOException ie ) {
 				
-				System.out.println("Error during the loading of the informations: " + ie.getMessage());
+				System.out.println( "---> [CONSISTECE] Error during the loading of the informations" );
+
 			}
 		}
 		
@@ -138,13 +149,13 @@ public class ConsistenceManager {
 
 	
 	public void deleteHibernateUpdates() {
-		File tempOrder = new File("HibernateData");
+		File tempOrder = new File("src/main/java/ConsistenceManagement/HibernateData");
 		tempOrder.delete();
 		
 	}
 	
 	public void deleteKeyValueUpdates() {
-		File tempOrder = new File("KeyValueData");
+		File tempOrder = new File("src/main/java/ConsistenceManagement/KeyValueData");
 		tempOrder.delete();
 		
 	}
@@ -153,6 +164,8 @@ public class ConsistenceManager {
 		
 		TransferData order = null;
 		HashMap<String,Object> values = new HashMap<>();
+		System.out.println( "---> [CONSISTECE] Request of consistence to a customer'order" );
+		System.out.println( "---> [CONSISTECE] Parsing data to store" );
 		
 		values.put( "username", customer );
 		values.put( "order" , obj );
@@ -161,6 +174,7 @@ public class ConsistenceManager {
 		values.put( "price" , price );
 		values.put( "date", date );
 		
+		System.out.println( "---> [CONSISTECE] Data saving" );
 		if( obj instanceof Order ) {
 			order = new TransferData( values , null , (Order)obj , RequestedCommand.ADDORDER );
 			return saveKeyValueState(order);
@@ -175,10 +189,14 @@ public class ConsistenceManager {
 	public boolean giveUserConsistence( User customer ) { 
 		TransferData data = null;
 		HashMap<String,Object> values = new HashMap<>();
+		System.out.println( "---> [CONSISTECE] Request of consistence to a customer'order" );
+		System.out.println( "---> [CONSISTECE] Parsing data to store" );
 		
 		values.put( "username", customer.getUsername() );
 		values.put( "password" , customer.getPassword() );
 		data = new TransferData( values , null , null , RequestedCommand.ADDCUSTOMER );
+		
+		System.out.println( "---> [CONSISTECE] Data saving" );
 		return saveKeyValueState(data);
 	}
 	
@@ -186,9 +204,13 @@ public class ConsistenceManager {
 		
 		TransferData data = null;
 		HashMap<String,Object> values = new HashMap<>();
+		System.out.println( "---> [CONSISTECE] Request of consistence to a customer'order" );
+		System.out.println( "---> [CONSISTECE] Parsing data to store" );
 		
 		values.put( "username", USERNAME );
 		data = new TransferData( values , null , null , RequestedCommand.REMOVECUSTOMER );
+		
+		System.out.println( "---> [CONSISTECE] Data saving" );
 		return saveKeyValueState(data);
 	}
 	
@@ -196,11 +218,15 @@ public class ConsistenceManager {
 		
 		TransferData data = null;
 		HashMap<String,Object> values = new HashMap<>();
+		System.out.println( "---> [CONSISTECE] Request of consistence to a customer'order" );
+		System.out.println( "---> [CONSISTECE] Parsing data to store" );
 		
 		values.put( "product", PRODUCT_NAME );
 		values.put( "availability" , ADDED_AVAILABILITY );
 		
 		data = new TransferData( values , null , null , RequestedCommand.ADDPRODUCT );
+		
+		System.out.println( "---> [CONSISTECE] Data saving" );
 		return saveKeyValueState(data);
 
 	}
