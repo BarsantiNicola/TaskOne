@@ -3,6 +3,8 @@ package DataManagement;
 import java.util.*;
 import java.util.logging.Level;
 
+import javax.persistence.EntityManager;
+
 import com.google.gson.*;
 import DataManagement.Hibernate.*;
 import JSONclasses.*;
@@ -105,42 +107,44 @@ public class KTransfer {
 		
 		System.out.println("---> Import of ordersID" );
 		List<User> userList = getCustomers( hibernate.getUsers() ); 
-
+		
+    	
 		JSONorderID idList;
 		List<Integer> orderIdList = new ArrayList<>();
-		List<HOrder> orders = null;			
+		HashMap<Integer,Order> orders = null;			
 						
 		String key, hashKey;
 		Gson gson = new Gson();
 				
-		for( User customer: userList ) {
+		for( int i = 0; i < userList.size(); i++ ) {
 					
-			orders = hibernate.getMyOrders(customer.getUsername());
+			orders = hibernate.getMyOrders(userList.get(i).getUsername());
 			orderIdList = new ArrayList<>();
-			for( HOrder order : orders ) {						
-				orderIdList.add( order.getIDorder());
-				key = "user:" + customer.getUsername() + ":order:" + order.getIDorder(); 
+			orderIdList.addAll( orders.keySet());
+
+			idList = new JSONorderID( orderIdList );
+			
+			key = "user:" + userList.get(i).getUsername() + ":order";
+			hashKey = KValueConnector.getStringHash(key);
+					
+			if( KValueConnector.getIntHash(key) <= 0 ) 
+				KValueConnector.levelDBStore1.put(bytes(hashKey),bytes(gson.toJson(idList)));
+			else 			
+				KValueConnector.levelDBStore2.put(bytes(hashKey),bytes(gson.toJson(idList)));
+			
+			for( Integer idOrder: orderIdList ) {						
+				key = "user:" + userList.get(i).getUsername() + ":order:" + idOrder; 
 				hashKey = KValueConnector.getStringHash(key);
 						
 				if( KValueConnector.getIntHash(key) <= 0 ) 					
-					KValueConnector.levelDBStore1.put(bytes(hashKey),bytes(gson.toJson(new Order(order))));
+					KValueConnector.levelDBStore1.put(bytes(hashKey),bytes(gson.toJson(orders.get(idOrder))));
 				else 					
-					KValueConnector.levelDBStore2.put(bytes(hashKey),bytes(gson.toJson(new Order(order))));
-				
-			}
-			
-			idList = new JSONorderID( orderIdList );
-			
-			key = "user:" + customer.getUsername() + ":order";
-			hashKey = KValueConnector.getStringHash(key);
-					
-			if( KValueConnector.getIntHash(key) <= 0 ) {
+					KValueConnector.levelDBStore2.put(bytes(hashKey),bytes(gson.toJson(orders.get(idOrder))));
 
-				KValueConnector.levelDBStore1.put(bytes(hashKey),bytes(gson.toJson(idList)));
-			} else {
-				
-				KValueConnector.levelDBStore2.put(bytes(hashKey),bytes(gson.toJson(idList)));
 			}
+
+			
+
 		}
 				
 		return true;

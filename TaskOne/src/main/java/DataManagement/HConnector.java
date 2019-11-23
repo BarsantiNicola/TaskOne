@@ -803,13 +803,14 @@ public class HConnector extends DataConnector{
     
     //function that return all the orders of a customer, and their order id
     
-	public List<HOrder> getMyOrders(String CUSTOMER_ID){
+	public HashMap<Integer,Order> getMyOrders(String CUSTOMER_ID){
 
     //  Firstable we control the status connection
     	if( FACTORY == null ) 
-			if( !createConnection()) return new ArrayList<>();
+			if( !createConnection()) return new HashMap<>();
     	
     	EntityManager manager = FACTORY.createEntityManager();
+    	HashMap<Integer,Order> map = new HashMap<>();
     	List<HOrder> horders = null;
     	HCustomer customer = null;
     	
@@ -819,13 +820,16 @@ public class HConnector extends DataConnector{
     		customer = manager.find( HCustomer.class , CUSTOMER_ID );
     		if( customer == null ) { 
     			System.out.println("---> [HIBERNATE] Error trying to find the customer: " + CUSTOMER_ID );
-    			return new ArrayList<>();
-    		}else
-    			horders = customer.getMyHOrders();
+    			return new HashMap<>();
+    		}
+    		horders = customer.getMyHOrders();
+    		for( HOrder order : horders ) 
+    			map.put( order.getIDorder() , new Order(order));
+    		
     		manager.close();
 
         	System.out.println( "---> [HIBERNATE] Request completed" );
-        	return horders;
+        	return map;
         	
     	}catch( Exception e ) {
     		
@@ -834,7 +838,7 @@ public class HConnector extends DataConnector{
     		manager.close();
 			FACTORY.close();
     		FACTORY = null;
-    		return new ArrayList<>();		
+    		return new HashMap<>();		
     	}
     	
     }
