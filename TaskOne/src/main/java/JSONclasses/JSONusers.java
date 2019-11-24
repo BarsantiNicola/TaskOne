@@ -27,4 +27,15 @@ public class JSONusers {
 		
 		return usersList.get(index);
 	}
+	
+	public boolean exists( String USERNAME ) {
+		
+		for( int i=0; i < usersList.size(); i++ ) {
+			
+			if( usersList.get(i).equals(USERNAME) )
+				return true;
+		}
+		
+		return false;
+	}
 }
