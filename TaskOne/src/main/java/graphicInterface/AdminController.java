@@ -314,7 +314,7 @@ class AdminController extends InterfaceController{
         	//  if the operation is a success we update the information into the interface
             System.out.println( "--> Update of the salary of the employee " + username + " correctly done");
         	userTable.removeAll( userTable );
-        	userTable.addAll( DataManager.getUsers());
+        	userTable.addAll( client.getUsers());
         	closePopups();
         	
         }else
@@ -346,7 +346,7 @@ class AdminController extends InterfaceController{
 
             System.out.println( "--> Delete of the user " + username + " correctly done");
         	userTable.removeAll( userTable );
-        	userTable.addAll( DataManager.getUsers()); 
+        	userTable.addAll( client.getUsers()); 
         	closePopups();
 
         }else

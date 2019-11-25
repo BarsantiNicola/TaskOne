@@ -9,7 +9,6 @@ import java.sql.Timestamp;
 import java.util.logging.Level;
 import javax.persistence.EntityManager;
 import ConsistenceManagement.TransferData;
-import DataManagement.Hibernate.HProduct;
 import DataManagement.Hibernate.HCustomer;
 import ConsistenceManagement.ConsistenceManager;
 
@@ -39,6 +38,7 @@ public class DataManager{
 		java.util.logging.Logger.getLogger("org.hibernate").setLevel(Level.OFF);
 	
 	}
+	
 	//------------------------------------------------------------ ----------------------------------------------
 	//							ADMINISTRATOR' INTERFACE REQUESTS MANAGEMENT FUNCTIONS
 	//-----------------------------------------------------------------------------------------------------------
@@ -89,21 +89,18 @@ public class DataManager{
     	//  To mantein consistance, before we could make a change into the database
     	//  we need to ensure that there aren't pending updates
     	System.out.println("--> Management of Customer\nForcing databases to refresh");
-    	updateDatabase();
+    	if( !updateHibernateDatabase()) {
+    		System.out.println( "--> Error during update. Undo of the operation to mantein consistence" );
+    		return false;
+    	}
+    	System.out.println("--> Consistence of data restored" );
     	System.out.println("--> Trying to persist data using hibernate ");
     	
 		if( HIBERNATE.insertUser( NEW_USER )){ //  if the data is correctly insertend into hibernate we need to make a replica
-			System.out.println("--> Trying to persist data using LevelDB");
-			if( !KEYVALUE.insertUser( NEW_USER )) { //  if we can't upload the replica we save for upload it when it will be possible
-				System.out.println("--> Error trying to save data to LevelDB\n--> start uploading data to the consistance module");
-				if( CONSISTENCE.giveUserConsistence( NEW_USER ))  //  if we can't upload the replica we undo the operation
-					System.out.println("--> Data correctly uploaded");
-				else {
-					System.out.println("--> Error, loose of consistance --> undo operation");
-					HIBERNATE.deleteUser( NEW_USER.getUsername() );
-					return false;
-				}
-			}
+			
+			System.out.println("--> Persist data using LevelDB");
+			KEYVALUE.insertUser( NEW_USER ); //  if we can't upload the replica we save for upload it when it will be possible
+
 			return true;
 		}
 
@@ -151,24 +148,18 @@ public class DataManager{
     	//  otherwise if the user is a customer we have firstable to update the databases
     	//  before changing something to ensure consistance
     	System.out.println("--> Management of Customer\nForcing databases to refresh");
-    	updateDatabase();
+    	if( !updateHibernateDatabase()) {
+    		System.out.println( "--> Error during update. Undo of the operation to mantein consistence" );
+    		return false;
+    	}
+    	System.out.println("--> Consistence of data restored" );
     	System.out.println("--> Trying to persist data using hibernate ");
     	
     	//  keyvalue database have only the customer's access informations
     	if( HIBERNATE.deleteUser(USER_NAME)){
 			System.out.println("--> Trying to persist data using LevelDB");  
     		//  if the user is correctly deleted from the mysql to database we have to delete its replica
-    		if(!KEYVALUE.deleteUser(USER_NAME)) {	
-				System.out.println("--> Error trying to save data to LevelDB\n--> start uploading data to the consistance module");
-				
-    			if( CONSISTENCE.giveDeleteUserConsistence( USER_NAME ))
-					System.out.println("--> Data correctly uploaded");
-    			else {   				
-					System.out.println("--> Error, loose of consistance --> undo operation");   	
-    				HIBERNATE.insertUser(new User(customer));
-    				return false;
-    			}		   		
-    		}
+    		KEYVALUE.deleteUser(USER_NAME);
     		return true;
     	}
     	return false;
@@ -205,23 +196,17 @@ public class DataManager{
     public static boolean updateProductAvailability( String PRODUCT_NAME , int ADDED_AVAILABILITY ){ 
     	
     	System.out.println("--> Management of Customer\nForcing databases to refresh");
-    	updateDatabase();
-    	
+    	if( !updateHibernateDatabase()) {
+    		System.out.println( "--> Error during update. Undo of the operation to mantein consistence" );
+    		return false;
+    	}
+    	System.out.println("--> Consistence of data restored" );
 		System.out.println( "--> Trying to persist data using Hibernate" );
 		System.out.println("PRODUCT NAME: " + PRODUCT_NAME + " ADD: " + ADDED_AVAILABILITY );
     	if( HIBERNATE.updateProductAvailability( PRODUCT_NAME , ADDED_AVAILABILITY )){
 			
     		System.out.println("--> Trying to persist data using LevelDB");
-			if(!KEYVALUE.updateProductAvailability( PRODUCT_NAME , ADDED_AVAILABILITY )) 	
-				if( CONSISTENCE.giveProductConsistence( PRODUCT_NAME , ADDED_AVAILABILITY )) 
-					System.out.println("--> Data correctly uploaded");					
-				else{
-					
-					System.out.println("--> Error, loose of consistance --> undo operation");   	
-    				HIBERNATE.decreaseProductAvailability( PRODUCT_NAME , ADDED_AVAILABILITY );
-    				return false;
-				
-				}
+			KEYVALUE.updateProductAvailability( PRODUCT_NAME , ADDED_AVAILABILITY );
 			
 			return true;
 		}
@@ -304,81 +289,22 @@ public class DataManager{
     //  the key value and hibernate databases. If a database is down the function use the consistence server
     //  to save the order for future update. If all database are down the function abort the request of the user.
     
-    public static boolean insertOrder( String CUSTOMER_ID , int PRODUCT_ID , String PRODUCT_NAME , int PRICE ){ 
-    	
-    	//  firstable we update the pending updates
-    	updateDatabase();
-    	//  for give consistence to the data we try to save the order in all databases 
-    	boolean kValueResult = KEYVALUE.insertOrder( CUSTOMER_ID , PRODUCT_ID , PRODUCT_NAME , PRICE );
-    	boolean hibernateResult = HIBERNATE.insertOrder( CUSTOMER_ID, PRODUCT_ID, PRODUCT_NAME , PRICE );
-		EntityManager manager = null;
-		HProduct myProduct = null;
-		System.out.println( "--> Handling of the consistence layer" );
-    	//  all databases are down. We can't create an order, the request fails
-    	//  HIBERNATE FAILS / KEY VALUE FAILS
-    	if( !kValueResult && !hibernateResult ) {
-    		System.out.println( "--> Error, no database available" );
-    		return false;
-    	}
-    	
-    	//  if some databases are down we send the datas to a third remote service who store the datas 
-    	//  and save it when the interested database will go up.
+	public static boolean insertOrder( String CUSTOMER_ID , int PRODUCT_ID , String PRODUCT_NAME , int PRICE ){ 
 
-    	//  HIBERNATE OK / KEY VALUE FAILS
-    	if( !kValueResult ) {
-    		System.out.println( "--> Error on key value connection, trying to give consistence" );
-    		if( HConnector.FACTORY == null )
-    			if( !HConnector.createConnection()) return false;
- 
-    		try {
-    			
-    			//  we create an order using hibernate database to get the needed informations
-    			manager = HConnector.FACTORY.createEntityManager();
-    			myProduct = manager.find( HProduct.class , PRODUCT_NAME );
-    			manager.close();
-    			
-    		}catch( Exception e ) {
-    			
-    			manager.close();
-    			HConnector.FACTORY.close();
-    			HConnector.FACTORY = null;
-    			return false;
-    			
-    		}
-    		System.out.println("--> Consistence data correctly builded, trying to save");
-    		//  we save the order for a future update to the key-value database
-    		if( CONSISTENCE.giveOrderConsistence( CUSTOMER_ID , PRODUCT_NAME , 0 , 0 , null , new Order( PRODUCT_ID , PRODUCT_NAME , myProduct.getProductPrice() , new Timestamp(System.currentTimeMillis()) , PRICE , "received"))) 
-    			System.out.println("--> Consistence correctly handled");
-    		else {
-    			//  if the save has fail we undo the operation
-    			System.out.println("--> Error on give consistence, undo operation");
-    			HConnector.removeLastOrder( CUSTOMER_ID );
-    			return false;
-    		
-    		}
-    		
-    		return true;
-    		
-    	}
+    	//  for give consistence to the data we try to save the order in all databases 
+    	KEYVALUE.insertOrder( CUSTOMER_ID , PRODUCT_ID , PRODUCT_NAME , PRICE );
+    	boolean hibernateResult = HIBERNATE.insertOrder( CUSTOMER_ID, PRODUCT_ID, PRODUCT_NAME , PRICE );
+
+		System.out.println( "--> Handling of the consistence layer" );
     	
-    	//  HIBERNATE FAILS / KEY VALUE OK
+    	//  if the database isn't available we have save the operation
     	if( !hibernateResult ) {
     		 
     		  //  we create an order using keyvalue databases to get the needed informations
-    		if( CONSISTENCE.giveOrderConsistence( CUSTOMER_ID ,  PRODUCT_NAME , PRODUCT_ID , PRICE , new Timestamp(System.currentTimeMillis()) , null ))
-      			System.out.println("--> Consistence correctly handled");
-      		else {
-      			//  if the save has fail we undo the operation
-      			System.out.println("--> Error on give consistence, undo operation");
-      		//	KValueConnector.removeLastOrder( CUSTOMER_ID );
-      			return false;
-      		
-      		}
-    		return true;
-    		
+    		CONSISTENCE.giveOrderConsistence( CUSTOMER_ID ,  PRODUCT_NAME , PRODUCT_ID , PRICE , new Timestamp(System.currentTimeMillis()) , null );
+      		System.out.println("--> Consistence correctly handled");
     	}
     	
-    	//  HIBERNATE OK / KEY VALUE OK
     	return true;
     }
 
@@ -408,33 +334,16 @@ public class DataManager{
   	
   	//  the function is used for consistence. It extracts from the saved Data class the request and try to apply
 	static boolean makeUpdate( TransferData data ) {
-		
-		System.out.println( "--> trying to make an update. Type: " + data.getCommand());
-		switch( data.getCommand() ) {
-		
-			case ADDORDER:
-				return KEYVALUE.insertOrder( (String)data.getValues().get("username"), data.getOrder());
-			case ADDHORDER:                                                             
-				return HIBERNATE.insertOrder( (String)data.getValues().get("username"), 
-						((Double)data.getValues().get("stock")).intValue() , (String)data.getValues().get("product") , 
-						((Double)data.getValues().get("price")).intValue());
-			case ADDPRODUCT:
-				return KEYVALUE.updateProductAvailability((String)data.getValues().get("product"), 
-						((Double)data.getValues().get("availability")).intValue());	
-			case ADDCUSTOMER:
-				return  KEYVALUE.insertUser( new User( (String)data.getValues().get("username") , null , null , 
-						(String)data.getValues().get("password") , null , null , 0 , null , 0 ));
-			case REMOVECUSTOMER:
-				return  KEYVALUE.deleteUser((String)data.getValues().get("username"));
-			default: return false;
-		
-		}
-		
+                                                            
+		return HIBERNATE.insertOrder( (String)data.getValues().get("username"), 
+				((Double)data.getValues().get("stock")).intValue() , (String)data.getValues().get("product") , 
+				((Double)data.getValues().get("price")).intValue());
+			
 	}
 	
 	//  function used for consistence. The function get all the pending consistence updates and try to restore
 	//  the cross-database data consistence
-	static void updateDatabase() { 
+	static boolean updateHibernateDatabase() { 
 		
 		System.out.println( "--> Analize cross-database data consistence" );
 		System.out.println( "--> Searching for hibernate database consistence updates" );
@@ -446,22 +355,28 @@ public class DataManager{
 				if( !makeUpdate(update)) {
 					System.out.println( "--> Failed update -> resaving" );
 					CONSISTENCE.saveHibernateState( update );
+					System.out.println( "--> Impossible to complete the update. Abort" );
+					return false;
 				}
 		}
 		
-		System.out.println( "--> Searching for key value databases consistence updates" );
-		updates = CONSISTENCE.loadKeyValueUpdates();
-		if( updates != null ) {
-			System.out.println( "--> Founded " + updates.length + " pending updates" );
-			for( TransferData update : updates ) 		
-				if( !makeUpdate(update)) {
-					System.out.println( "--> Failed update -> resaving" );
-					CONSISTENCE.saveKeyValueState( update );
-				}
-		}
-			
+		return true;
 	}
   	
-	public static int getMinIDProduct( String PRODUCT_NAME ){ return HIBERNATE.getNextStock(PRODUCT_NAME ); }
+	public static int getMinIDProduct( String PRODUCT_NAME ){ 
+
+		int ret = KEYVALUE.getNextStock( PRODUCT_NAME );
+		
+		if( ret == -1 ){
+			
+	    	if( !updateHibernateDatabase()) {
+	    		System.out.println( "--> Error during update. Undo of the operation to mantein consistence" );
+	    		return -1;
+	    	}
+			return HIBERNATE.getNextStock(PRODUCT_NAME ); 
+		}
   	
+		return ret;
+		
+	}
 }
