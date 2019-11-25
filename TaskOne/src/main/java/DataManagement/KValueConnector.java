@@ -656,19 +656,22 @@ public class KValueConnector extends DataConnector{
 		    	
 		    	JSONorderID orders = getJSONOrders(USER_NAME);
 		    	
-		    	for( int i=0; i < orders.getOrderIDList().size(); i++ ) {
-		    		
-		    		key = "user:" + USER_NAME + ":order:" + orders.getID(i);
-		    		hashKey = getStringHash(key);
-		    		
-		    		if ( getIntHash(key) <= 0 ) {
-						
-						levelDBStore1.delete(bytes(hashKey)); 
-									
-					} else {
-						
-						levelDBStore2.delete(bytes(hashKey));		
-					}
+		    	if( !orders.getOrderIDList().isEmpty() ) {
+			    	
+		    		for( int i=0; i < orders.getOrderIDList().size(); i++ ) {
+			    		
+			    		key = "user:" + USER_NAME + ":order:" + orders.getID(i);
+			    		hashKey = getStringHash(key);
+			    		
+			    		if ( getIntHash(key) <= 0 ) {
+							
+							levelDBStore1.delete(bytes(hashKey)); 
+										
+						} else {
+							
+							levelDBStore2.delete(bytes(hashKey));		
+						}
+			    	}
 		    	}
 		    	
 		    	key = "user:" + USER_NAME + ":order";
@@ -1308,7 +1311,22 @@ public class KValueConnector extends DataConnector{
 	    
 		public static void removeLastOrder( String CUSTOMER_ID ) {};
 	    
-		public  int getNextStock( String PRODUCT_NAME ) { return -1; };
+		public int getNextStock( String PRODUCT_NAME ) { 
+			
+			System.out.println("---> [KEYVALUE] getting the last available id stock of " + PRODUCT_NAME );
+			
+			JSONidStocks stocks = getIDStocks(PRODUCT_NAME);
+			
+			if( stocks.getidStocksList().isEmpty() ) {
+				
+				System.out.println("---> [KEYVALUE] getting the last available id stock of " + PRODUCT_NAME + " failed: empty list" );
+				return -1;
+			} else {
+				
+				System.out.println("---> [KEYVALUE] last available id stock of " + PRODUCT_NAME + " got correctly" );
+				return Collections.max(stocks.getidStocksList());
+			}			
+		};
 		
 	    ////////////
 	    
