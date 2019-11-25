@@ -14,8 +14,12 @@ import javafx.scene.control.PasswordField;
 import javafx.scene.control.TextField;
 import javafx.scene.layout.AnchorPane;
 import javafx.stage.Stage;
+
+import java.io.FileInputStream;
 import java.net.URL;
 import java.util.ResourceBundle;
+
+import javafx.scene.image.*;
 
 
 //  Main class of the program, it creates the window and intercept the request from the GUI
@@ -51,7 +55,7 @@ public class GraphicInterface extends Application implements Initializable {
         primaryStage.setTitle( "Innovative Solutions" );
         primaryStage.setScene( myApplication );
         primaryStage.setResizable( false );
-        
+        primaryStage.getIcons().add(new Image(new FileInputStream("data/logo.png")));
         System.out.println( "Starting graphic interface" );
         
         primaryStage.setOnCloseRequest(event -> {

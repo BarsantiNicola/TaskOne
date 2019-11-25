@@ -52,7 +52,7 @@ public class CustomerController extends InterfaceController {
 
         String[][] productFields = { { "Name" , "productName"} , { "Price" , "productPrice" } ,
         		{ "Description" , "productDescription"} , { "Availability" , "productAvailability"} };
-        String[][] orderFields = { { "productID" , "productId" } ,  { "ProductName" , "productName" } , 
+        String[][] orderFields = { { "IDstock" , "productId" } ,  { "ProductName" , "productName" } , 
         		{ "ProductPrice" , "productPrice" } , { "Purchase Date" , "purchaseDate" } , 
         		{ "Purchased Price" , "purchasedPrice" }  , { "Status" , "orderStatus" }};
         

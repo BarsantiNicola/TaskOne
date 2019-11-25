@@ -56,10 +56,16 @@ public class DataClient extends DataConnector {
 			
 		}catch( Exception e ) {
 			
-			toServer.close();
-			fromServer.close();
-			try { socket.close(); }catch( Exception i ) {}
-			System.out.println( "---> Error, Connection Rejected" );
+
+			try { 
+				
+				socket.close();			
+				toServer.close();
+				fromServer.close(); 
+				
+			}catch( Exception i ) {}
+			
+				System.out.println( "---> Error, Connection Rejected" );
 		
 		}
 		

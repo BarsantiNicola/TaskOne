@@ -1308,6 +1308,8 @@ public class KValueConnector extends DataConnector{
 	    
 		public static void removeLastOrder( String CUSTOMER_ID ) {};
 	    
+		public  int getNextStock( String PRODUCT_NAME ) { return -1; };
+		
 	    ////////////
 	    
 		public List<Integer> getIDStocks( String PRODUCTNAME, int STOCKID ) {
