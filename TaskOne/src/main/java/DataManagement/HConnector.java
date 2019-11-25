@@ -681,6 +681,7 @@ public class HConnector extends DataConnector{
     	
     }
 
+    
 	//------------------------------------------------------------ ----------------------------------------------
 	//									COMMON MANAGEMENT FUNCTIONS
 	//-----------------------------------------------------------------------------------------------------------
@@ -747,6 +748,8 @@ public class HConnector extends DataConnector{
 	@SuppressWarnings("unchecked")
 	public int getNextStock( String SEARCHED_PRODUCT ){ 
 
+    	if( FACTORY == null )
+    		if(!createConnection()) return -1;
     	System.out.println( "---> [HIBERNATE] Request to search the next available stock for the product " + SEARCHED_PRODUCT );
     	EntityManager manager = FACTORY.createEntityManager();
         int maxStock = -1;

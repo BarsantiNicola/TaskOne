@@ -1,8 +1,5 @@
 package graphicInterface;
 
-
-import DataManagement.DataManager;
-
 import java.io.PrintWriter;
 
 abstract class InterfaceController {

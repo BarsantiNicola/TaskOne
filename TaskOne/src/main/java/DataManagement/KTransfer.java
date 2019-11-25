@@ -2,9 +2,6 @@ package DataManagement;
 
 import java.util.*;
 import java.util.logging.Level;
-
-import javax.persistence.EntityManager;
-
 import com.google.gson.*;
 import DataManagement.Hibernate.*;
 import JSONclasses.*;

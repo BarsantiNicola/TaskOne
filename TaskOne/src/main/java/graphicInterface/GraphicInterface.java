@@ -1,6 +1,5 @@
 package graphicInterface;
 
-import DataManagement.DataManager;
 import DataManagement.UserType;
 import javafx.application.Application;
 import javafx.event.ActionEvent;

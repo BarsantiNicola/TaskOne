@@ -3,7 +3,6 @@ package graphicInterface;
 import beans.*;
 import java.util.*;
 import javafx.scene.*;
-import DataManagement.*;
 import javafx.collections.*;
 import javafx.scene.image.*;
 import javafx.scene.layout.*;

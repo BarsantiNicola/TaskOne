@@ -265,7 +265,7 @@ public class DataTransfer {
         DatabaseConnector conn = new DatabaseConnector();  
         
 
-     /*   manager.saveHTeamedEmployee( conn.getHTeamedEmployees());
+        manager.saveHTeamedEmployee( conn.getHTeamedEmployees());
 
         manager.saveUnteamedHEmployee(conn.getUnteamedHEmployees());
 
@@ -279,15 +279,7 @@ public class DataTransfer {
     
         manager.saveHProductStock(conn.getHProductStock());
 
-        manager.saveHOrder(conn.getHOrder());*/
-        HConnector hconn = new HConnector();
-        hconn.getFreeStocks("ISmartBand");
-     //   manager.saveHCustomer(conn.getHCustomer());
-       // manager.entityManager = manager.factory.createEntityManager();
-       // new HConnector();
-       // List<HOrder> customerOrders = manager.entityManager.find(HCustomer.class, "adri").getMyHorders();
-       // for( HOrder order : customerOrders )
-        //	System.out.println("order: " + order.toString());
-       // System.out.println(HConnector.getMinIDProduct("ISmartBand"));
+        manager.saveHOrder(conn.getHOrder());
+
     }
 }
