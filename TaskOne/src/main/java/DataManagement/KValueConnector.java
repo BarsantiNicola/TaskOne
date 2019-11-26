@@ -178,23 +178,6 @@ public class KValueConnector extends DataConnector{
 	    	
 	    }
 	    
-	    //  FOR GET THE KEY TO SAVE VALUES we obtain the hashKey used to store/retrieve data into/from the db
-	    /*
-	    static String getStringHash( String key ) {
-	    	
-	    	MessageDigest md = null;
-
-	        try {
-	            md = MessageDigest.getInstance("SHA-1");
-	        }
-	        catch(NoSuchAlgorithmException e) {
-	            e.printStackTrace();
-	        }
-	        
-	        return new String(md.digest(bytes(key)));
-	           	
-	    }*/
-	    
 	    // UTILITY FUNCTION TO GET THE NEW ORDER ID
 	    // WHAT: get a new order ID for a new order
 	    // HOW: search for all the order id used, take the max and increase it by one
@@ -204,6 +187,7 @@ public class KValueConnector extends DataConnector{
 	    	
 	    	int maxOrderID = -1;
 	    	JSONusers users = getJSONusers();
+	    	
 	    	if( users == null ) {
 	    		System.out.println( "---> [KEYVALUE] Unable to find users");
 	    		return -1;
@@ -211,6 +195,7 @@ public class KValueConnector extends DataConnector{
 	    	for( int i=0; i < users.getUsersList().size(); i++ ) {
 	    		
 	    		JSONorderID ids = getJSONOrders(users.getUsername(i));
+	    		
 	    		if( ids == null ) {
 		    		System.out.println( "---> [KEYVALUE] Unable to find orders");
 		    		continue;
@@ -236,7 +221,15 @@ public class KValueConnector extends DataConnector{
 	    	
 	    	int id = 0;
 	    	JSONproductNames productNames = getJSONProducts();
+	    	
+	    	if( productNames == null ) {
+	    		
+	    		System.out.println("---> [KEYVALUE] unable to find products");
+	    		return -1;
+	    	}
+	    	
 	    	JSONidStocks stocks = new JSONidStocks();
+	    	
 	    	String key;
 	    	JsonObject json;
 	    	Gson gson = new Gson();
@@ -249,6 +242,9 @@ public class KValueConnector extends DataConnector{
 	    			
 	    			json = JsonParser.parseString(asString(levelDBStore1.get(bytes(key)))).getAsJsonObject();
 	    			
+	    			if( json == null )
+	    				continue;
+	    			
 	    			if( json.has("idStocksList") ) {
 	    				
 	    				stocks = gson.fromJson(json,JSONidStocks.class);
@@ -257,6 +253,9 @@ public class KValueConnector extends DataConnector{
 	    		} else {
 	    			
 	    			json = JsonParser.parseString(asString(levelDBStore2.get(bytes(key)))).getAsJsonObject();
+	    			
+	    			if( json == null )
+	    				continue;
 	    			
 	    			if( json.has("idStocksList") ) {
 	    				
@@ -295,7 +294,7 @@ public class KValueConnector extends DataConnector{
 				if( getIntHash(key) <= 0 ) {
 					
 					json = JsonParser.parseString(asString(levelDBStore1.get(bytes(key)))).getAsJsonObject();
-					
+										
 					if( json.has("usersList") ) {
 						
 						users = gson.fromJson(json,JSONusers.class);
@@ -339,6 +338,12 @@ public class KValueConnector extends DataConnector{
 			System.out.println("---> [KEYVALUE] getting " + USERNAME + "'s password");
 			
 			JSONusers users = getJSONusers();
+			
+			if( users == null ) {
+				
+				System.out.println("---> [KEYVALUE] unable to find users");
+				return null;
+			}
 			
 			if( !users.exists(USERNAME) ) {
 				
@@ -402,6 +407,12 @@ public class KValueConnector extends DataConnector{
 			System.out.println("---> [KEYVALUE] getting " + USERNAME + "'s order list");
 			
 			JSONusers users = getJSONusers();
+			
+			if( users == null ) {
+				
+				System.out.println("---> [KEYVALUE] unable to find users");
+				return null;
+			}
 			
 			if( !users.exists(USERNAME) ) {
 				
@@ -647,6 +658,12 @@ public class KValueConnector extends DataConnector{
 		    	
 		    	JSONorderID orders = getJSONOrders(USER_NAME);
 		    	
+		    	if( orders == null ) {
+		    		
+		    		System.out.println("---> [KEYVALUE] unable to find orders");
+		    		return false;
+		    	}
+		    	
 		    	if( !orders.getOrderIDList().isEmpty() ) {
 			    	
 		    		for( int i=0; i < orders.getOrderIDList().size(); i++ ) {
@@ -678,6 +695,13 @@ public class KValueConnector extends DataConnector{
 		    	//rimuovo l'utente dalla lista degli utenti
 		    	
 		    	JSONusers users = getJSONusers();
+		    	
+		    	if( users == null ) {
+		    		
+		    		System.out.println("---> [KEYVALUE] unable to find users");
+		    		return false;
+		    	}
+		    	
 		    	users.getUsersList().remove(USER_NAME);
 		    	
 		    	key = "user:names";
@@ -726,14 +750,29 @@ public class KValueConnector extends DataConnector{
 				
 				//aggiorno la disponibilità prodotto
 				
-				updateProductAvailability(PRODUCT_NAME,-1);
+				if ( !updateProductAvailability(PRODUCT_NAME,-1) ) {
+					
+					System.out.println("---> [KEYVALUE] unable to update the availability");
+					return false;
+				}
 				
 				//tolgo il product id da quelli disponibili 
-				deleteProductID(PRODUCT_NAME,PRODUCT_ID);
+				if( !deleteProductID(PRODUCT_NAME,PRODUCT_ID) ) {
+					
+					System.out.println("---> [KEYVALUE] unable to delete the product id");
+					return false;
+				}
 				
 				//aggiungo order id al customer
 				
 				JSONorderID orders = getJSONOrders(CUSTOMER_ID);
+				
+				if( orders==null ) {
+					
+					System.out.println("---> [KEYVALUE] unable to get the order list");
+					return false;
+				}
+				
 				orders.getOrderIDList().add(getNewOrderID()); 
 				
 				key = "user:" + CUSTOMER_ID + ":order";
@@ -779,18 +818,29 @@ public class KValueConnector extends DataConnector{
 				
 				//aggiorno la disponibilità prodotto
 				
-				updateProductAvailability(ORDER.getProductName(),-1);
+				if ( !updateProductAvailability(ORDER.getProductName(),-1) ) {
+					
+					System.out.println("---> [KEYVALUE] unable to update the availability");
+					return false;
+				}
 				
 				//tolgo il product id da quelli disponibili 
-				deleteProductID(ORDER.getProductName(),ORDER.getProductId());
+				if( !deleteProductID(ORDER.getProductName(),ORDER.getProductId()) ) {
+					
+					System.out.println("---> [KEYVALUE] unable to delete the product id");
+					return false;
+				}
 				
 				//aggiungo order id al customer
 				
 				JSONorderID orders = getJSONOrders(CUSTOMER);
-				if( orders == null ) {
-					System.out.println( "---> [KEYVALUE] Unable to find the orders of the customer " + CUSTOMER );
+				
+				if( orders==null ) {
+					
+					System.out.println("---> [KEYVALUE] unable to get the order list");
 					return false;
 				}
+				
 				orders.getOrderIDList().add(getNewOrderID()); 
 				
 				key = "user:" + CUSTOMER + ":order";
@@ -821,6 +871,13 @@ public class KValueConnector extends DataConnector{
 	    	
 	    	System.out.println("---> [KEYVALUE] updating availability of " + PRODUCTNAME + " adding " + ADDED_AVAILABILITY);
 	    	Product product = getProduct(PRODUCTNAME);
+	    	
+	    	if( product == null ) {
+	    		
+	    		System.out.println("---> [KEYVALUE] unable to find product");
+	    		return false;
+	    	}
+	    	
 	    	System.out.println("product"  + product.getProductName() + "AVA" + product.getProductAvailability());
 	    	int current_availability = product.getProductAvailability();
 	    	product.setProductAvailability(current_availability + ADDED_AVAILABILITY);
@@ -844,7 +901,20 @@ public class KValueConnector extends DataConnector{
 		    		//aggiungo stock id
 			    	int new_id = getNextIDStock();
 			    	
+			    	if( new_id == -1 ) {
+			    		
+			    		System.out.println("---> [KEYVALUE] unable to find next stock");
+			    		return false;
+			    	}
+			    	
 			    	JSONidStocks stocks = getIDStocks(PRODUCTNAME);
+			    	
+			    	if( stocks == null ) {
+			    		
+			    		System.out.println("---> [KEYVALUE] unable to find id stock");
+			    		return false;
+			    	}
+			    	
 			    	stocks.getidStocksList().add(new_id);
 			    	
 			    	key = "prod:" + PRODUCTNAME + ":idstocks";
@@ -892,6 +962,12 @@ public class KValueConnector extends DataConnector{
 				}
 				
 				JSONusers users = getJSONusers();
+				
+				if( users == null ) {
+					
+					System.out.println("---> [KEYVALUE] unable to find users");
+					return false;
+				}
 				users.getUsersList().add(NEW_USER.getUsername());
 				
 				key = "user:names";
