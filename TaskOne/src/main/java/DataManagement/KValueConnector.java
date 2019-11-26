@@ -1000,10 +1000,12 @@ public class KValueConnector extends DataConnector{
 	    	System.out.println("---> [KEYVALUE] " + USERNAME + " asking for login");
 	    	
 	    	JSONusers users = getJSONusers();
+	    	
 	    	if( users == null ) {
-	    		System.out.println( "---> [KEYVALUE] " + "User " + USERNAME + "doesn't exist" );
+	    		System.out.println( "---> [KEYVALUE] failed getting user list" );
 	    		return UserType.NOUSER;
 	    	}
+	    	
 	    	if( !users.exists(USERNAME) ) {
 	    		
 	    		System.out.println("---> [KEYVALUE] " + USERNAME + " not found. Login failed.");
@@ -1061,6 +1063,13 @@ public class KValueConnector extends DataConnector{
 	    	List<Product> productList = new ArrayList<Product>();
 	    	
 	    	JSONproductNames productNames = getJSONProducts();
+	    	
+	    	if( productNames == null ) {
+	    		
+	    		System.out.println("---> [KEYVALUE] failed getting product names list");
+	    		return new ArrayList<>();
+	    	}
+	    	
 	    	Gson gson = new Gson();
 	    	
 	    	String key;
@@ -1112,6 +1121,13 @@ public class KValueConnector extends DataConnector{
 	    	List<Product> productList = new ArrayList<Product>();
 	    	
 	    	JSONproductNames productNames = getJSONProducts();
+	    	
+	    	if( productNames == null ) {
+	    		
+	    		System.out.println("---> [KEYVALUE] failed getting product names list");
+	    		return new ArrayList<>();
+	    	}
+	    	
 	    	Gson gson = new Gson();
 	    	
 	    	String key;
@@ -1170,6 +1186,19 @@ public class KValueConnector extends DataConnector{
 	    	List<Order> orderList = new ArrayList<Order>();
 	    	
 	    	JSONorderID orderIDS = getJSONOrders(CUSTOMER_ID);
+	    	
+	    	if( orderIDS == null ) {
+	    		
+	    		System.out.println("---> [KEYVALUE] failed getting order list");
+	    		return new ArrayList<>();
+	    	}
+	    	
+	    	if( orderIDS.getOrderIDList().isEmpty() ) {
+	    		
+	    		System.out.println("---> [KEYVALUE] getting " + CUSTOMER_ID + " orders completed: the customer hasn't ordered yet");
+	    		return new ArrayList<>();
+	    	}
+	    	
 	    	Gson gson = new Gson();
 	    	
 	    	String key;
@@ -1223,6 +1252,12 @@ public class KValueConnector extends DataConnector{
 	    	List<Order> orderList = new ArrayList<Order>();
 	    	
 	    	JSONorderID orderIDS = getJSONOrders(CUSTOMER_ID);
+	    	
+	    	if( orderIDS == null ) {
+	    		
+	    		System.out.println("---> [KEYVALUE] failed getting order list");
+	    		return new ArrayList<>();
+	    	}
 	    	
 	    	if( orderIDS.getOrderIDList().isEmpty() ) {
 	    		
@@ -1342,6 +1377,17 @@ public class KValueConnector extends DataConnector{
 	    	String key = "prod:" + PRODUCT_NAME + ":idstocks";
 	    	
 	    	JSONidStocks stocks = getIDStocks(PRODUCT_NAME);
+	    	
+	    	if( stocks == null ) {
+	    		
+	    		System.out.println("---> [KEYVALUE] failed getting id stocks");
+	    		return false;
+	    	}
+	    	
+	    	if( stocks.getidStocksList().isEmpty() ) {
+	    		
+	    		System.out.println("---> [KEYVALUE] the stock list is empty");
+	    	}
 	  
 	    	Gson gson = new Gson();
 	    		
