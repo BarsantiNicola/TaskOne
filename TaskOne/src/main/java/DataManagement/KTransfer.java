@@ -26,7 +26,6 @@ public class KTransfer {
 		List<String> namesList = new ArrayList<String>();
 		
 		String key = "user:names";
-		String hashKey = KValueConnector.getStringHash(key);
 		
 		Gson gson = new Gson();
 		
@@ -43,10 +42,10 @@ public class KTransfer {
 			
 			if( KValueConnector.getIntHash(key) <= 0 ) {
 				
-				KValueConnector.levelDBStore1.put(bytes(hashKey),bytes(object));
+				KValueConnector.levelDBStore1.put(bytes(key),bytes(object));
 			} else {
 				
-				KValueConnector.levelDBStore2.put(bytes(hashKey),bytes(object));
+				KValueConnector.levelDBStore2.put(bytes(key),bytes(object));
 			}
 		} catch (Exception e) {
 			
@@ -67,7 +66,7 @@ public class KTransfer {
 		System.out.println("---> [KEYVALUE] Importing users' passwords" );
 		List<User> userList = getCustomers(hibernate.getUsers()); 
 				
-		String key, hashKey;
+		String key;
 		User user;
 		JSONPasswordUserType jsonObject;
 		Gson gson = new Gson();
@@ -79,16 +78,15 @@ public class KTransfer {
 				user = userList.get(i);
 						
 				key = "user:" + user.getUsername();
-				hashKey = KValueConnector.getStringHash(key);
 					
 				jsonObject = new JSONPasswordUserType(user.getPassword());
 						
 				if( KValueConnector.getIntHash(key) <= 0 ) {
 					
-					KValueConnector.levelDBStore1.put(bytes(hashKey),bytes(gson.toJson(jsonObject)));
+					KValueConnector.levelDBStore1.put(bytes(key),bytes(gson.toJson(jsonObject)));
 				} else {
 							
-					KValueConnector.levelDBStore2.put(bytes(hashKey),bytes(gson.toJson(jsonObject)));
+					KValueConnector.levelDBStore2.put(bytes(key),bytes(gson.toJson(jsonObject)));
 				}
 			}	
 		} catch ( Exception e ) {
@@ -127,7 +125,7 @@ public class KTransfer {
 		List<Integer> orderIdList = new ArrayList<>();
 		HashMap<Integer,Order> orders = null;			
 						
-		String key, hashKey;
+		String key;
 		Gson gson = new Gson();
 			
 		try {
@@ -141,21 +139,19 @@ public class KTransfer {
 				idList = new JSONorderID( orderIdList );
 				
 				key = "user:" + userList.get(i).getUsername() + ":order";
-				hashKey = KValueConnector.getStringHash(key);
 						
 				if( KValueConnector.getIntHash(key) <= 0 ) 
-					KValueConnector.levelDBStore1.put(bytes(hashKey),bytes(gson.toJson(idList)));
+					KValueConnector.levelDBStore1.put(bytes(key),bytes(gson.toJson(idList)));
 				else 			
-					KValueConnector.levelDBStore2.put(bytes(hashKey),bytes(gson.toJson(idList)));
+					KValueConnector.levelDBStore2.put(bytes(key),bytes(gson.toJson(idList)));
 				
 				for( Integer idOrder: orderIdList ) {						
 					key = "user:" + userList.get(i).getUsername() + ":order:" + idOrder; 
-					hashKey = KValueConnector.getStringHash(key);
 							
 					if( KValueConnector.getIntHash(key) <= 0 ) 					
-						KValueConnector.levelDBStore1.put(bytes(hashKey),bytes(gson.toJson(orders.get(idOrder))));
+						KValueConnector.levelDBStore1.put(bytes(key),bytes(gson.toJson(orders.get(idOrder))));
 					else 					
-						KValueConnector.levelDBStore2.put(bytes(hashKey),bytes(gson.toJson(orders.get(idOrder))));
+						KValueConnector.levelDBStore2.put(bytes(key),bytes(gson.toJson(orders.get(idOrder))));
 	
 				}
 			}
@@ -178,7 +174,7 @@ public class KTransfer {
 		
 		System.out.println("---> [KEYVALUE] Importing products" );
 		List<Product> productList = hibernate.getAvailableProducts(); 
-		String key, hashKey;
+		String key;
 		Product product;
 		Gson gson = new Gson();
 				
@@ -189,14 +185,13 @@ public class KTransfer {
 				product = productList.get(i);
 						
 				key = "prod:" + product.getProductName();
-				hashKey = KValueConnector.getStringHash(key);
 						
 				if( KValueConnector.getIntHash(key) <= 0 ) {
 					
-					KValueConnector.levelDBStore1.put(bytes(hashKey),bytes(gson.toJson(product)));
+					KValueConnector.levelDBStore1.put(bytes(key),bytes(gson.toJson(product)));
 				} else {
 					
-					KValueConnector.levelDBStore2.put(bytes(hashKey),bytes(gson.toJson(product)));
+					KValueConnector.levelDBStore2.put(bytes(key),bytes(gson.toJson(product)));
 				}
 			}
 		} catch (Exception e) {
@@ -221,7 +216,6 @@ public class KTransfer {
 		List<String> namesList = new ArrayList<>();
 				
 		String key = "prod:names";
-		String hashKey = KValueConnector.getStringHash(key);
 		Product product;
 		Gson gson = new Gson();
 				
@@ -237,10 +231,10 @@ public class KTransfer {
 			
 			if( KValueConnector.getIntHash(key) <= 0 ) {
 						
-				KValueConnector.levelDBStore1.put(bytes(hashKey),bytes(gson.toJson(jsonObject)));
+				KValueConnector.levelDBStore1.put(bytes(key),bytes(gson.toJson(jsonObject)));
 			} else {
 						
-				KValueConnector.levelDBStore2.put(bytes(hashKey),bytes(gson.toJson(jsonObject)));
+				KValueConnector.levelDBStore2.put(bytes(key),bytes(gson.toJson(jsonObject)));
 			}
 		} catch (Exception e) {
 			
@@ -262,7 +256,7 @@ public class KTransfer {
 		List<Product> productList = hibernate.getAvailableProducts();
 		List<HProductStock> stockList = null;
 		List<Integer> stockIds = new ArrayList<>();
-		String key, hashKey;
+		String key;
 		Gson gson = new Gson();
 			
 		try {
@@ -270,7 +264,6 @@ public class KTransfer {
 			for( int i=0; i < productList.size(); i++ ) {
 						
 				key = "prod:" + productList.get(i).getProductName() + ":idstocks";
-				hashKey = KValueConnector.getStringHash(key);
 				stockList = hibernate.getFreeStocks(productList.get(i).getProductName());
 				stockIds = new ArrayList<>();
 				for( HProductStock s : stockList ) {
@@ -282,10 +275,10 @@ public class KTransfer {
 				
 				if( KValueConnector.getIntHash(key) <= 0 ) {
 						
-					KValueConnector.levelDBStore1.put(bytes(hashKey),bytes(json));
+					KValueConnector.levelDBStore1.put(bytes(key),bytes(json));
 				} else {
 							
-					KValueConnector.levelDBStore2.put(bytes(hashKey),bytes(json));
+					KValueConnector.levelDBStore2.put(bytes(key),bytes(json));
 				}
 			}
 		} catch(Exception e) {

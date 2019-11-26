@@ -57,16 +57,15 @@ public class KValueConnector extends DataConnector{
 			Product product;
 			
 			String key = "user:names";
-			String hashKey = getStringHash(key);
 			
 			System.out.println("---> [KEYVALUE] printing K-value database content");
 			
 			if( getIntHash(key) <= 0 ) {
 				
-				System.out.println("---> [KEYVALUE] " + key + "="  + gson.fromJson(asString(levelDBStore1.get(bytes(hashKey))), JSONusers.class).getUsersList());
+				System.out.println("---> [KEYVALUE] " + key + "="  + gson.fromJson(asString(levelDBStore1.get(bytes(key))), JSONusers.class).getUsersList());
 			} else {
 				
-				System.out.println("---> [KEYVALUE] " + key + "="  + gson.fromJson(asString(levelDBStore2.get(bytes(hashKey))), JSONusers.class).getUsersList());
+				System.out.println("---> [KEYVALUE] " + key + "="  + gson.fromJson(asString(levelDBStore2.get(bytes(key))), JSONusers.class).getUsersList());
 			}
 			
 			JSONusers users = getJSONusers();
@@ -74,25 +73,23 @@ public class KValueConnector extends DataConnector{
 			for( int i=0; i<users.getUsersList().size(); i++ ) {
 				
 				key = "user:" + users.getUsername(i);
-				hashKey = getStringHash(key);
 				
 				if( getIntHash(key) <= 0 ) {
 					
-					System.out.println("---> [KEYVALUE] " + key + "="  + gson.fromJson(asString(levelDBStore1.get(bytes(hashKey))), JSONPasswordUserType.class).getPassword());
+					System.out.println("---> [KEYVALUE] " + key + "="  + gson.fromJson(asString(levelDBStore1.get(bytes(key))), JSONPasswordUserType.class).getPassword());
 				} else {
 					
-					System.out.println("---> [KEYVALUE] " + key + "="  + gson.fromJson(asString(levelDBStore2.get(bytes(hashKey))), JSONPasswordUserType.class).getPassword());
+					System.out.println("---> [KEYVALUE] " + key + "="  + gson.fromJson(asString(levelDBStore2.get(bytes(key))), JSONPasswordUserType.class).getPassword());
 				}
 				
 				key = "user:" + users.getUsername(i) + ":order";
-				hashKey = getStringHash(key);
 				
 				if( getIntHash(key) <= 0 ) {
 					
-					System.out.println("---> [KEYVALUE] " + key + "="  + gson.fromJson(asString(levelDBStore1.get(bytes(hashKey))), JSONorderID.class).getOrderIDList());
+					System.out.println("---> [KEYVALUE] " + key + "="  + gson.fromJson(asString(levelDBStore1.get(bytes(key))), JSONorderID.class).getOrderIDList());
 				} else {
 					
-					System.out.println("---> [KEYVALUE] " + key + "="  + gson.fromJson(asString(levelDBStore2.get(bytes(hashKey))), JSONorderID.class).getOrderIDList());
+					System.out.println("---> [KEYVALUE] " + key + "="  + gson.fromJson(asString(levelDBStore2.get(bytes(key))), JSONorderID.class).getOrderIDList());
 				}
 				
 				JSONorderID orders = getJSONOrders(users.getUsername(i));
@@ -100,17 +97,16 @@ public class KValueConnector extends DataConnector{
 				for( int j=0; j < orders.getOrderIDList().size(); j++ ) {
 					
 					key = "user:" + users.getUsername(i) + ":order:" + orders.getID(j);
-					hashKey = getStringHash(key);
 					
 					if( getIntHash(key) <= 0 ) {
 						
-						order = gson.fromJson(asString(levelDBStore1.get(bytes(hashKey))), Order.class);
+						order = gson.fromJson(asString(levelDBStore1.get(bytes(key))), Order.class);
 						
 						System.out.println("---> [KEYVALUE] " + key + "=["  + order.getProductId() + "," + order.getProductName() + "," +
 								order.getProductPrice() + "," + order.getPurchaseDate() + "," + order.getPurchasedPrice() + "," + order.getOrderStatus() +"]");
 					} else {
 						
-						order = gson.fromJson(asString(levelDBStore2.get(bytes(hashKey))), Order.class);
+						order = gson.fromJson(asString(levelDBStore2.get(bytes(key))), Order.class);
 						
 						System.out.println("---> [KEYVALUE] " + key + "=["  + order.getProductId() + "," + order.getProductName() + "," +
 								order.getProductPrice() + "," + order.getPurchaseDate() + "," + order.getPurchasedPrice() + "," + order.getOrderStatus() +"]");
@@ -119,14 +115,13 @@ public class KValueConnector extends DataConnector{
 			}
 			
 			key = "prod:names";
-			hashKey = getStringHash(key);
 			
 			if( getIntHash(key) <= 0 ) {
 				
-				System.out.println("---> [KEYVALUE] " + key + "="  + gson.fromJson(asString(levelDBStore1.get(bytes(hashKey))), JSONproductNames.class).getProductNamesList());
+				System.out.println("---> [KEYVALUE] " + key + "="  + gson.fromJson(asString(levelDBStore1.get(bytes(key))), JSONproductNames.class).getProductNamesList());
 			} else {
 				
-				System.out.println("---> [KEYVALUE] " + key + "="  + gson.fromJson(asString(levelDBStore2.get(bytes(hashKey))), JSONproductNames.class).getProductNamesList());
+				System.out.println("---> [KEYVALUE] " + key + "="  + gson.fromJson(asString(levelDBStore2.get(bytes(key))), JSONproductNames.class).getProductNamesList());
 			}
 			
 			JSONproductNames productNames = getJSONProducts();
@@ -134,31 +129,29 @@ public class KValueConnector extends DataConnector{
 			for( int i=0; i < productNames.getProductNamesList().size(); i++ ) {
 				
 				key = "prod:" + productNames.getName(i);
-				hashKey = getStringHash(key);
 				
 				if( getIntHash(key) <= 0 ) {
 					
-					product = gson.fromJson(asString(levelDBStore1.get(bytes(hashKey))), Product.class);
+					product = gson.fromJson(asString(levelDBStore1.get(bytes(key))), Product.class);
 					
 					System.out.println("---> [KEYVALUE] " + key + "=[" + product.getProductName() + "," + product.getProductPrice() + "," + 
 							product.getProductDescription() + "," + product.getProductAvailability() + "]");
 				} else {
 					
-					product = gson.fromJson(asString(levelDBStore2.get(bytes(hashKey))), Product.class);
+					product = gson.fromJson(asString(levelDBStore2.get(bytes(key))), Product.class);
 					
 					System.out.println("---> [KEYVALUE] " + key + "=[" + product.getProductName() + "," + product.getProductPrice() + "," + 
 							product.getProductDescription() + "," + product.getProductAvailability() + "]");
 				}
 				
 				key = "prod:" + productNames.getName(i) + ":idstocks";
-				hashKey = getStringHash(key);
 				
 				if( getIntHash(key) <= 0 ) {
 					
-					System.out.println("---> [KEYVALUE] " + key + "="  + gson.fromJson(asString(levelDBStore1.get(bytes(hashKey))), JSONidStocks.class).getidStocksList());
+					System.out.println("---> [KEYVALUE] " + key + "="  + gson.fromJson(asString(levelDBStore1.get(bytes(key))), JSONidStocks.class).getidStocksList());
 				} else {
 					
-					System.out.println("---> [KEYVALUE] " + key + "="  + gson.fromJson(asString(levelDBStore2.get(bytes(hashKey))), JSONidStocks.class).getidStocksList());
+					System.out.println("---> [KEYVALUE] " + key + "="  + gson.fromJson(asString(levelDBStore2.get(bytes(key))), JSONidStocks.class).getidStocksList());
 				}
 			}
 		}
@@ -186,7 +179,7 @@ public class KValueConnector extends DataConnector{
 	    }
 	    
 	    //  FOR GET THE KEY TO SAVE VALUES we obtain the hashKey used to store/retrieve data into/from the db
-	    
+	    /*
 	    static String getStringHash( String key ) {
 	    	
 	    	MessageDigest md = null;
@@ -200,7 +193,7 @@ public class KValueConnector extends DataConnector{
 	        
 	        return new String(md.digest(bytes(key)));
 	           	
-	    }
+	    }*/
 	    
 	    // UTILITY FUNCTION TO GET THE NEW ORDER ID
 	    // WHAT: get a new order ID for a new order
@@ -238,18 +231,17 @@ public class KValueConnector extends DataConnector{
 	    	int id = 0;
 	    	JSONproductNames productNames = getJSONProducts();
 	    	JSONidStocks stocks = new JSONidStocks();
-	    	String key,hashKey;
+	    	String key;
 	    	JsonObject json;
 	    	Gson gson = new Gson();
 	    	
 	    	for( int i = 0; i < productNames.getProductNamesList().size(); i++ ) {
 	    		
 	    		key = "prod:" + productNames.getName(i) + ":idstocks";
-	    		hashKey = getStringHash(key);
 	    		
 	    		if( getIntHash(key) <= 0 ) {
 	    			
-	    			json = JsonParser.parseString(asString(levelDBStore1.get(bytes(hashKey)))).getAsJsonObject();
+	    			json = JsonParser.parseString(asString(levelDBStore1.get(bytes(key)))).getAsJsonObject();
 	    			
 	    			if( json.has("idStocksList") ) {
 	    				
@@ -258,7 +250,7 @@ public class KValueConnector extends DataConnector{
 	    			
 	    		} else {
 	    			
-	    			json = JsonParser.parseString(asString(levelDBStore2.get(bytes(hashKey)))).getAsJsonObject();
+	    			json = JsonParser.parseString(asString(levelDBStore2.get(bytes(key)))).getAsJsonObject();
 	    			
 	    			if( json.has("idStocksList") ) {
 	    				
@@ -288,7 +280,6 @@ public class KValueConnector extends DataConnector{
 			JSONusers users = new JSONusers();
 			
 			String key = "user:names";
-			String hashKey = getStringHash(key);
 			
 			Gson gson = new Gson();
 			JsonObject json = new JsonObject();
@@ -297,7 +288,7 @@ public class KValueConnector extends DataConnector{
 				
 				if( getIntHash(key) <= 0 ) {
 					
-					json = JsonParser.parseString(asString(levelDBStore1.get(bytes(hashKey)))).getAsJsonObject();
+					json = JsonParser.parseString(asString(levelDBStore1.get(bytes(key)))).getAsJsonObject();
 					
 					if( json.has("usersList") ) {
 						
@@ -310,7 +301,7 @@ public class KValueConnector extends DataConnector{
 					
 				} else {
 					
-					json = JsonParser.parseString(asString(levelDBStore2.get(bytes(hashKey)))).getAsJsonObject();
+					json = JsonParser.parseString(asString(levelDBStore2.get(bytes(key)))).getAsJsonObject();
 					
 					if( json.has("usersList") ) {
 						
@@ -350,7 +341,6 @@ public class KValueConnector extends DataConnector{
 			}
 			
 			String key = "user:" + USERNAME;
-			String hashKey = getStringHash(key);
 			
 			JSONPasswordUserType psw = new JSONPasswordUserType();
 			
@@ -361,7 +351,7 @@ public class KValueConnector extends DataConnector{
 				
 				if( getIntHash(key) <= 0  ) {
 					
-					json = JsonParser.parseString(asString(levelDBStore1.get(bytes(hashKey)))).getAsJsonObject();
+					json = JsonParser.parseString(asString(levelDBStore1.get(bytes(key)))).getAsJsonObject();
 					
 					if ( json.has("password") ) {
 						
@@ -373,7 +363,7 @@ public class KValueConnector extends DataConnector{
 					}			
 				} else {
 					
-					json = JsonParser.parseString(asString(levelDBStore2.get(bytes(hashKey)))).getAsJsonObject();
+					json = JsonParser.parseString(asString(levelDBStore2.get(bytes(key)))).getAsJsonObject();
 					
 					if ( json.has("password") ) {
 						
@@ -414,7 +404,6 @@ public class KValueConnector extends DataConnector{
 			}
 			
 			String key = "user:" + USERNAME + ":order";
-			String hashKey = getStringHash(key);
 			
 			JSONorderID orderIDList = new JSONorderID();
 			
@@ -425,7 +414,7 @@ public class KValueConnector extends DataConnector{
 				
 				if( getIntHash(key) <= 0 ) {
 					
-					json = JsonParser.parseString(asString(levelDBStore1.get(bytes(hashKey)))).getAsJsonObject();
+					json = JsonParser.parseString(asString(levelDBStore1.get(bytes(key)))).getAsJsonObject();
 					
 					if ( json.has("orderIDList") ) {
 						
@@ -437,7 +426,7 @@ public class KValueConnector extends DataConnector{
 					}
 				} else {
 					
-					json = JsonParser.parseString(asString(levelDBStore2.get(bytes(hashKey)))).getAsJsonObject();
+					json = JsonParser.parseString(asString(levelDBStore2.get(bytes(key)))).getAsJsonObject();
 					
 					if ( json.has("orderIDList") ) {
 						
@@ -470,7 +459,6 @@ public class KValueConnector extends DataConnector{
 			System.out.println("---> [KEYVALUE] getting " + PRODUCTNAME + "details");
 			
 			String key = "prod:" + PRODUCTNAME;
-			String hashKey = getStringHash(key);
 			
 			Product product;
 			
@@ -481,7 +469,7 @@ public class KValueConnector extends DataConnector{
 				
 				if( getIntHash(key) <= 0 ) {
 					
-					json = JsonParser.parseString(asString(levelDBStore1.get(bytes(hashKey)))).getAsJsonObject();
+					json = JsonParser.parseString(asString(levelDBStore1.get(bytes(key)))).getAsJsonObject();
 					
 					if ( json.has("productName") ) {
 						
@@ -493,7 +481,7 @@ public class KValueConnector extends DataConnector{
 					}
 				} else {
 					
-					json = JsonParser.parseString(asString(levelDBStore2.get(bytes(hashKey)))).getAsJsonObject();
+					json = JsonParser.parseString(asString(levelDBStore2.get(bytes(key)))).getAsJsonObject();
 					
 					if ( json.has("productName") ) {
 						
@@ -525,7 +513,6 @@ public class KValueConnector extends DataConnector{
 			
 			System.out.println("---> [KEYVALUE] getting " + USERNAME + " " + ORDERID + "order details");
 			String key = "user:" + USERNAME + ":order" + ORDERID;
-			String hashKey = getStringHash(key);
 			
 			Order order;
 			
@@ -536,7 +523,7 @@ public class KValueConnector extends DataConnector{
 				
 				if( getIntHash(key) <= 0 ) {
 					
-					json = JsonParser.parseString(asString(levelDBStore1.get(bytes(hashKey)))).getAsJsonObject();
+					json = JsonParser.parseString(asString(levelDBStore1.get(bytes(key)))).getAsJsonObject();
 					
 					if ( json.has("productName") ) {
 						
@@ -548,7 +535,7 @@ public class KValueConnector extends DataConnector{
 					}
 				} else {
 					
-					json = JsonParser.parseString(asString(levelDBStore2.get(bytes(hashKey)))).getAsJsonObject();
+					json = JsonParser.parseString(asString(levelDBStore2.get(bytes(key)))).getAsJsonObject();
 					
 					if ( json.has("productName") ) {
 						
@@ -579,7 +566,6 @@ public class KValueConnector extends DataConnector{
 			
 			System.out.println("---> [KEYVALUE] getting product names list");
 			String key = "prod:names";
-			String hashKey = getStringHash(key);
 			
 			JSONproductNames productNamesList = new JSONproductNames();
 			
@@ -590,7 +576,7 @@ public class KValueConnector extends DataConnector{
 				
 				if( getIntHash(key) <= 0 ) {
 					
-					json = JsonParser.parseString(asString(levelDBStore1.get(bytes(hashKey)))).getAsJsonObject();
+					json = JsonParser.parseString(asString(levelDBStore1.get(bytes(key)))).getAsJsonObject();
 					
 					if ( json.has("productNamesList") ) {
 						
@@ -602,7 +588,7 @@ public class KValueConnector extends DataConnector{
 					}
 				} else {
 					
-					json = JsonParser.parseString(asString(levelDBStore2.get(bytes(hashKey)))).getAsJsonObject();
+					json = JsonParser.parseString(asString(levelDBStore2.get(bytes(key)))).getAsJsonObject();
 					
 					if ( json.has("productNamesList") ) {
 						
@@ -637,7 +623,6 @@ public class KValueConnector extends DataConnector{
 	    	
 	    	System.out.println("---> [KEYVALUE] deleting user " + USER_NAME);
 	    	String key = "user:" + USER_NAME;
-	    	String hashKey = getStringHash(key);
 	    	
 	    	Gson gson = new Gson();
 	    	
@@ -645,11 +630,11 @@ public class KValueConnector extends DataConnector{
 	    		
 	    		if ( getIntHash(key) <= 0 ) {
 					
-					levelDBStore1.delete(bytes(hashKey)); 
+					levelDBStore1.delete(bytes(key)); 
 								
 				} else {
 					
-					levelDBStore2.delete(bytes(hashKey));		
+					levelDBStore2.delete(bytes(key));		
 				}
 		    	
 		    	//cancello tutti gli ordini dell'utente
@@ -661,29 +646,27 @@ public class KValueConnector extends DataConnector{
 		    		for( int i=0; i < orders.getOrderIDList().size(); i++ ) {
 			    		
 			    		key = "user:" + USER_NAME + ":order:" + orders.getID(i);
-			    		hashKey = getStringHash(key);
 			    		
 			    		if ( getIntHash(key) <= 0 ) {
 							
-							levelDBStore1.delete(bytes(hashKey)); 
+							levelDBStore1.delete(bytes(key)); 
 										
 						} else {
 							
-							levelDBStore2.delete(bytes(hashKey));		
+							levelDBStore2.delete(bytes(key));		
 						}
 			    	}
 		    	}
 		    	
 		    	key = "user:" + USER_NAME + ":order";
-		    	hashKey = getStringHash(key);
 		    	
 		    	if ( getIntHash(key) <= 0 ) {
 					
-					levelDBStore1.delete(bytes(hashKey)); 
+					levelDBStore1.delete(bytes(key)); 
 								
 				} else {
 					
-					levelDBStore2.delete(bytes(hashKey));		
+					levelDBStore2.delete(bytes(key));		
 				}
 		    	
 		    	//rimuovo l'utente dalla lista degli utenti
@@ -692,15 +675,14 @@ public class KValueConnector extends DataConnector{
 		    	users.getUsersList().remove(USER_NAME);
 		    	
 		    	key = "user:names";
-		    	hashKey = getStringHash(key);
 		    	
 		    	if ( getIntHash(key) <= 0 ) {
 					
-		    		levelDBStore1.put(bytes(hashKey),bytes(gson.toJson(users)));
+		    		levelDBStore1.put(bytes(key),bytes(gson.toJson(users)));
 								
 				} else {
 					
-					levelDBStore2.put(bytes(hashKey),bytes(gson.toJson(users)));	
+					levelDBStore2.put(bytes(key),bytes(gson.toJson(users)));	
 				}
 	    	} catch (Exception e ) {
 	    		
@@ -721,21 +703,19 @@ public class KValueConnector extends DataConnector{
 	    public boolean insertOrder( String CUSTOMER_ID , int PRODUCT_ID , String PRODUCT_NAME , int PRICE ){ 
 	    	
 	    	System.out.println("---> [KEYVALUE] inserting order, customer " + CUSTOMER_ID + ",product " + PRODUCT_NAME + ",product id " + PRODUCT_ID);
-	    	String key, hashKey;
+	    	String key = "user:"+ CUSTOMER_ID + ":order:"+ getNewOrderID();
 			Gson gson = new Gson();
 	    	
 			Order order = new Order (PRODUCT_ID, PRODUCT_NAME, PRICE, new Timestamp(System.currentTimeMillis()), PRICE, "Ordered" );
-			key = "user:"+ CUSTOMER_ID + ":order:"+ getNewOrderID();
-			hashKey= getStringHash(key);
 		
 			try {
 				
 				if( getIntHash(key) <= 0 ) {
 					
-					levelDBStore1.put(bytes(hashKey),bytes(gson.toJson(order)));
+					levelDBStore1.put(bytes(key),bytes(gson.toJson(order)));
 				} else {
 					
-					levelDBStore2.put(bytes(hashKey),bytes(gson.toJson(order)));
+					levelDBStore2.put(bytes(key),bytes(gson.toJson(order)));
 				}
 				
 				//aggiorno la disponibilità prodotto
@@ -751,14 +731,13 @@ public class KValueConnector extends DataConnector{
 				orders.getOrderIDList().add(getNewOrderID()); 
 				
 				key = "user:" + CUSTOMER_ID + ":order";
-				hashKey = getStringHash(key);
 				
 				if( getIntHash(key) <= 0 ) {
 					
-					levelDBStore1.put(bytes(hashKey),bytes(gson.toJson(orders)));
+					levelDBStore1.put(bytes(key),bytes(gson.toJson(orders)));
 				} else {
 					
-					levelDBStore2.put(bytes(hashKey),bytes(gson.toJson(orders)));
+					levelDBStore2.put(bytes(key),bytes(gson.toJson(orders)));
 				}
 			} catch (Exception e ) {
 	    		
@@ -779,20 +758,17 @@ public class KValueConnector extends DataConnector{
 	    public boolean insertOrder( String CUSTOMER , Order ORDER ) { 
 	    	
 	    	System.out.println("---> [KEYVALUE] inserting order, customer " + CUSTOMER );
-	    	String key, hashKey;
+	    	String key = "user:" + CUSTOMER + ":order:" + getNewOrderID(); 
 			Gson gson = new Gson();
-	    	
-			key= "user:" + CUSTOMER + ":order:" + getNewOrderID(); 
-			hashKey= getStringHash(key);
 	    	
 			try {
 				
 				if( getIntHash(key) <= 0 ) {
 					
-					levelDBStore1.put(bytes(hashKey),bytes(gson.toJson(ORDER)));
+					levelDBStore1.put(bytes(key),bytes(gson.toJson(ORDER)));
 				} else {
 					
-					levelDBStore2.put(bytes(hashKey),bytes(gson.toJson(ORDER)));
+					levelDBStore2.put(bytes(key),bytes(gson.toJson(ORDER)));
 				}
 				
 				//aggiorno la disponibilità prodotto
@@ -808,14 +784,13 @@ public class KValueConnector extends DataConnector{
 				orders.getOrderIDList().add(getNewOrderID()); 
 				
 				key = "user:" + CUSTOMER + ":order";
-				hashKey = getStringHash(key);
 				
 				if( getIntHash(key) <= 0 ) {
 					
-					levelDBStore1.put(bytes(hashKey),bytes(gson.toJson(orders)));
+					levelDBStore1.put(bytes(key),bytes(gson.toJson(orders)));
 				} else {
 					
-					levelDBStore2.put(bytes(hashKey),bytes(gson.toJson(orders)));
+					levelDBStore2.put(bytes(key),bytes(gson.toJson(orders)));
 				}
 			} catch (Exception e ) {
 	    		
@@ -840,19 +815,17 @@ public class KValueConnector extends DataConnector{
 	    	int current_availability = product.getProductAvailability();
 	    	product.setProductAvailability(current_availability + ADDED_AVAILABILITY);
 	    	
-	    	String key, hashKey;
+	    	String key = "prod:" + PRODUCTNAME;
 	    	Gson gson = new Gson();
-	    	key = "prod:" + PRODUCTNAME;
-	    	hashKey= getStringHash(key);
-	    	
+	    		    	
 	    	try {
 		    	
 	    		if( getIntHash(key) <= 0 ) {
 					
-					levelDBStore1.put(bytes(hashKey),bytes(gson.toJson(product)));
+					levelDBStore1.put(bytes(key),bytes(gson.toJson(product)));
 				} else {
 					
-					levelDBStore2.put(bytes(hashKey),bytes(gson.toJson(product)));
+					levelDBStore2.put(bytes(key),bytes(gson.toJson(product)));
 				}
 		    	
 		    	
@@ -865,14 +838,13 @@ public class KValueConnector extends DataConnector{
 			    	stocks.getidStocksList().add(new_id);
 			    	
 			    	key = "prod:" + PRODUCTNAME + ":idstocks";
-			    	hashKey = getStringHash(key);
 			    	
 			    	if( getIntHash(key) <= 0 ) {
 						
-						levelDBStore1.put(bytes(hashKey),bytes(gson.toJson(stocks)));
+						levelDBStore1.put(bytes(key),bytes(gson.toJson(stocks)));
 					} else {
 						
-						levelDBStore2.put(bytes(hashKey),bytes(gson.toJson(stocks)));
+						levelDBStore2.put(bytes(key),bytes(gson.toJson(stocks)));
 					}
 		    	}
 	    	} catch( Exception e ) {
@@ -893,37 +865,33 @@ public class KValueConnector extends DataConnector{
 	   public boolean insertUser( User NEW_USER ) { 
 	    	
 		    System.out.println("---> [KEYVALUE] adding user " + NEW_USER.getUsername());
-	    	String key, hashKey;
+	    	String key = "user:" + NEW_USER.getUsername();
 			Gson gson = new Gson();
 			JSONPasswordUserType jsonObject;
-			
-			key = "user:" + NEW_USER.getUsername();
-			hashKey = getStringHash(key);
-			
+
 			jsonObject = new JSONPasswordUserType(NEW_USER.getPassword());
 			
 			try {
 				
 				if( getIntHash(key) <= 0 ) {
 					
-					levelDBStore1.put(bytes(hashKey),bytes(gson.toJson(jsonObject)));
+					levelDBStore1.put(bytes(key),bytes(gson.toJson(jsonObject)));
 				} else {
 					
-					levelDBStore2.put(bytes(hashKey),bytes(gson.toJson(jsonObject)));
+					levelDBStore2.put(bytes(key),bytes(gson.toJson(jsonObject)));
 				}
 				
 				JSONusers users = getJSONusers();
 				users.getUsersList().add(NEW_USER.getUsername());
 				
 				key = "user:names";
-				hashKey = getStringHash(key);
 				
 				if( getIntHash(key) <= 0 ) {
 					
-					levelDBStore1.put(bytes(hashKey),bytes(gson.toJson(users)));
+					levelDBStore1.put(bytes(key),bytes(gson.toJson(users)));
 				} else {
 					
-					levelDBStore2.put(bytes(hashKey),bytes(gson.toJson(users)));
+					levelDBStore2.put(bytes(key),bytes(gson.toJson(users)));
 				}
 			} catch( Exception e ) {
 				
@@ -954,14 +922,13 @@ public class KValueConnector extends DataConnector{
 	    	}	    	
 	    	
 	    	String key = "user:" + USERNAME;
-	    	String hashKey = getStringHash(key);
 	    	JsonObject json = new JsonObject();
 	    	 
 	    	try {
 		    	
 	    		if( getIntHash(key) <= 0 ) {
 					
-		    		json = JsonParser.parseString(asString(levelDBStore1.get(bytes(hashKey)))).getAsJsonObject(); 
+		    		json = JsonParser.parseString(asString(levelDBStore1.get(bytes(key)))).getAsJsonObject(); 
 		    		
 		    		if( json.has("password") && json.get("password").getAsString().equals(PASSWORD)) {
 		    			
@@ -974,7 +941,7 @@ public class KValueConnector extends DataConnector{
 		    		}		
 	    		} else {
 					
-	    			json = JsonParser.parseString(asString(levelDBStore2.get(bytes(hashKey)))).getAsJsonObject(); 
+	    			json = JsonParser.parseString(asString(levelDBStore2.get(bytes(key)))).getAsJsonObject(); 
 		    		
 		    		if( json.has("password") && json.get("password").getAsString().equals(PASSWORD)) {
 		    			
@@ -1007,7 +974,7 @@ public class KValueConnector extends DataConnector{
 	    	JSONproductNames productNames = getJSONProducts();
 	    	Gson gson = new Gson();
 	    	
-	    	String key, hashKey;
+	    	String key;
 	    	JsonObject json = new JsonObject();
 	    	
 	    	try {
@@ -1015,11 +982,10 @@ public class KValueConnector extends DataConnector{
 	    		for( int i=0; i < productNames.getProductNamesList().size() ; i++ ) {
 		    		
 		    		key = "prod:" + productNames.getName(i);
-		    		hashKey = getStringHash(key);
 		    		
 		    		if( getIntHash(key) <= 0 ) {
 						
-		    			json = JsonParser.parseString(asString(levelDBStore1.get(bytes(hashKey)))).getAsJsonObject();
+		    			json = JsonParser.parseString(asString(levelDBStore1.get(bytes(key)))).getAsJsonObject();
 							    			
 						if ( json.has("productName") && json.getAsJsonObject("productAvailability").get("value").getAsInt() > 0 ) {
 							
@@ -1027,7 +993,7 @@ public class KValueConnector extends DataConnector{
 						} 					
 		    		} else {
 						
-						json = JsonParser.parseString(asString(levelDBStore2.get(bytes(hashKey)))).getAsJsonObject();
+						json = JsonParser.parseString(asString(levelDBStore2.get(bytes(key)))).getAsJsonObject();
 						
 						if( json.has("productName") && json.getAsJsonObject("productAvailability").get("value").getAsInt() > 0 ) {
 							
@@ -1059,7 +1025,7 @@ public class KValueConnector extends DataConnector{
 	    	JSONproductNames productNames = getJSONProducts();
 	    	Gson gson = new Gson();
 	    	
-	    	String key, hashKey;
+	    	String key;
 	    	JsonObject json = new JsonObject();
 	    	
 	    	try {
@@ -1067,11 +1033,10 @@ public class KValueConnector extends DataConnector{
 	    		for( int i=0; i < productNames.getProductNamesList().size() ; i++ ) {
 		    		
 		    		key = "prod:" + productNames.getName(i);
-		    		hashKey = getStringHash(key);
 		    		
 		    		if( getIntHash(key) <= 0 ) {
 						
-		    			json = JsonParser.parseString(asString(levelDBStore1.get(bytes(hashKey)))).getAsJsonObject();
+		    			json = JsonParser.parseString(asString(levelDBStore1.get(bytes(key)))).getAsJsonObject();
 		    			
 		    			if ( json.has("productName") && json.getAsJsonObject("productAvailability").get("value").getAsInt() > 0 && 
 								( json.getAsJsonObject("productName").get("value").getAsString().contains(SEARCHED_STRING) ||
@@ -1083,7 +1048,7 @@ public class KValueConnector extends DataConnector{
 						} 					
 		    		} else {
 						
-						json = JsonParser.parseString(asString(levelDBStore2.get(bytes(hashKey)))).getAsJsonObject();
+						json = JsonParser.parseString(asString(levelDBStore2.get(bytes(key)))).getAsJsonObject();
 
 						if ( json.has("productName") && json.getAsJsonObject("productAvailability").get("value").getAsInt() > 0 && 
 								( json.getAsJsonObject("productName").get("value").getAsString().contains(SEARCHED_STRING) ||
@@ -1118,7 +1083,7 @@ public class KValueConnector extends DataConnector{
 	    	JSONorderID orderIDS = getJSONOrders(CUSTOMER_ID);
 	    	Gson gson = new Gson();
 	    	
-	    	String key, hashKey;
+	    	String key;
 	    	JsonObject json = new JsonObject();
 	    	
 	    	try {
@@ -1126,11 +1091,10 @@ public class KValueConnector extends DataConnector{
 	    		for( int i=0; i < orderIDS.getOrderIDList().size(); i++ ) {
 	    		
 	    		key = "user:" + CUSTOMER_ID + ":order:" + orderIDS.getID(i);
-	    		hashKey = getStringHash(key);
 	    		
 	    		if( getIntHash(key) <= 0 ) {
 					
-	    			json = JsonParser.parseString(asString(levelDBStore1.get(bytes(hashKey)))).getAsJsonObject();
+	    			json = JsonParser.parseString(asString(levelDBStore1.get(bytes(key)))).getAsJsonObject();
 	    			
 					if ( json.has("productId") && 
 							json.getAsJsonObject("productName").get("value").getAsString().contains(SEARCHED_VALUE)) {
@@ -1139,7 +1103,7 @@ public class KValueConnector extends DataConnector{
 					} 				
 	    		} else {
 					
-					json = JsonParser.parseString(asString(levelDBStore2.get(bytes(hashKey)))).getAsJsonObject();
+					json = JsonParser.parseString(asString(levelDBStore2.get(bytes(key)))).getAsJsonObject();
 					
 					if( json.has("productId") && 
 							json.getAsJsonObject("productName").get("value").getAsString().contains(SEARCHED_VALUE)) {
@@ -1170,9 +1134,16 @@ public class KValueConnector extends DataConnector{
 	    	List<Order> orderList = new ArrayList<Order>();
 	    	
 	    	JSONorderID orderIDS = getJSONOrders(CUSTOMER_ID);
+	    	
+	    	if( orderIDS.getOrderIDList().isEmpty() ) {
+	    		
+	    		System.out.println("---> [KEYVALUE] getting " + CUSTOMER_ID + " orders completed: the customer hasn't ordered yet");
+	    		return new ArrayList<>();
+	    	}
+	    	
 	    	Gson gson = new Gson();
 	    	
-	    	String key, hashKey;
+	    	String key;
 	    	Order order;
 	    	JsonObject json = new JsonObject();
 	    	
@@ -1181,14 +1152,13 @@ public class KValueConnector extends DataConnector{
 		    	for( int i=0; i < orderIDS.getOrderIDList().size(); i++ ) {
 		    		
 		    		key = "user:" + CUSTOMER_ID + ":order:" + orderIDS.getID(i);
-		    		hashKey = getStringHash(key);
 		    		
 		    		if( getIntHash(key) <= 0 ) {
 						
-		    			json = JsonParser.parseString(asString(levelDBStore1.get(bytes(hashKey)))).getAsJsonObject();
+		    			json = JsonParser.parseString(asString(levelDBStore1.get(bytes(key)))).getAsJsonObject();
 		    				
 		    			if( json.has("productId")) {
-		    				order = gson.fromJson(asString(levelDBStore1.get(bytes(hashKey))),Order.class);	
+		    				order = gson.fromJson(json,Order.class);	
 		    				orderList.add(order);
 		    			} else {
 		    				
@@ -1197,10 +1167,10 @@ public class KValueConnector extends DataConnector{
 		    			}			
 		    		} else {
 						
-		    			json = JsonParser.parseString(asString(levelDBStore2.get(bytes(hashKey)))).getAsJsonObject();
+		    			json = JsonParser.parseString(asString(levelDBStore2.get(bytes(key)))).getAsJsonObject();
 		    				
 		    			if( json.has("productId")) {
-		    				order = gson.fromJson(asString(levelDBStore2.get(bytes(hashKey))),Order.class);	
+		    				order = gson.fromJson(json,Order.class);	
 		    				orderList.add(order);
 		    			} else {
 		    				
@@ -1230,7 +1200,6 @@ public class KValueConnector extends DataConnector{
 	    	System.out.println("---> [KEYVALUE] getting free id stocks of " + PRODUCT_NAME);
 	    	JSONidStocks idList = new JSONidStocks();
 	    	String key = "prod:" + PRODUCT_NAME + ":idstocks";
-	    	String hashKey = getStringHash(key);
 	    	
 	    	Gson gson = new Gson();
 	    	JsonObject json = new JsonObject();
@@ -1239,7 +1208,7 @@ public class KValueConnector extends DataConnector{
 		    	
 	    		if( getIntHash(key) <= 0 ) {
 		    		
-		    		json = JsonParser.parseString(asString(levelDBStore1.get(bytes(hashKey)))).getAsJsonObject();
+		    		json = JsonParser.parseString(asString(levelDBStore1.get(bytes(key)))).getAsJsonObject();
 		    		
 		    		if( json.has("idStocksList") ) {
 		    			
@@ -1252,7 +1221,7 @@ public class KValueConnector extends DataConnector{
 		    		
 		    	} else {
 		    		
-		    		json = JsonParser.parseString(asString(levelDBStore2.get(bytes(hashKey)))).getAsJsonObject();
+		    		json = JsonParser.parseString(asString(levelDBStore2.get(bytes(key)))).getAsJsonObject();
 		    		
 		    		if( json.has("idStocksList") ) {
 		    			
@@ -1282,7 +1251,6 @@ public class KValueConnector extends DataConnector{
 	    	
 	    	System.out.println("---> [KEYVALUE] deleting id stock " + PRODUCT_ID + " of product " + PRODUCT_NAME);
 	    	String key = "prod:" + PRODUCT_NAME + ":idstocks";
-	    	String hashKey = getStringHash(key);
 	    	
 	    	JSONidStocks stocks = getIDStocks(PRODUCT_NAME);
 	  
@@ -1294,10 +1262,10 @@ public class KValueConnector extends DataConnector{
 		    	
 		    	if( getIntHash(key) <= 0 ) {
 		    		
-		    		levelDBStore1.put(bytes(hashKey),bytes(gson.toJson(stocks)));
+		    		levelDBStore1.put(bytes(key),bytes(gson.toJson(stocks)));
 		    	} else {
 		    		
-		    		levelDBStore2.put(bytes(hashKey),bytes(gson.toJson(stocks)));
+		    		levelDBStore2.put(bytes(key),bytes(gson.toJson(stocks)));
 		    	}
 	    	} catch( Exception e ) {
 	    		
