@@ -204,11 +204,17 @@ public class KValueConnector extends DataConnector{
 	    	
 	    	int maxOrderID = -1;
 	    	JSONusers users = getJSONusers();
-	    	
+	    	if( users == null ) {
+	    		System.out.println( "---> [KEYVALUE] Unable to find users");
+	    		return -1;
+	    	}
 	    	for( int i=0; i < users.getUsersList().size(); i++ ) {
 	    		
 	    		JSONorderID ids = getJSONOrders(users.getUsername(i));
-	    		
+	    		if( ids == null ) {
+		    		System.out.println( "---> [KEYVALUE] Unable to find orders");
+		    		continue;
+		    	}
 	    		for( int j=0; j < ids.getOrderIDList().size(); j++ ) {
 	    			
 	    			if( ids.getID(j) > maxOrderID ) {
@@ -781,6 +787,10 @@ public class KValueConnector extends DataConnector{
 				//aggiungo order id al customer
 				
 				JSONorderID orders = getJSONOrders(CUSTOMER);
+				if( orders == null ) {
+					System.out.println( "---> [KEYVALUE] Unable to find the orders of the customer " + CUSTOMER );
+					return false;
+				}
 				orders.getOrderIDList().add(getNewOrderID()); 
 				
 				key = "user:" + CUSTOMER + ":order";
@@ -914,7 +924,10 @@ public class KValueConnector extends DataConnector{
 	    	System.out.println("---> [KEYVALUE] " + USERNAME + " asking for login");
 	    	
 	    	JSONusers users = getJSONusers();
-	    	
+	    	if( users == null ) {
+	    		System.out.println( "---> [KEYVALUE] " + "User " + USERNAME + "doesn't exist" );
+	    		return UserType.NOUSER;
+	    	}
 	    	if( !users.exists(USERNAME) ) {
 	    		
 	    		System.out.println("---> [KEYVALUE] " + USERNAME + " not found. Login failed.");
@@ -1284,6 +1297,12 @@ public class KValueConnector extends DataConnector{
 			System.out.println("---> [KEYVALUE] getting the last available id stock of " + PRODUCT_NAME );
 			
 			JSONidStocks stocks = getIDStocks(PRODUCT_NAME);
+			
+			if( stocks == null ) {
+				
+				System.out.println("---> [KEYVALUE] Error, unable to find the product" );
+				return -1;
+			}
 			
 			if( stocks.getidStocksList().isEmpty() ) {
 				

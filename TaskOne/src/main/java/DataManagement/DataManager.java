@@ -89,6 +89,7 @@ public class DataManager{
     	//  To mantein consistance, before we could make a change into the database
     	//  we need to ensure that there aren't pending updates
     	System.out.println("--> Management of Customer\nForcing databases to refresh");
+    	System.out.println("--> Trying to persist data using hibernate ");
     	
     	if( !updateHibernateDatabase()) {
     		System.out.println( "--> Error during update. Undo of the operation to mantein consistence" );
@@ -96,7 +97,7 @@ public class DataManager{
     	}
 
     	System.out.println("--> Hibernate consistence of data restored" );
-    	System.out.println("--> Trying to persist data using hibernate ");
+
     	
 		if( HIBERNATE.insertUser( NEW_USER )){ //  if the data is correctly insertend into hibernate we need to make a replica
 			
