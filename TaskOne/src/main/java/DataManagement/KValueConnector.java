@@ -658,27 +658,26 @@ public class KValueConnector extends DataConnector{
 		    	
 		    	JSONorderID orders = getJSONOrders(USER_NAME);
 		    	
-		    	if( orders == null ) {
+		    	if( orders != null ) {
 		    		
 		    		System.out.println("---> [KEYVALUE] unable to find orders");
-		    		return false;
-		    	}
 		    	
-		    	if( !orders.getOrderIDList().isEmpty() ) {
+		    		if( !orders.getOrderIDList().isEmpty() ) {
 			    	
-		    		for( int i=0; i < orders.getOrderIDList().size(); i++ ) {
+		    			for( int i=0; i < orders.getOrderIDList().size(); i++ ) {
 			    		
-			    		key = "user:" + USER_NAME + ":order:" + orders.getID(i);
+		    				key = "user:" + USER_NAME + ":order:" + orders.getID(i);
 			    		
-			    		if ( getIntHash(key) <= 0 ) {
+		    				if ( getIntHash(key) <= 0 ) {
 							
-							levelDBStore1.delete(bytes(key)); 
+		    					levelDBStore1.delete(bytes(key)); 
 										
-						} else {
+		    				} else {
 							
-							levelDBStore2.delete(bytes(key));		
-						}
-			    	}
+		    					levelDBStore2.delete(bytes(key));		
+		    				}
+		    			}
+		    		}
 		    	}
 		    	
 		    	key = "user:" + USER_NAME + ":order";

@@ -19,7 +19,7 @@ public class ConsistenceManager {
 		
 		PrintWriter temp = null;
 		Gson gson = new Gson();
-		System.out.println( "---> [CONSISTENCE] Saving new data to the hibernate pending updates queue: " );
+		System.out.println( "---> [CONSISTENCE] Saving new data to the keyvalue pending updates queue: " );
 		
 		try {
 			

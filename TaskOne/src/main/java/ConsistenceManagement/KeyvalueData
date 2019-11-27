@@ -1,1 +1,1 @@
-{"values":{"product":"ISmartBand","price":20,"stock":20,"username":"adri"},"command":"ADDORDER"}
+{"values":{"username":"nicoCustom"},"command":"REMOVECUSTOMER"}

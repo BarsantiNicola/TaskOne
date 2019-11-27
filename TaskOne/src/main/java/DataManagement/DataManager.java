@@ -383,7 +383,7 @@ public class DataManager{
     	}
     	
     	if( !giveKconsistence ) {
-    		System.out.println( "--> Error during update. Undo of the operation to mantein consistence" );
+    		System.out.println( "--> Error during update. Insert of the operation in the keyValue update queue to mantein consistence" );
     		if( CONSISTENCE.giveOrderConsistence( CUSTOMER_ID , PRODUCT_NAME , PRODUCT_ID , PRICE )) { 
     			System.out.println("--> Consistence correctly handled");
     			return true;
