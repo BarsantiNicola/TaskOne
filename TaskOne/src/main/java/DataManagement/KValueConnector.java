@@ -21,6 +21,12 @@ public class KValueConnector extends DataConnector{
 		
 		public KValueConnector() {
 			
+			createConnection();
+		}
+		
+		public static boolean createConnection() {
+			
+			System.out.println( "---> [KEYVALUE] Creation of a new connection" );
 			Options options = new Options();
 			options.createIfMissing(true);
 			File dir = new File("levelDBStore");
@@ -39,14 +45,19 @@ public class KValueConnector extends DataConnector{
 				levelDBStore1 = factory.open(new File("levelDBStore/innovativeSolutionsLevelDB1"),options);
 				levelDBStore2 = factory.open(new File("levelDBStore/innovativeSolutionsLevelDB2"),options);
 				
-			} catch (IOException e) {
-				e.printStackTrace();
+			} catch (Exception e) {
+
+				System.out.println("---> [KEYVALUE] connection rejected");
+				return false;
 			}
 			
 			if( !result ) {
 				KTransfer.transferIntoKValue();
 				printKValueDB();
 			}
+			
+			System.out.println("---> [KEYVALUE] connection created");
+			return true;
 		}
 		
 		static void printKValueDB() {
@@ -185,6 +196,14 @@ public class KValueConnector extends DataConnector{
 	    
 	    static int getNewOrderID() {
 	    	
+	    	if( new File("levelDBStore/innovativeSolutionsLevelDB1").listFiles().length == 0 || 
+	    			new File("levelDBStore/innovativeSolutionsLevelDB2").listFiles().length == 0 ) {
+	    		if( !createConnection() ) {
+		    		System.out.println("---> [KEYVALUE] connection doesn't exists");
+		    		return -1;
+	    		}
+	    	}	    	
+	    	
 	    	int maxOrderID = -1;
 	    	JSONusers users = getJSONusers();
 	    	
@@ -218,6 +237,14 @@ public class KValueConnector extends DataConnector{
 	    //WHY: when a new product is added by a team leader, a new id stock is required
 	    
 	    public int getNextIDStock() {
+	    	
+	    	if( new File("levelDBStore/innovativeSolutionsLevelDB1").listFiles().length == 0 || 
+	    			new File("levelDBStore/innovativeSolutionsLevelDB2").listFiles().length == 0 ) {
+	    		if( !createConnection() ) {
+		    		System.out.println("---> [KEYVALUE] connection doesn't exists");
+		    		return -1;
+	    		}
+	    	}	
 	    	
 	    	int id = 0;
 	    	JSONproductNames productNames = getJSONProducts();
@@ -280,6 +307,14 @@ public class KValueConnector extends DataConnector{
 	    
 		public static JSONusers getJSONusers() {
 			
+			if( new File("levelDBStore/innovativeSolutionsLevelDB1").listFiles().length == 0 || 
+	    			new File("levelDBStore/innovativeSolutionsLevelDB2").listFiles().length == 0 ) {
+	    		if( !createConnection() ) {
+		    		System.out.println("---> [KEYVALUE] connection doesn't exists");
+		    		return null;
+	    		}
+	    	}	
+			
 			System.out.println("---> [KEYVALUE] getting the list of users");
 			
 			JSONusers users = new JSONusers();
@@ -334,6 +369,14 @@ public class KValueConnector extends DataConnector{
 		//WHY: used for the login
 		
 		public String getJSONUserInformation( String USERNAME ) {
+			
+			if( new File("levelDBStore/innovativeSolutionsLevelDB1").listFiles().length == 0 || 
+	    			new File("levelDBStore/innovativeSolutionsLevelDB2").listFiles().length == 0 ) {
+	    		if( !createConnection() ) {
+		    		System.out.println("---> [KEYVALUE] connection doesn't exists");
+		    		return null;
+	    		}
+	    	}	
 			
 			System.out.println("---> [KEYVALUE] getting " + USERNAME + "'s password");
 			
@@ -404,6 +447,14 @@ public class KValueConnector extends DataConnector{
 		
 		public static JSONorderID getJSONOrders( String USERNAME ) {
 			
+			if( new File("levelDBStore/innovativeSolutionsLevelDB1").listFiles().length == 0 || 
+	    			new File("levelDBStore/innovativeSolutionsLevelDB2").listFiles().length == 0 ) {
+	    		if( !createConnection() ) {
+		    		System.out.println("---> [KEYVALUE] connection doesn't exists");
+		    		return null;
+	    		}
+	    	}	
+			
 			System.out.println("---> [KEYVALUE] getting " + USERNAME + "'s order list");
 			
 			JSONusers users = getJSONusers();
@@ -473,6 +524,14 @@ public class KValueConnector extends DataConnector{
 		
 		public Product getProduct( String PRODUCTNAME ) {
 			
+			if( new File("levelDBStore/innovativeSolutionsLevelDB1").listFiles().length == 0 || 
+	    			new File("levelDBStore/innovativeSolutionsLevelDB2").listFiles().length == 0 ) {
+	    		if( !createConnection() ) {
+		    		System.out.println("---> [KEYVALUE] connection doesn't exists");
+		    		return null;
+	    		}
+	    	}	
+			
 			System.out.println("---> [KEYVALUE] getting " + PRODUCTNAME + "details");
 			
 			String key = "prod:" + PRODUCTNAME;
@@ -528,6 +587,14 @@ public class KValueConnector extends DataConnector{
 		
 		public Order getOrder( String USERNAME, int ORDERID ) {
 			
+			if( new File("levelDBStore/innovativeSolutionsLevelDB1").listFiles().length == 0 || 
+	    			new File("levelDBStore/innovativeSolutionsLevelDB2").listFiles().length == 0 ) {
+	    		if( !createConnection() ) {
+		    		System.out.println("---> [KEYVALUE] connection doesn't exists");
+		    		return null;
+	    		}
+	    	}	
+			
 			System.out.println("---> [KEYVALUE] getting " + USERNAME + " " + ORDERID + "order details");
 			String key = "user:" + USERNAME + ":order" + ORDERID;
 			
@@ -580,6 +647,14 @@ public class KValueConnector extends DataConnector{
 		//WHY: used in different scenarios
 		
 		public static JSONproductNames getJSONProducts() {
+			
+			if( new File("levelDBStore/innovativeSolutionsLevelDB1").listFiles().length == 0 || 
+	    			new File("levelDBStore/innovativeSolutionsLevelDB2").listFiles().length == 0 ) {
+	    		if( !createConnection() ) {
+		    		System.out.println("---> [KEYVALUE] connection doesn't exists");
+		    		return null;
+	    		}
+	    	}	
 			
 			System.out.println("---> [KEYVALUE] getting product names list");
 			String key = "prod:names";
@@ -637,6 +712,14 @@ public class KValueConnector extends DataConnector{
 		//WHY: used to give consistence from hibernate, if admin deletes a customer
 	    
 	    public boolean deleteUser( String USER_NAME ){ 
+	    	
+	    	if( new File("levelDBStore/innovativeSolutionsLevelDB1").listFiles().length == 0 || 
+	    			new File("levelDBStore/innovativeSolutionsLevelDB2").listFiles().length == 0 ) {
+	    		if( !createConnection() ) {
+		    		System.out.println("---> [KEYVALUE] connection doesn't exists");
+		    		return false;
+	    		}
+	    	}	
 	    	
 	    	System.out.println("---> [KEYVALUE] deleting user " + USER_NAME);
 	    	String key = "user:" + USER_NAME;
@@ -731,6 +814,14 @@ public class KValueConnector extends DataConnector{
 	    
 	    public boolean insertOrder( String CUSTOMER_ID , int PRODUCT_ID , String PRODUCT_NAME , int PRICE ){ 
 	    	
+	    	if( new File("levelDBStore/innovativeSolutionsLevelDB1").listFiles().length == 0 || 
+	    			new File("levelDBStore/innovativeSolutionsLevelDB2").listFiles().length == 0 ) {
+	    		if( !createConnection() ) {
+		    		System.out.println("---> [KEYVALUE] connection doesn't exists");
+		    		return false;
+	    		}
+	    	}	
+	    	
 	    	System.out.println("---> [KEYVALUE] inserting order, customer " + CUSTOMER_ID + ",product " + PRODUCT_NAME + ",product id " + PRODUCT_ID);
 	    	String key = "user:"+ CUSTOMER_ID + ":order:"+ getNewOrderID();
 			Gson gson = new Gson();
@@ -801,6 +892,14 @@ public class KValueConnector extends DataConnector{
  
 	    public boolean insertOrder( String CUSTOMER , Order ORDER ) { 
 	    	
+	    	if( new File("levelDBStore/innovativeSolutionsLevelDB1").listFiles().length == 0 || 
+	    			new File("levelDBStore/innovativeSolutionsLevelDB2").listFiles().length == 0 ) {
+	    		if( !createConnection() ) {
+		    		System.out.println("---> [KEYVALUE] connection doesn't exists");
+		    		return false;
+	    		}
+	    	}	
+	    	
 	    	System.out.println("---> [KEYVALUE] inserting order, customer " + CUSTOMER );
 	    	String key = "user:" + CUSTOMER + ":order:" + getNewOrderID(); 
 			Gson gson = new Gson();
@@ -867,6 +966,14 @@ public class KValueConnector extends DataConnector{
 	    //WHY: customer can make new orders, and leaders can insert new product stocks
 	    
 	    public boolean updateProductAvailability( String PRODUCTNAME , int ADDED_AVAILABILITY ) { 
+	    	
+	    	if( new File("levelDBStore/innovativeSolutionsLevelDB1").listFiles().length == 0 || 
+	    			new File("levelDBStore/innovativeSolutionsLevelDB2").listFiles().length == 0 ) {
+	    		if( !createConnection() ) {
+		    		System.out.println("---> [KEYVALUE] connection doesn't exists");
+		    		return false;
+	    		}
+	    	}	
 	    	
 	    	System.out.println("---> [KEYVALUE] updating availability of " + PRODUCTNAME + " adding " + ADDED_AVAILABILITY);
 	    	Product product = getProduct(PRODUCTNAME);
@@ -943,6 +1050,14 @@ public class KValueConnector extends DataConnector{
 	      
 	   public boolean insertUser( User NEW_USER ) { 
 	    	
+		   if( new File("levelDBStore/innovativeSolutionsLevelDB1").listFiles().length == 0 || 
+	    			new File("levelDBStore/innovativeSolutionsLevelDB2").listFiles().length == 0 ) {
+	    		if( !createConnection() ) {
+		    		System.out.println("---> [KEYVALUE] connection doesn't exists");
+		    		return false;
+	    		}
+	    	}	
+		   
 		    System.out.println("---> [KEYVALUE] adding user " + NEW_USER.getUsername());
 	    	String key = "user:" + NEW_USER.getUsername();
 			Gson gson = new Gson();
@@ -995,6 +1110,14 @@ public class KValueConnector extends DataConnector{
 	   //WHY: customer have to log in!	   
 	   
 	    UserType login( String USERNAME , String PASSWORD ) { 
+	    	
+	    	if( new File("levelDBStore/innovativeSolutionsLevelDB1").listFiles().length == 0 || 
+	    			new File("levelDBStore/innovativeSolutionsLevelDB2").listFiles().length == 0 ) {
+	    		if( !createConnection() ) {
+		    		System.out.println("---> [KEYVALUE] connection doesn't exists");
+		    		return UserType.NOUSER;
+	    		}
+	    	}	
 	    	
 	    	System.out.println("---> [KEYVALUE] " + USERNAME + " asking for login");
 	    	
@@ -1058,6 +1181,14 @@ public class KValueConnector extends DataConnector{
 	    
 	    public List<Product> getAvailableProducts(){ 
 	    	
+	    	if( new File("levelDBStore/innovativeSolutionsLevelDB1").listFiles().length == 0 || 
+	    			new File("levelDBStore/innovativeSolutionsLevelDB2").listFiles().length == 0 ) {
+	    		if( !createConnection() ) {
+		    		System.out.println("---> [KEYVALUE] connection doesn't exists");
+		    		return new ArrayList<>();
+	    		}
+	    	}	
+	    	
 	    	System.out.println("---> [KEYVALUE] getting the list of available products ");
 	    	List<Product> productList = new ArrayList<Product>();
 	    	
@@ -1115,6 +1246,14 @@ public class KValueConnector extends DataConnector{
 	    //WHY: in order to implement the search function
 	    
 	    public List<Product> searchProducts( String SEARCHED_STRING ){ 
+	    	
+	    	if( new File("levelDBStore/innovativeSolutionsLevelDB1").listFiles().length == 0 || 
+	    			new File("levelDBStore/innovativeSolutionsLevelDB2").listFiles().length == 0 ) {
+	    		if( !createConnection() ) {
+		    		System.out.println("---> [KEYVALUE] connection doesn't exists");
+		    		return new ArrayList<>();
+	    		}
+	    	}	
 	    	
 	    	System.out.println("---> [KEYVALUE] searching for " + SEARCHED_STRING + " in products");
 	    	List<Product> productList = new ArrayList<Product>();
@@ -1181,6 +1320,14 @@ public class KValueConnector extends DataConnector{
 	    
 	    public List<Order> searchOrders( String SEARCHED_VALUE , String CUSTOMER_ID ){ 
 	    	
+	    	if( new File("levelDBStore/innovativeSolutionsLevelDB1").listFiles().length == 0 || 
+	    			new File("levelDBStore/innovativeSolutionsLevelDB2").listFiles().length == 0 ) {
+	    		if( !createConnection() ) {
+		    		System.out.println("---> [KEYVALUE] connection doesn't exists");
+		    		return new ArrayList<>();
+	    		}
+	    	}	
+	    	
 	    	System.out.println("---> [KEYVALUE] searching " + SEARCHED_VALUE + " in " + CUSTOMER_ID + " orders");
 	    	List<Order> orderList = new ArrayList<Order>();
 	    	
@@ -1246,6 +1393,14 @@ public class KValueConnector extends DataConnector{
 	    //WHY: to fill the order table into customer interface
 	    
 	    public List<Order> getOrders( String CUSTOMER_ID ){ 
+	    	
+	    	if( new File("levelDBStore/innovativeSolutionsLevelDB1").listFiles().length == 0 || 
+	    			new File("levelDBStore/innovativeSolutionsLevelDB2").listFiles().length == 0 ) {
+	    		if( !createConnection() ) {
+		    		System.out.println("---> [KEYVALUE] connection doesn't exists");
+		    		return new ArrayList<>();
+	    		}
+	    	}	
 	    	
 	    	System.out.println("---> [KEYVALUE] getting " + CUSTOMER_ID + " orders");
 	    	List<Order> orderList = new ArrayList<Order>();
@@ -1320,6 +1475,14 @@ public class KValueConnector extends DataConnector{
 	    
 	    public JSONidStocks getIDStocks( String PRODUCT_NAME ){
 	    	
+	    	if( new File("levelDBStore/innovativeSolutionsLevelDB1").listFiles().length == 0 || 
+	    			new File("levelDBStore/innovativeSolutionsLevelDB2").listFiles().length == 0 ) {
+	    		if( !createConnection() ) {
+		    		System.out.println("---> [KEYVALUE] connection doesn't exists");
+		    		return null;
+	    		}
+	    	}	
+	    	
 	    	System.out.println("---> [KEYVALUE] getting free id stocks of " + PRODUCT_NAME);
 	    	JSONidStocks idList = new JSONidStocks();
 	    	String key = "prod:" + PRODUCT_NAME + ":idstocks";
@@ -1372,6 +1535,14 @@ public class KValueConnector extends DataConnector{
 	    
 	    public boolean deleteProductID( String PRODUCT_NAME, int PRODUCT_ID ) {
 	    	
+	    	if( new File("levelDBStore/innovativeSolutionsLevelDB1").listFiles().length == 0 || 
+	    			new File("levelDBStore/innovativeSolutionsLevelDB2").listFiles().length == 0 ) {
+	    		if( !createConnection() ) {
+		    		System.out.println("---> [KEYVALUE] connection doesn't exists");
+		    		return false;
+	    		}
+	    	}	
+	    	
 	    	System.out.println("---> [KEYVALUE] deleting id stock " + PRODUCT_ID + " of product " + PRODUCT_NAME);
 	    	String key = "prod:" + PRODUCT_NAME + ":idstocks";
 	    	
@@ -1414,6 +1585,14 @@ public class KValueConnector extends DataConnector{
 		public static void removeLastOrder( String CUSTOMER_ID ) {};
 	    
 		public int getNextStock( String PRODUCT_NAME ) { 
+			
+			if( new File("levelDBStore/innovativeSolutionsLevelDB1").listFiles().length == 0 || 
+	    			new File("levelDBStore/innovativeSolutionsLevelDB2").listFiles().length == 0 ) {
+	    		if( !createConnection() ) {
+		    		System.out.println("---> [KEYVALUE] connection doesn't exists");
+		    		return -1;
+	    		}
+	    	}	
 			
 			System.out.println("---> [KEYVALUE] getting the last available id stock of " + PRODUCT_NAME );
 			
