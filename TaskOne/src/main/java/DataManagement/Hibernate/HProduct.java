@@ -191,7 +191,7 @@ public class HProduct {
 	//  USED BY TEAMLEADER INTERFACE 
 	//  the function ADDS the number given to the current availability of the object
 	
-	public boolean addProductAvailability( EntityManager manager , int number ) {
+	public int addProductAvailability( EntityManager manager , int number ) {
 		
         int availability = productAvailability;
     	HProduct product = this; 
@@ -209,7 +209,7 @@ public class HProduct {
 
 		System.out.println( "----> [HIBERNATE] Availability updated" + (availability-1) + " -> " + availability );
 	
-		return true;
+		return productStock.getIDstock();
 			
 		
 		

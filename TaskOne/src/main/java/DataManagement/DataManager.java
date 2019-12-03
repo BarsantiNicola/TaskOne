@@ -30,7 +30,7 @@ public class DataManager{
     
 	//private final static DatabaseConnector MYSQL = new DatabaseConnector();
     private final static HConnector HIBERNATE = new HConnector();
-    private final static KValueConnector KEYVALUE = new KValueConnector(); 
+    private final static KeyValueConnector KEYVALUE = new KeyValueConnector(); 
     private final static ConsistenceManager CONSISTENCE = new ConsistenceManager();
     
 	static {
@@ -245,6 +245,7 @@ public class DataManager{
     //  to the products available to the customers
     public static boolean updateProductAvailability( String PRODUCT_NAME , int ADDED_AVAILABILITY ){ 
     	
+    	int addedStock;
     	System.out.println("--> Management of Customer\nForcing databases to refresh");
     	if( !updateHibernateDatabase()) {
     		System.out.println( "--> Error during update. Undo of the operation to mantein consistence" );
@@ -253,12 +254,13 @@ public class DataManager{
     	System.out.println("--> Consistence of data restored" );
 		System.out.println( "--> Trying to persist data using Hibernate" );
 		System.out.println("PRODUCT NAME: " + PRODUCT_NAME + " ADD: " + ADDED_AVAILABILITY );
-    	if( HIBERNATE.updateProductAvailability( PRODUCT_NAME , ADDED_AVAILABILITY )){
+		addedStock = HIBERNATE.updateProductAvailability( PRODUCT_NAME , ADDED_AVAILABILITY ); 
+    	if( addedStock != -1 ){
 			
     		System.out.println("--> Trying to persist data using LevelDB");
     		if( !updateKeyvalueDatabase()) {  //  before we can write into a database all updates have to be done
 				System.out.println("--> Error trying to save data to KeyValue\n--> start uploading data to the consistance module");
-	    		if( CONSISTENCE.giveProductConsistence( PRODUCT_NAME , ADDED_AVAILABILITY ))  //  if we can't upload the replica we store the operation
+	    		if( CONSISTENCE.giveProductConsistence( PRODUCT_NAME , addedStock ))  //  if we can't upload the replica we store the operation
 					System.out.println("--> Data correctly uploaded");
 				else {  //  if we can't store the operation we undo it
 					System.out.println("--> Error, loose of consistance --> undo operation");
@@ -267,9 +269,9 @@ public class DataManager{
 				}
 	    	}
 	    	System.out.println("--> KeyValue consistence of data restored" );
-			if( !KEYVALUE.updateProductAvailability( PRODUCT_NAME , ADDED_AVAILABILITY )) {
+			if( KEYVALUE.updateProductAvailability( PRODUCT_NAME , addedStock ) == -1) {
 				System.out.println("--> Error trying to save data to KeyValue\n--> start uploading data to the consistance module");
-	    		if( CONSISTENCE.giveProductConsistence( PRODUCT_NAME , ADDED_AVAILABILITY ))  //  if we can't upload the replica we store the operation
+	    		if( CONSISTENCE.giveProductConsistence( PRODUCT_NAME , addedStock ))  //  if we can't upload the replica we store the operation
 					System.out.println("--> Data correctly uploaded");
 				else {  //  if we can't store the operation we undo it
 					System.out.println("--> Error, loose of consistance --> undo operation");
@@ -453,7 +455,7 @@ public class DataManager{
 					((Double)data.getValues().get("price")).intValue());
 		case ADDPRODUCT:
 			return KEYVALUE.updateProductAvailability((String)data.getValues().get("product"), 
-					((Double)data.getValues().get("availability")).intValue());	
+					((Double)data.getValues().get("availability")).intValue()) != -1;	
 		case ADDCUSTOMER:
 			return  KEYVALUE.insertUser( new User( (String)data.getValues().get("username") , null , null , 
 					(String)data.getValues().get("password") , null , null , 0 , null , 0 ));

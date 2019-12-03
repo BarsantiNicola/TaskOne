@@ -8,7 +8,6 @@ import java.util.List;
 import java.util.Scanner;
 import com.google.gson.Gson;
 
-import DataManagement.DataConnector;
 import DataManagement.UserType;
 import beans.Employee;
 import beans.Order;
@@ -26,7 +25,7 @@ import connection.ReqType;
 //      locally. So we had to use it remotelly otherwise it becames a cache (useless for us)
 //	
 //----------------------------------------------------------------------------------------------------------
-public class DataClient extends DataConnector {
+public class DataClient {
 
 	private DataResponse sendRequest( DataRequest data ) {
 		
@@ -77,7 +76,6 @@ public class DataClient extends DataConnector {
 	//							ADMINISTRATOR' INTERFACE REQUESTS MANAGEMENT FUNCTIONS
 	//-----------------------------------------------------------------------------------------------------------
 	
-	@Override
 	public List<User> searchUsers(String SEARCHED_STRING) {
 		
 		DataResponse response;
@@ -90,7 +88,6 @@ public class DataClient extends DataConnector {
 
 	}
 
-	@Override
 	public List<User> getUsers() {
 		
 		DataResponse response;
@@ -102,7 +99,6 @@ public class DataClient extends DataConnector {
 
 	}
 
-	@Override
 	public boolean insertUser( User NEW_USER ) {
 		
 		DataResponse response;
@@ -125,7 +121,6 @@ public class DataClient extends DataConnector {
 
 	}
 
-	@Override
 	public boolean updateSalary(int SALARY, String USER_ID) {
 
 		DataResponse response;
@@ -140,7 +135,6 @@ public class DataClient extends DataConnector {
 
 	}
 
-	@Override
 	public boolean deleteUser(String USER_NAME) {
 
 		DataResponse response;
@@ -159,7 +153,7 @@ public class DataClient extends DataConnector {
 	//							CUSTOMER' INTERFACE REQUESTS MANAGEMENT FUNCTIONS
 	//-----------------------------------------------------------------------------------------------------------
 	
-	@Override
+
 	public List<Product> getAvailableProducts() {
 		
 		DataResponse response = sendRequest( new DataRequest( ReqType.GET_PRODUCT , null ));
@@ -169,7 +163,7 @@ public class DataClient extends DataConnector {
 		
 	}
 
-	@Override
+
 	public List<Product> searchProducts(String SEARCHED_STRING) {
 		
 		DataResponse response;
@@ -183,7 +177,6 @@ public class DataClient extends DataConnector {
 		
 	}
 
-	@Override
 	public List<Order> searchOrders(String SEARCHED_VALUE, String CUSTOMER_ID) {
 		
 		DataResponse response;
@@ -198,7 +191,7 @@ public class DataClient extends DataConnector {
 		
 	}
 
-	@Override
+
 	public List<Order> getOrders(String CUSTOMERID) {
 		
 		DataResponse response;
@@ -213,7 +206,7 @@ public class DataClient extends DataConnector {
 		
 	}
 
-	@Override
+
 	public int getProductType(String PRODUCT_NAME) {
 		// TODO Auto-generated method stub
 		return 0;
@@ -232,13 +225,13 @@ public class DataClient extends DataConnector {
 		
 	}
 	
-	@Override
+
 	public int getMinIDProduct( int productType) {
 		// TODO Auto-generated method stub
 		return 0;
 	}
 
-	@Override
+
 	public boolean insertOrder(String CUSTOMER_ID, int PRODUCT_ID, String PRODUCT_NAME, int PRICE) {
 		
 		DataResponse response;
@@ -259,7 +252,6 @@ public class DataClient extends DataConnector {
 	//							TEAM LEADER' INTERFACE REQUESTS MANAGEMENT FUNCTIONS
 	//-----------------------------------------------------------------------------------------------------------
 	
-	@Override
 	public List<Product> getTeamProducts(int TEAM_ID) {
 		
 		DataResponse response;
@@ -272,7 +264,6 @@ public class DataClient extends DataConnector {
 		return response.getProducts();
 	}
 
-	@Override
 	public List<Employee> getTeamEmployees(int TEAM_ID) {
 	
 		DataResponse response;
@@ -286,7 +277,6 @@ public class DataClient extends DataConnector {
 	
 	}
 
-	@Override
 	public boolean updateProductAvailability(String PRODUCT_NAME, int ADDED_AVAILABILITY) {
 
 		DataResponse response;
@@ -301,7 +291,7 @@ public class DataClient extends DataConnector {
 
 	}
 
-	@Override
+
 	public List<Employee> searchTeamEmployees(int TEAM_ID, String SEARCHED_VALUE) {
 
 		DataResponse response;
@@ -315,7 +305,7 @@ public class DataClient extends DataConnector {
 		return response.getEmployee();
 	}
 
-	@Override
+
 	public List<Product> searchTeamProducts(int TEAM_ID, String SEARCHED_VALUE) {
 
 		DataResponse response;

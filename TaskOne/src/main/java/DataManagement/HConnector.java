@@ -375,15 +375,15 @@ public class HConnector extends DataConnector{
     }
 
     //  the function add availability to a product and insert new stock available to the customers
-    public boolean updateProductAvailability( String PRODUCT_NAME , int ADDED_AVAILABILITY ){ 
+    public int updateProductAvailability( String PRODUCT_NAME , int ADDED_AVAILABILITY ){ 
     	
 		System.out.println( "---> [HIBERNATE] Request to increase the product availability of " + PRODUCT_NAME + " received" );
 		if( FACTORY == null ) 
-			if( !createConnection()) return false;
+			if( !createConnection()) return -1;
 		
 		EntityManager manager = null;
     	HProduct product = null;
-    	boolean ret = false;
+    	int ret;
     	
     	try {
     		
@@ -394,7 +394,7 @@ public class HConnector extends DataConnector{
     			
     			System.out.println( "---> [HIBERNATE] The product " + PRODUCT_NAME + " doesn't exist" );
     			manager.close();
-    			return false;
+    			return -1;
     			
     		}
     		
@@ -410,7 +410,7 @@ public class HConnector extends DataConnector{
     		manager.close();
 			FACTORY.close();
     		FACTORY = null;
-    		return false;
+    		return -1;
     	
     	}
     	
@@ -848,7 +848,7 @@ public class HConnector extends DataConnector{
     
     //function that returns all the available id stock for a given product name
     @SuppressWarnings("unchecked")
-	List<HProductStock> getFreeStocks( String PRODUCT_NAME ){
+	public List<HProductStock> getFreeStocks( String PRODUCT_NAME ){
     	
     	System.out.println( "---> [HIBERNATE] Request to search all the available stocks for product " + PRODUCT_NAME );
     //  Firstable we control the status connection

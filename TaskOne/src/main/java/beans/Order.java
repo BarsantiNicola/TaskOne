@@ -19,6 +19,7 @@ public class Order{
 	private final SimpleIntegerProperty purchasedPrice;
 	private final SimpleStringProperty orderStatus;
 	
+	@SuppressWarnings({ "unchecked", "rawtypes" })
 	public Order( int Id , String name , int price , Timestamp date, int cost , String status ) {
 
 		productId = new SimpleIntegerProperty(Id);
@@ -31,6 +32,7 @@ public class Order{
 	}
 	
 	
+	@SuppressWarnings({ "rawtypes", "unchecked" })
 	public Order( HOrder order ) {
 		
 		HProduct product = order.getProductStock().getProduct();
@@ -42,6 +44,8 @@ public class Order{
 		orderStatus = new SimpleStringProperty( order.getStatus() );
 		
 	}
+	
+
 
 	public int getProductId(){
 
