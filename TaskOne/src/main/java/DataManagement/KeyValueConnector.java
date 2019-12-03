@@ -19,9 +19,11 @@ public class KeyValueConnector extends DataConnector{
 		
 		String DIRECTORY = "levelDb";
 		
-		System.out.println( "---> [KEYVALUE] Starting connection to databases" );
+		System.out.println( "---> [KEYVALUE] Starting connection to the databases" );
+		
 		try {
-			levelDb1 = new KValueDatabase( DIRECTORY +  0 , 0 );
+			
+			levelDb1 = new KValueDatabase( DIRECTORY +  0 , 3 );
 
 		}catch( Exception e ) {
 			
@@ -31,8 +33,9 @@ public class KeyValueConnector extends DataConnector{
 		}
 		
 		try {
+			
 			levelDb2 = new KValueDatabase( DIRECTORY +  1 , 1 );
-			System.out.println( "---> [KEYVALUE] LevelDB2 connected" );
+			
 		}catch( Exception e ) {
 			
 			System.out.println( "---> [KEYVALUE] Error trying to connect to levelDB2" );
@@ -44,21 +47,23 @@ public class KeyValueConnector extends DataConnector{
 
 	//  get all the customers order saved into the database
 	public List<Order> getOrders( String CUSTOMERID ) {
-		
-    	List<Integer> orderList = levelDb1.getOrdersIndex(CUSTOMERID);
+    	List<Integer> orderList = new ArrayList<>();
+    	if( levelDb1 != null )
+    		orderList = levelDb1.getOrdersIndex(CUSTOMERID);
     	List<Order> orders = new ArrayList<>();
-    	Order order;
+    	Order order = null;
     	
-    	if( orderList.size() == 0 ) orderList = levelDb2.getOrdersIndex(CUSTOMERID);
+		System.out.println( "---> [KEYVALUE] Trying to get the orders of " + CUSTOMERID );
+    	if( orderList.size() == 0 && levelDb2 != null ) orderList = levelDb2.getOrdersIndex(CUSTOMERID);
     	for( int a = 0; a< orderList.size(); a++ ) {
-    	
-    		System.out.println( "Order: " +  orderList.get(a));
-    	
+    		if( levelDb1 != null )
     		order = levelDb1.getOrder(CUSTOMERID, orderList.get(a).intValue());
-    		System.out.println("GETORDER" + order );
-    		if( order == null ) order = levelDb2.getOrder(CUSTOMERID, orderList.get(a).intValue() );
+    		if( order == null && levelDb2 != null ) order = levelDb2.getOrder(CUSTOMERID, orderList.get(a).intValue() );
     		if( order != null ) orders.add(order);
+
     	}
+    	
+		System.out.println( "---> [KEYVALUE] " + orders.size() + " orders found" );
     	
     	return orders;
 	
@@ -69,33 +74,40 @@ public class KeyValueConnector extends DataConnector{
 		
 		List<Order> orders = getOrders( CUSTOMER_ID );
 		List<Order> searched = new ArrayList<>();
-		System.out.println( "----> [KEYVALUE] Searching into the orders" );		
+		System.out.println( "---> [KEYVALUE] Searching into the orders" );		
 		for( Order o : orders )  //  we search only into the string fields
 			if( o.getOrderStatus().compareTo(SEARCHED_VALUE) == 0 || o.getProductName().compareTo(SEARCHED_VALUE)==0)
 				searched.add(o);
-		
+		System.out.println( "---> [KEYVALUE] " + searched.size() + " orders found" );			
 		return searched;
 		
 	}
 	
-	//  get all the available products handled by the shard
+	//  get all the available products handled by the key value databases
 	public List<Product> getAvailableProducts() {
 		
-		List<String> productIndex = levelDb1.getProductsIndex();
+		List<String> productIndex = new ArrayList<>();
+		if( levelDb1 != null )
+			productIndex = levelDb1.getProductsIndex();
+		
 		List<Product> products = new ArrayList<>();
-		Product product;
-		if( productIndex.size() == 0 ) productIndex = levelDb2.getProductsIndex();
+		Product product = null;
+		System.out.println( "---> [KEYVALUE] Searching for available products" );	
+		if( levelDb2 != null && productIndex.size() == 0 ) productIndex = levelDb2.getProductsIndex();
 		for( String productName : productIndex ) {
+			if( levelDb1 != null )
 			product = levelDb1.getProduct(productName);
-			if( product == null ) product = levelDb2.getProduct(productName);
+			if( levelDb2 != null &&  product == null ) product = levelDb2.getProduct(productName);
 			if( product != null ) products.add(product);
 		}
 		
+		System.out.println( "---> [KEYVALUE] " + products.size() + " product found" );	
 		return products;
+		
 	}
 
-	
-	public List<Product> searchProducts(String SEARCHED_STRING) {
+	//  get all the available products hanlded by the key value databases that match the given key
+	public List<Product> searchProducts( String SEARCHED_STRING ) {
 		
 		List<Product> products = getAvailableProducts();
 		List<Product> searched = new ArrayList<>();
@@ -108,37 +120,44 @@ public class KeyValueConnector extends DataConnector{
 	}
 
 	
+	//  the function gives an available stock to build an order
 	public int getNextStock( String PRODUCT_NAME ) {
-		
-		int nextStock = levelDb1.getStock( PRODUCT_NAME );
-		if( nextStock == -1 ) nextStock = levelDb2.getStock(PRODUCT_NAME);
+		int nextStock = -1;
+		if( levelDb1 != null )
+			nextStock = levelDb1.getStock( PRODUCT_NAME );
+		if( nextStock == -1 && levelDb2 != null )
+			nextStock = levelDb2.getStock(PRODUCT_NAME);
 		else 
 			return nextStock;
-		if( nextStock == -1 ) return -1;
-		else return nextStock;
+		
+		if( nextStock == -1 )
+			return -1;
+		else 
+			return nextStock;
 	}
 	
+	//  the function inserts a new order for a customer
 	public boolean insertOrder(String CUSTOMER_ID, int PRODUCT_ID, String PRODUCT_NAME, int PRICE) {
 		
-		System.out.println("GETTING STOCKS!");
-		if( !levelDb1.removeFromStockIndex(PRODUCT_NAME , PRODUCT_ID) && !levelDb2.removeFromStockIndex(PRODUCT_NAME, PRODUCT_ID )){
+		if( (levelDb1 != null && !levelDb1.removeFromStockIndex(PRODUCT_NAME , PRODUCT_ID)) && ( levelDb2 != null && !levelDb2.removeFromStockIndex(PRODUCT_NAME, PRODUCT_ID ))){
 				System.out.println( "---> [KEYVALUE] Stock doesn't exist" );
 				return false;
 		}
 	
-		System.out.println("GET MAX ORDER ID");
 		int orderId = levelDb1.getMaxOrderId()+1;
 		Order order = new Order( PRODUCT_ID , PRODUCT_NAME, PRICE, new Timestamp(System.currentTimeMillis()), PRICE, "received");
-		if( levelDb1.addOrder(CUSTOMER_ID, orderId , order ) || levelDb2.addOrder(CUSTOMER_ID, orderId, order)) {
-			System.out.println("ORDER ADDED");
-			if( !levelDb1.setMaxOrderId(orderId) && !levelDb2.setMaxOrderId(orderId)) {
-				
+		
+		if( (levelDb1 != null && levelDb1.addOrder(CUSTOMER_ID, orderId , order )) || (levelDb2 != null && levelDb2.addOrder(CUSTOMER_ID, orderId, order))) {
+
+			if( (levelDb1 != null && !levelDb1.setMaxOrderId(orderId)) && ( levelDb2 != null && !levelDb2.setMaxOrderId(orderId))) {
+				System.out.println( "---> [KEYVALUE] Error, impossible to set the Max Order ID" );
 				levelDb1.removeFromOrderIndex(CUSTOMER_ID, orderId);
 				levelDb2.removeFromOrderIndex(CUSTOMER_ID, orderId);
 				return false;
 				
 			}
 			
+			System.out.println( "---> [KEYVALUE] Order correctly inserted" );
 			levelDb1.setLastOrder(CUSTOMER_ID, orderId );
 			levelDb2.setLastOrder(CUSTOMER_ID, orderId );
 			return true;
@@ -146,16 +165,24 @@ public class KeyValueConnector extends DataConnector{
 		
 		return false;
 
-
 	}
 	
+	//  function used by the consistence manager to undo an order insertion 
 	public void removeLastOrder(String CUSTOMER_ID) {
 		
-		int orderId = levelDb1.getLastOrder(CUSTOMER_ID);
-		if( orderId == -1 ) 
-			orderId = levelDb2.getLastOrder(CUSTOMER_ID);
-
-		if( orderId == -1 ) return;
+		int orderId = -1;
+		
+		if( levelDb1 != null )
+			orderId = levelDb1.getLastOrder(CUSTOMER_ID);
+		
+		if( orderId == -1 ) {
+			
+			if( levelDb2 != null )
+				orderId = levelDb2.getLastOrder(CUSTOMER_ID);
+			
+			if( orderId == -1 ) return;
+			
+		}
 		
 		levelDb1.removeOrder( CUSTOMER_ID , orderId );
 		levelDb2.removeOrder(CUSTOMER_ID, orderId);
@@ -167,11 +194,25 @@ public class KeyValueConnector extends DataConnector{
 	//  function to handle the login requests of the customers
 	public UserType login( String username , String password ) {
 		
-		String passw = levelDb1.getPassword(username);
-		if( passw == null ) passw = levelDb2.getPassword(username);
-		if( passw == null ) return UserType.NOUSER;
-		if( passw.compareTo(password) == 0 ) return UserType.CUSTOMER;
-		return UserType.NOUSER;
+		String passw = null;
+		
+		if( levelDb1 != null )
+			passw = levelDb1.getPassword(username);
+		
+		if( passw == null ) { 
+			
+			if( levelDb2 != null )
+			passw = levelDb2.getPassword(username);
+			
+			if( passw == null ) 
+				return UserType.NOUSER;
+			
+		}
+		
+		if( passw.compareTo(password) == 0 ) 
+			return UserType.CUSTOMER;
+		else
+			return UserType.NOUSER;
 		
 	}
 	
@@ -182,19 +223,38 @@ public class KeyValueConnector extends DataConnector{
 	
 	//  insert a new customer to the database for the login management
 	 public boolean insertUser( User USER ) {
+		 
+		System.out.println( "---> [KEYVALUE] Trying to insert a new customer into database" );	
+		
+		 if( (levelDb1 != null && levelDb1.addPassword(USER.getUsername(), USER.getPassword())) || ( levelDb2 != null && levelDb2.addPassword(USER.getUsername(), USER.getPassword()))) {
 			
-		 if( levelDb1.addPassword(USER.getUsername(), USER.getPassword()) || levelDb2.addPassword(USER.getUsername(), USER.getPassword()))
-		 	return true;
-		 return false;
+			 System.out.println( "---> [KEYVALUE] Customer " + USER.getUsername() + " correctly getted" );
+			 return true;
+			
+	 	}else {
+	 		
+			 System.out.println( "---> [KEYVALUE] Error, user not inserted" );
+			 return false;
+			 
+		 }
 		 	
 	 }
 	 
 	 //  used to update keyvalue database in the case a customer will be deleted from the hibernate Db
 	 public boolean deleteUser(String USER_NAME) {
 		 
-		 if( levelDb1.removePassword(USER_NAME) || levelDb2.removePassword(USER_NAME))
-			 	return true;
-			 return false;
+		 if( (levelDb1 != null && levelDb1.removePassword(USER_NAME)) || ( levelDb2 != null && levelDb2.removePassword(USER_NAME))) {
+				
+			 System.out.println( "---> [KEYVALUE] User " + USER_NAME + " correctly deleted"  );
+			 return true;
+			 	
+		 }else {
+			
+			System.out.println( "---> [KEYVALUE] Error trying to delete user " + USER_NAME );
+			return false;
+				
+		 }
+		 
 	 }
 	 
 
@@ -205,9 +265,17 @@ public class KeyValueConnector extends DataConnector{
 	 //  the function inserts a new stock for the selected product
 	 public int updateProductAvailability( String PRODUCT_NAME , int STOCK_ID ) {
 		
-		if( levelDb1.addToStockIndex(PRODUCT_NAME, STOCK_ID) || levelDb2.addToStockIndex(PRODUCT_NAME, STOCK_ID))
+		if( (levelDb1 != null && levelDb1.addToStockIndex(PRODUCT_NAME, STOCK_ID)) || ( levelDb2 != null && levelDb2.addToStockIndex(PRODUCT_NAME, STOCK_ID))) {
+			
+			System.out.println( "---> [KEYVALUE] Insert stock " + STOCK_ID + " for product " + PRODUCT_NAME );
 			return STOCK_ID;
-		return -1;
+			
+	 	}else {
+	 		
+	 		System.out.println( "---> [KEYVALUE] Insert stock " + STOCK_ID + " for product " + PRODUCT_NAME );
+			return -1;
+			
+		}
 	 }
 	 
 	 

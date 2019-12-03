@@ -62,7 +62,7 @@ public class DataServer {
 		
 		try {
 			
-			System.out.println( "-> waiting for a client'request" );
+			System.out.println( "-> waiting for a client request" );
 			socket = SERVER.accept();
 			System.out.println( "->[NEW REQUEST]\n-> Start allocating management resource" );
 			fromClient = new Scanner( socket.getInputStream());
@@ -80,7 +80,7 @@ public class DataServer {
 			
 			System.out.println( "-> Error while the management of the request" );
 			System.out.println( "-> Request aborted" );
-			
+			e.printStackTrace();
 			toClient.close();
 			fromClient.close();
 			try { socket.close(); } catch( Exception i ) {}

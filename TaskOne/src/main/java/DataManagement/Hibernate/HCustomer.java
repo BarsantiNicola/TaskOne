@@ -162,7 +162,7 @@ public class HCustomer extends HUser{
 			manager.persist(order);
 			manager.getTransaction().commit();
 			manager.close();
-	    	System.out.println( "----> [HIBERNATE] Order correctly saved" );
+	    	System.out.println( "----> [HIBERNATE] Order saved correctly" );
 			return true;
 			
 		}catch( IllegalStateException | RollbackException e ){

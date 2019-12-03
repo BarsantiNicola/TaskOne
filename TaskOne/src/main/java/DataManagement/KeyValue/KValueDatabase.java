@@ -593,7 +593,7 @@ public class KValueDatabase {
     	
 		try {
 			
-			password = levelDb.get(USER_KEY.getBytes());
+			password = levelDb.get( USER_KEY.getBytes() );
 			
 			if( password == null ) {
 				
@@ -689,7 +689,7 @@ public class KValueDatabase {
 		
 		String LAST_STOCK_KEY = "product:" + PRODUCT_NAME + ":stock";
     	byte[] stockIndex;
-    	System.out.println("GETSTOCKINDEX!!!!!");
+    	
     	if( !isAuthoritative( LAST_STOCK_KEY )) return new ArrayList<>();
 		
     	if( levelDb == null )
@@ -707,8 +707,6 @@ public class KValueDatabase {
 				System.out.println( "----> [KEYVALUE][" + id + "] Error, unable to find the last stock" );
 				return new ArrayList<>();
 			}
-			
-			System.out.println(" INDEX GETTED " + stockIndex );
 			
 			return gson.fromJson( new String(stockIndex), new TypeToken<ArrayList<Integer>>(){}.getType() );
     		
@@ -742,7 +740,7 @@ public class KValueDatabase {
     	
 		try {
 			
-			if( levelDb.get(STOCK_INDEX_KEY.getBytes()) != null ) 
+			if( levelDb.get( STOCK_INDEX_KEY.getBytes()) != null ) 
 				levelDb.delete( STOCK_INDEX_KEY.getBytes());
 			levelDb.put( STOCK_INDEX_KEY.getBytes() , gson.toJson(stockIndex).getBytes());
 			System.out.println( "----> [KEYVALUE][" + id + "] Stock " + STOCK_ID + " correctly added" );
@@ -774,24 +772,24 @@ public class KValueDatabase {
     	
 		System.out.println( "----> [KEYVALUE][" + id + "] Remove stock from Stock index of product " + PRODUCT_NAME );
     	stockIndex = getStockIndex( PRODUCT_NAME );
-    	if( stockIndex.contains(STOCK_ID))
-    		stockIndex.remove(stockIndex.indexOf(STOCK_ID));
-    	else
-    		System.out.println("Stock not found");
     	
-    	System.out.println("Stock removed savage");
+    	if( stockIndex.contains( STOCK_ID ))
+    		stockIndex.remove( stockIndex.indexOf( STOCK_ID ));
+    	else
+    		System.out.println( "----> [KEYVALUE][" + id + "] Stock not found");
     	
 		try {
 			
-			if( levelDb.get(STOCK_INDEX_KEY.getBytes()) != null ) 
+			if( levelDb.get( STOCK_INDEX_KEY.getBytes()) != null ) 
 				levelDb.delete( STOCK_INDEX_KEY.getBytes());
-			levelDb.put( STOCK_INDEX_KEY.getBytes() , gson.toJson(stockIndex).getBytes());
 			
+			levelDb.put( STOCK_INDEX_KEY.getBytes() , gson.toJson( stockIndex ).getBytes());
+		
 			return true;
     		
     	}catch( Exception e ) {
     		
-    		System.out.println( "----> [KEYVALUE]["+id+"] Error, Connection rejected" );
+    		System.out.println( "----> [KEYVALUE]["+id+"] Error, connection rejected" );
 			try{ levelDb.close(); } catch( Exception a ) {}
     		levelDb = null;
     		return false;
@@ -799,6 +797,7 @@ public class KValueDatabase {
     	}
 	}
 	
+	//  the function give a stock of a product for make an order
 	public Integer getStock( String PRODUCT_NAME  ) {
 		
 		String STOCK_INDEX_KEY = "product:" + PRODUCT_NAME + ":stock";
@@ -808,7 +807,7 @@ public class KValueDatabase {
     	
 		System.out.println( "----> [KEYVALUE][" + id + "] Search stock index of product " + PRODUCT_NAME );
     	stockIndex = getStockIndex( PRODUCT_NAME );
-    	System.out.println(" STOCK GETTED!!!!!!!!!!!" + stockIndex.size());
+    	
     	if( stockIndex.size() > 0 )
     		return stockIndex.get(stockIndex.size()-1);
     	else
@@ -820,6 +819,7 @@ public class KValueDatabase {
 	//							COMMON REQUESTS MANAGEMENT FUNCTION
 	//-----------------------------------------------------------------------------------------------------------
 		
+	//  the function creates a connection to the shard and eventually rebuilds it
 	private boolean createConnection() throws Exception {
 			
 			
@@ -841,7 +841,7 @@ public class KValueDatabase {
 				
 			//  we start to create the first database
 			System.out.println( "----> [KEYVALUE]["+id+"] Starting create levelDB1" );
-			options.createIfMissing(true);	
+			options.createIfMissing( true );	
 				
 			try {
 					
@@ -856,6 +856,7 @@ public class KValueDatabase {
 				throw new Exception();
 						
 			}
+			
 			System.out.println( "----> [KEYVALUE]["+id+"] Creation done, start transfer of data" );
 			KTransfer.transferIntoKValue(this);
 			return true;
@@ -868,7 +869,7 @@ public class KValueDatabase {
 				
 		}catch( Exception e ) {
 					
-			System.out.println("----> [KEYVALUE][" + id + "]  Error, impossible to create the connection");
+			System.out.println("----> [KEYVALUE][" + id + "] Error, impossible to create the connection");
 			e.printStackTrace();
 			try{ levelDb.close(); } catch( Exception a ) {}
 			levelDb = null;
@@ -879,11 +880,12 @@ public class KValueDatabase {
 	}
 	
 
-	
+	//  function used by the server to reconnect to its shards
 	boolean updateConnection() {
 		
 		Options options = new Options();
-		System.out.println("updating the connection");
+		System.out.println( "----> [KEYVALUE][" + id + "] Updating the connection" );
+		
 		if( levelDb == null )
 			try {
 				
@@ -891,7 +893,7 @@ public class KValueDatabase {
 					
 			}catch( Exception e ) {
 						
-				System.out.println("----> [KEYVALUE][" + id + "] Error, impossible to restore the connection");
+				System.out.println( "----> [KEYVALUE][" + id + "] Error, impossible to restore the connection" );
 				e.printStackTrace();
 				try{ levelDb.close(); } catch( Exception a ) {}
 				levelDb = null;
@@ -903,7 +905,7 @@ public class KValueDatabase {
 	}
 	
 	//  ONLY FOR DETERMINE THE DATABASE: <= 0 -> levelDBStore1, > 0 levelDBStore2
-	
+	//  the function creates an int value based on the key 
      public int intHashKey( String key ) {
     	
     	MessageDigest md = null;
@@ -927,37 +929,21 @@ public class KValueDatabase {
     	
     }
      
+     //  the function is used by the instances to determine whether 
+     //  they are authorative in relation to a particular key
      public boolean isAuthoritative( String key ) {
     	 
-    	 int hashKey = intHashKey(key);
+    	 int hashKey = intHashKey(key);  //  build of the hash value
+    	 
+    	 //  condition to determine the correct shard
     	 if((hashKey<0 && id == 0) || (hashKey>0 && id == 1 )){
-    		 System.out.println("----> [KEYVALUE][" + id + "] [AUTHORITATIVE]");
+    		 System.out.println( "----> [KEYVALUE][" + id + "] [AUTHORITATIVE] " + key );
     		 return true;
     	 }
-		 System.out.println("----> [KEYVALUE][" + id + "] [NOT AUTHORITATIVE]");
+    	 
+		 System.out.println( "----> [KEYVALUE][" + id + "] [NOT AUTHORITATIVE] " + key );
 		 return false;
-     }
-     
-     public static void main( String[] args ) {
-    	 KValueDatabase data = null , data2 = null;
-    	 
-    	 try {
-    		 data = new KValueDatabase( "levelDBTest" , 0 );
-    		 data2 = new KValueDatabase("levelDBTest2" , 1 );
-    	 }catch(Exception e ) {}
-    	 
-    	 System.out.println( data.getProductsIndex());
-    	 System.out.println( data2.getProductsIndex());
-    	 System.out.println( data.getPassword("adri"));
-    	 System.out.println( data2.getPassword("adri"));
-    	 System.out.println( data.getStockIndex("ISmartBand"));
-    	 System.out.println( data2.getStockIndex("ISmartBand"));
-    	 System.out.println( data.getOrdersIndex("adri"));
-    	 System.out.println( data2.getOrdersIndex("adri"));
-    	 
-    	 
-    	 
-    	 
+		 
      }
 
 }
