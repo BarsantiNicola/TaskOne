@@ -8,18 +8,18 @@ import DataManagement.Hibernate.HUser;
 import javafx.beans.property.SimpleIntegerProperty;
 import javafx.beans.property.SimpleStringProperty;
 
-//  bean class used by administrator interface to show user indipendently by the role
+//  Bean class used by administrator interface to show an user regardless of his role
 public class User {
 	
-	private final SimpleStringProperty username;   //  ID for searching
+	private final SimpleStringProperty username;     // Used for searching the user
 	private final SimpleStringProperty name;
 	private final SimpleStringProperty surname;
 	private final SimpleStringProperty password;
 	private final SimpleStringProperty mail;
-	private final SimpleStringProperty role;       //  CUSTOMER/ADMINISTRATOR/TEAMLEADER
-	private final SimpleIntegerProperty salary;     //  may be miss(ex. a CUSTOMER)
-	private final SimpleIntegerProperty team;       //  may be miss
-	private final SimpleStringProperty address;
+	private final SimpleStringProperty role;        // CUSTOMER/ADMINISTRATOR/TEAMLEADER
+	private final SimpleIntegerProperty salary;     // Missing for a customer
+	private final SimpleIntegerProperty team;       // Missing for a customer or an unteamed employee
+	private final SimpleStringProperty address;     // Missing for employees
 	
 	public User( String Username, String Name, String Surname, String Password, String Mail , String Role , Integer Salary , String addr , Integer Team ) {
 		

@@ -207,7 +207,7 @@ public class HProduct {
 		manager.persist(productStock);
 		manager.merge(product);
 
-		System.out.println( "----> [HIBERNATE] Availability updated" + (availability-1) + " -> " + availability );
+		System.out.println( "----> [HIBERNATE] Availability updated " + (availability) + " -> " + (availability+1) );
 	
 		return productStock.getIDstock();
 			
@@ -243,13 +243,13 @@ public class HProduct {
 			
 			manager.getTransaction().commit();
 			manager.close();
-			System.out.println( "----> [HIBERNATE] Availability updated" + (availability+1) + " -> " + availability );
+			System.out.println( "----> [HIBERNATE] Availability updated " + (availability+1) + " -> " + availability );
 			
 		}catch( IllegalStateException | RollbackException e ) {
 			
     		System.out.println( "----> [HIBERNATE] Error, Connection Rejected" );
     		manager.close();
-			HConnector.FACTORY.close();
+			   HConnector.FACTORY.close();
     		HConnector.FACTORY = null;
     		return false;
 			

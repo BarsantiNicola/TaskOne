@@ -23,7 +23,7 @@ public class KeyValueConnector extends DataConnector{
 		
 		try {
 			
-			levelDb1 = new KValueDatabase( DIRECTORY +  0 , 3 );
+			levelDb1 = new KValueDatabase( DIRECTORY +  0 , 0 );
 
 		}catch( Exception e ) {
 			

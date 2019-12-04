@@ -15,45 +15,38 @@ import ConsistenceManagement.ConsistenceManager;
 //----------------------------------------------------------------------------------------------------------
 //										DataManager
 //
-//	The class creates a logical bridge between the graphic interface and the persistence routines.
-//  According to this, all requests of the graphic interface to the persistence level will be handled by
-//  the object which, using lowers technology oriented object, redirect the requests to the appropriated database
-//  and handle the cross-database consistance.
-//
+//  This class acts as a bridge between the user's GUI and the underlying persistence layers by forwarding
+//	 the requests to the appropriate databases and handling the cross-database data consistency
 //----------------------------------------------------------------------------------------------------------
 
 public class DataManager{
-
-	//  the class manteins an object for every available connection type.
-	//  Doing this permits an easy customization of the management of the requests, statically
-	//  but moreover dinamically giving us the possibility to create easily consistance rules between modules.
-    
-	//private final static DatabaseConnector MYSQL = new DatabaseConnector();
+ 
+	//private final static DatabaseConnector MYSQL = new DatabaseConnector();             //Unused in this version of the application
     private final static HConnector HIBERNATE = new HConnector();
     private final static KeyValueConnector KEYVALUE = new KeyValueConnector(); 
     private final static ConsistenceManager CONSISTENCE = new ConsistenceManager();
     
 	static {
-		//  to prevent hibernate messages
+		// Prevents the hibernate default logging
 		java.util.logging.Logger.getLogger("org.hibernate").setLevel(Level.OFF);
 	
 	}
 	
 	//------------------------------------------------------------ ----------------------------------------------
-	//							ADMINISTRATOR' INTERFACE REQUESTS MANAGEMENT FUNCTIONS
+	//							ADMINISTRATOR INTERFACE REQUESTS MANAGEMENT FUNCTIONS
 	//-----------------------------------------------------------------------------------------------------------
     
-    //  ONLY HIBERNATE
-    //  the function returns a list of all the users registered to the database.
+    //  HIBERNATE ONLY
+    //  this function returns a list of all users registered in the database.
     public static List<User> getUsers(){ 
     	
     	return HIBERNATE.getUsers();  
     
     }
     
-    //  ONLY HIBERNATE
-    //  the function returns a list of all the users registered to the database who have
-    //  a field matching with the given key(only string)
+    //  HIBERNATE ONLY
+    //  this function returns a list of all the users registered in the database who have
+    //  a field matching with a given string key
     
     public static List<User> searchUsers(String SEARCHED_STRING ){ 
     		
@@ -61,8 +54,8 @@ public class DataManager{
     	
     }
     
-    //  ONLY HIBERNATE
-    //  the function update the salary of an employee
+    //  HIBERNATE ONLY
+    //  this function updates the salary of an employee
     
     public static boolean updateSalary(int SALARY , String USER_ID  ){ 
     	
@@ -71,23 +64,20 @@ public class DataManager{
     }
     
     //  HIBERNATE - KEY VALUE
-    //  the function insert a new user into the mysql database. However due to consistence
-    //  if the user is a customer he has to be replicated into the key value database.
-    //  (for permits to a user to access to his page without the hibernate database)
+    //  this function inserts a new user into the MySQL database and, in case of a customer,
+    //  in the key-value database
     
     public static boolean insertUser( User NEW_USER ){ 
     	
     	System.out.println("--> Getting user' type");
-    	//  we use the role information to discriminate between customers and employees
+    	// The "role" field is used to discriminate employees from customers
     	if( NEW_USER.getRole().length()>0) { 
     		System.out.println("--> Trying to persist data using Hibernate" );
     		return HIBERNATE.insertUser(NEW_USER);
     	}
     	
-    	//  if we have a customer we have to save it in both databases
-    	
-    	//  To mantein consistance, before we could make a change into the database
-    	//  we need to ensure that there aren't pending updates
+    	//  If the user is a customer it must be saved in both databases,
+    	//  where consistency between the two is attempted beforehand
     	System.out.println("--> Management of Customer\nForcing databases to refresh");
     	System.out.println("--> Trying to persist data using hibernate ");
     	
@@ -99,15 +89,15 @@ public class DataManager{
     	System.out.println("--> Hibernate consistence of data restored" );
 
     	
-		if( HIBERNATE.insertUser( NEW_USER )){ //  if the data is correctly insertend into hibernate we need to make a replica
+		if( HIBERNATE.insertUser( NEW_USER )){  // if the user was correctly inserted into the MySQL database
 			
 			System.out.println("--> Persist data using KeyValue");
-	    	if( !updateKeyvalueDatabase()) {  //  before we can write into a database all updates have to be done
+	    	if( !updateKeyvalueDatabase()) {   // Attempt to restore consistency between the databases
 				System.out.println("--> Error trying to save data to LevelDB\n--> start uploading data to the consistance module");
-	    		if( CONSISTENCE.giveUserConsistence( NEW_USER ))  //  if we can't upload the replica we store the operation
+	    		if( CONSISTENCE.giveUserConsistence( NEW_USER ))  //  If the consistency restore failed
 					System.out.println("--> Data correctly uploaded");
-				else {  //  if we can't store the operation we undo it
-					System.out.println("--> Error, loose of consistance --> undo operation");
+				else {  // If the operation cannot be saved, it is rolled-back from the MySQL database
+					System.out.println("--> Error, lose of consistance --> undo operation");
 					HIBERNATE.deleteUser( NEW_USER.getUsername() );
 					return false;
 				}

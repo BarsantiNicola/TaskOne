@@ -73,7 +73,7 @@ public class ConsistenceManager {
 		
 		List<TransferData> updates = new ArrayList<>();
 		File tempK = new File("src/main/java/ConsistenceManagement/HibernateData");	
-		System.out.println("---> [CONSISTENCE] Loading datas from the hibernate pending updates queue");
+		System.out.println("---> [CONSISTENCE] Loading data from the hibernate pending updates queue");
 		Scanner temp = null;
 		Gson gson = new Gson();
 		TransferData[] ret = null;
@@ -89,13 +89,13 @@ public class ConsistenceManager {
 					ret[a] = updates.get(a);
 				
 				temp.close();
-				System.out.println( "---> [CONSISTENCE] Loading of data completed" );
+				System.out.println( "---> [CONSISTENCE] Data loading completed" );
 				tempK.delete();
 				return ret;
 				
 			}catch( IOException ie ) {
 				
-				System.out.println( "---> [CONSISTENCE] Error during the loading of the informations" );
+				System.out.println( "---> [CONSISTENCE] Error in the loading of the information" );
 
 			}
 		}
@@ -107,7 +107,7 @@ public class ConsistenceManager {
 		
 		List<TransferData> updates = new ArrayList<>();
 		File tempK = new File("src/main/java/ConsistenceManagement/KeyvalueData");	
-		System.out.println("---> [CONSISTENCE] Loading datas from the hibernate pending updates queue");
+		System.out.println("---> [CONSISTENCE] Loading data from the hibernate pending updates queue");
 		Scanner temp = null;
 		Gson gson = new Gson();
 		TransferData[] ret = null;
@@ -123,13 +123,13 @@ public class ConsistenceManager {
 					ret[a] = updates.get(a);
 				
 				temp.close();
-				System.out.println( "---> [CONSISTENCE] Loading of data completed" );
+				System.out.println( "---> [CONSISTENCE] Data loading completed" );
 				tempK.delete();
 				return ret;
 				
 			}catch( IOException ie ) {
 				
-				System.out.println( "---> [CONSISTENCE] Error during the loading of the informations" );
+				System.out.println( "---> [CONSISTENCE] Error in the loading of the information" );
 
 			}
 		}
@@ -153,8 +153,8 @@ public class ConsistenceManager {
 	public boolean giveOrderConsistence( String customer , String product , int stock , int price ) {
 		
 		HashMap<String,Object> values = new HashMap<>();
-		System.out.println( "---> [CONSISTENCE] Request of consistence to a customer'order" );
-		System.out.println( "---> [CONSISTENCE] Parsing data to store" );
+		System.out.println( "---> [CONSISTENCE] Requesting consistence of a customer order" );
+		System.out.println( "---> [CONSISTENCE] Parsing data to the store" );
 		
 		values.put( "username", customer );
 		values.put( "product" , product );
@@ -162,7 +162,7 @@ public class ConsistenceManager {
 		values.put( "price" , price );
 
 		
-		System.out.println( "---> [CONSISTENCE] Data saving" );
+		System.out.println( "---> [CONSISTENCE] Saving Data" );
 		return saveKeyvalueState(new TransferData( values ,  RequestedCommand.ADDORDER ));
 		
 		
@@ -171,8 +171,8 @@ public class ConsistenceManager {
 	public boolean giveHOrderConsistence( String customer , String product , int stock , int price ) {
 	
 		HashMap<String,Object> values = new HashMap<>();
-		System.out.println( "---> [CONSISTENCE] Request of consistence to a customer'order" );
-		System.out.println( "---> [CONSISTENCE] Parsing data to store" );
+		System.out.println( "---> [CONSISTENCE] Requesting consistence of a customer order" );
+		System.out.println( "---> [CONSISTENCE] Parsing data to the store" );
 	
 		values.put( "username", customer );
 		values.put( "product" , product );
@@ -180,20 +180,20 @@ public class ConsistenceManager {
 		values.put( "price" , price );
 
 	
-		System.out.println( "---> [CONSISTENCE] Data saving" );
+		System.out.println( "---> [CONSISTENCE] Saving Data" );
 		return saveHibernateState(new TransferData( values ,  RequestedCommand.ADDHORDER ));
 	}
 	
 	public boolean giveUserConsistence( User customer ) { 
 		TransferData data = null;
 		HashMap<String,Object> values = new HashMap<>();
-		System.out.println( "---> [CONSISTENCE] Request of consistence for a new user account" );
+		System.out.println( "---> [CONSISTENCE] Requesting consistence of a new user account" );
 		System.out.println( "---> [CONSISTENCE] Parsing data to store" );
 		
 		values.put( "username", customer.getUsername() );
 		values.put( "password" , customer.getPassword() );
 		data = new TransferData( values , RequestedCommand.ADDCUSTOMER );
-		System.out.println( "---> [CONSISTENCE] Data saving" );
+		System.out.println( "---> [CONSISTENCE] Saving data" );
 		return saveKeyvalueState(data);
 	}
 	
@@ -201,12 +201,12 @@ public class ConsistenceManager {
 		
 		TransferData data = null;
 		HashMap<String,Object> values = new HashMap<>();
-		System.out.println( "---> [CONSISTENCE] Request of consistence to delete a customer account" );
+		System.out.println( "---> [CONSISTENCE] Requesting consistence regarding the deletion of a customer account" );
 		System.out.println( "---> [CONSISTENCE] Parsing data to store" );
 		
 		values.put( "username", USERNAME );
 		data = new TransferData( values , RequestedCommand.REMOVECUSTOMER );
-		System.out.println( "---> [CONSISTENCE] Data saving" );
+		System.out.println( "---> [CONSISTENCE] Saving Data" );
 		return saveKeyvalueState(data);
 	}
 	
@@ -214,14 +214,14 @@ public class ConsistenceManager {
 		
 		TransferData data = null;
 		HashMap<String,Object> values = new HashMap<>();
-		System.out.println( "---> [CONSISTENCE] Request of consistence to a new stock for a product" );
+		System.out.println( "---> [CONSISTENCE] Requesting consistence of adding a new stock for a product" );
 		System.out.println( "---> [CONSISTENCE] Parsing data to store" );
 		
 		values.put( "product", PRODUCT_NAME );
 		values.put( "availability" , ADDED_AVAILABILITY );
 		
 		data = new TransferData( values ,  RequestedCommand.ADDPRODUCT );
-		System.out.println( "---> [CONSISTENCE] Data saving" );
+		System.out.println( "---> [CONSISTENCE] Saving Data" );
 		return saveKeyvalueState(data);
 
 	}
