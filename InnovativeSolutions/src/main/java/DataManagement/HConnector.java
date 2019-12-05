@@ -443,6 +443,13 @@ public class HConnector extends DataConnector{
     			
     		}
     		
+    		if( product.getProductAvailability() < 1 ) {
+    			
+    			System.out.println( "---> [HIBERNATE] The product " + PRODUCT_NAME + " doesn't have enought availability" );
+    			manager.close();
+    			return false;
+    			
+    		}
     		ret = product.decreaseAvailability( HProductStock.getMaxStock( manager , PRODUCT_NAME ) );
     		manager.close();
     		
