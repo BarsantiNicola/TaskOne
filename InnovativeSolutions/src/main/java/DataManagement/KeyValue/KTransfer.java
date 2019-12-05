@@ -103,7 +103,6 @@ public class KTransfer {
 		try {
 			
 			for( Product p : productList ) { 
-				p.setProductAvailability(p.getProductAvailability()+1);
 				database.addProduct(p);
 				database.addToProductsIndex(p.getProductName());
 				importStocks(p.getProductName(), database );

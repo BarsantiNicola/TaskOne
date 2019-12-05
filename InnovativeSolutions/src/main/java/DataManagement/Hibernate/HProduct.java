@@ -243,7 +243,7 @@ public class HProduct {
 			
 			manager.getTransaction().commit();
 			manager.close();
-			System.out.println( "----> [HIBERNATE] Availability updated " + (availability+1) + " -> " + availability );
+			System.out.println( "----> [HIBERNATE] Availability updated " + availability + " -> " + (availability-1) );
 			
 		}catch( IllegalStateException | RollbackException e ) {
 			
