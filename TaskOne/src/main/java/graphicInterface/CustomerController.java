@@ -331,12 +331,6 @@ public class CustomerController extends InterfaceController {
                     ordersTable.add( newOrder );
                     productsTable.removeAll(productsTable);
                     productsTable.addAll(client.getAvailableProducts());
-                   // prod.addAll(productsTable);
-                   // productsTable.removeAll( productsTable );
-                   // product.setProductAvailability( product.getProductAvailability()-1);
-                   // if( product.getProductAvailability() > 0 ) //  we show only available products
-                    //	prod.add(product);
-                    //productsTable.addAll(prod);  
                     closePopups();
                     return;
 

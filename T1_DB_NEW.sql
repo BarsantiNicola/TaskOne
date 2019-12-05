@@ -1,8 +1,8 @@
-CREATE DATABASE  IF NOT EXISTS `taskone` /*!40100 DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci */ /*!80016 DEFAULT ENCRYPTION='N' */;
-USE `taskone`;
+CREATE DATABASE  IF NOT EXISTS `InnovativeSolutions` /*!40100 DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci */ /*!80016 DEFAULT ENCRYPTION='N' */;
+USE `InnovativeSolutions`;
 -- MySQL dump 10.13  Distrib 8.0.17, for Win64 (x86_64)
 --
--- Host: localhost    Database: taskone
+-- Host: localhost    Database: InnovativeSolutions
 -- ------------------------------------------------------
 -- Server version	8.0.17
 

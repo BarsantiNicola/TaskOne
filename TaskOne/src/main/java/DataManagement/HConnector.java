@@ -734,7 +734,7 @@ public class HConnector extends DataConnector{
 		try {
 			
 			java.util.logging.Logger.getLogger("org.hibernate").setLevel(Level.OFF);
-			FACTORY = Persistence.createEntityManagerFactory( "taskOne" ); 
+			FACTORY = Persistence.createEntityManagerFactory( "InnovativeSolutions" ); 
 			return true;
 		
 		}catch( Exception e ) {
