@@ -355,26 +355,27 @@ public class DataManager{
 	public static boolean insertOrder( String CUSTOMER_ID , int PRODUCT_ID , String PRODUCT_NAME , int PRICE ){ 
 
 		//  Firstable we have to restore all the consistence
-		boolean giveKconsistence, giveHconsistence;
+		int giveKconsistence, giveHconsistence;
     	if( !updateKeyvalueDatabase()) {
     		System.out.println( "--> Error during update. Undo of the operation to mantein consistence" );
-    		giveKconsistence = false;
+    		giveKconsistence = -1;
     	}else
     		giveKconsistence = KEYVALUE.insertOrder( CUSTOMER_ID , PRODUCT_ID , PRODUCT_NAME , PRICE );
+    	if( giveKconsistence == 0 ) return false;
     	
     	if( !updateHibernateDatabase()) {
     		System.out.println( "--> Error during update. Undo of the operation to mantein consistence" );
-    		giveHconsistence = false;
+    		giveHconsistence = -1;
     	}else
     		giveHconsistence = HIBERNATE.insertOrder( CUSTOMER_ID , PRODUCT_ID , PRODUCT_NAME , PRICE );
     	//  for give consistence to the data we try to save the order in all databases 
  	
-    	if( !giveKconsistence && !giveHconsistence ) {
+    	if( giveKconsistence == -1 && giveHconsistence == -1 ) {
     		System.out.println( "--> Error, no database available" );
     		return false;
     	}
     	
-    	if( !giveKconsistence ) {
+    	if( giveKconsistence == -1 ) {
     		System.out.println( "--> Error during update. Insert of the operation in the keyValue update queue to mantein consistence" );
     		if( CONSISTENCE.giveOrderConsistence( CUSTOMER_ID , PRODUCT_NAME , PRODUCT_ID , PRICE )) { 
     			System.out.println("--> Consistence correctly handled");
@@ -388,7 +389,7 @@ public class DataManager{
     		}
     	}
     		
-        if( !giveHconsistence ) {
+        if( giveHconsistence == -1 ) {
         	
         	System.out.println( "--> Error during update. Undo of the operation to mantein consistence" );
         	if( CONSISTENCE.giveHOrderConsistence( CUSTOMER_ID , PRODUCT_NAME , PRODUCT_ID , PRICE )) { 
@@ -438,11 +439,11 @@ public class DataManager{
 		case ADDORDER:
 			return KEYVALUE.insertOrder( (String)data.getValues().get("username"), 
 					((Double)data.getValues().get("stock")).intValue() , (String)data.getValues().get("product") , 
-					((Double)data.getValues().get("price")).intValue());
+					((Double)data.getValues().get("price")).intValue()) != -1;
 		case ADDHORDER:                                                             
 			return HIBERNATE.insertOrder( (String)data.getValues().get("username"), 
 					((Double)data.getValues().get("stock")).intValue() , (String)data.getValues().get("product") , 
-					((Double)data.getValues().get("price")).intValue());
+					((Double)data.getValues().get("price")).intValue()) != -1;
 		case ADDPRODUCT:
 			return KEYVALUE.updateProductAvailability((String)data.getValues().get("product"), 
 					((Double)data.getValues().get("availability")).intValue()) != -1;	

@@ -581,12 +581,12 @@ public class HConnector extends DataConnector{
     }
 
     //  the function insert a new order into the customer list
-    public boolean insertOrder( String CUSTOMER_ID , int PRODUCT_ID , String productName , int PRICE ){ 
+    public int insertOrder( String CUSTOMER_ID , int PRODUCT_ID , String productName , int PRICE ){ 
     	
 		System.out.println( "---> [HIBERNATE] Request to insert a new order of product " + productName + " for customer " + CUSTOMER_ID + "received" );
     	//  Firstable we control the status connection
     	if( FACTORY == null ) 
-			if( !createConnection()) return false;
+			if( !createConnection()) return -1;
     	
     	EntityManager manager = null;
     	HCustomer newCustomer = null;
@@ -603,7 +603,7 @@ public class HConnector extends DataConnector{
     			
     			System.out.println( "---> [HIBERNATE] The customer " + CUSTOMER_ID + " doesn't exist" );
     			manager.close();
-    			return false;
+    			return -1;
     			
     		}
     		
@@ -612,7 +612,7 @@ public class HConnector extends DataConnector{
     			
     			System.out.println( "---> [HIBERNATE] Unable to find an available stock for product " + productName );
     			manager.close();
-    			return false;
+    			return -1;
     			
     			
     		}
@@ -630,11 +630,13 @@ public class HConnector extends DataConnector{
     		manager.close();
 			FACTORY.close();
     		FACTORY = null;
-    		return false;
+    		return -1;
     		
     	}
     	System.out.println( "---> [HIBERNATE] Request completed" );
-    	return newCustomer.addOrder( newOrder );
+    	if( newCustomer.addOrder( newOrder ))
+    		return 1;
+    	return -1;
 
     }
     

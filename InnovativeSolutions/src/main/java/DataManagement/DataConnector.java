@@ -27,7 +27,7 @@ public abstract class DataConnector {
 
     public abstract int getMinIDProduct( int PRODUCT_TYPE );
 
-    public abstract boolean insertOrder( String CUSTOMER_ID , int PRODUCT_ID , String PRODUCT_NAME , int PRICE );
+    public abstract int insertOrder( String CUSTOMER_ID , int PRODUCT_ID , String PRODUCT_NAME , int PRICE );
 
     public abstract List<Product> getTeamProducts( int TEAM_ID );
 

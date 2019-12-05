@@ -137,7 +137,7 @@ public class KeyValueConnector extends DataConnector{
 	}
 	
 	//  the function inserts a new order for a customer
-	public boolean insertOrder(String CUSTOMER_ID, int PRODUCT_ID, String PRODUCT_NAME, int PRICE) {
+	public int insertOrder(String CUSTOMER_ID, int PRODUCT_ID, String PRODUCT_NAME, int PRICE) {
 		
 		 if( ( levelDb1 != null && levelDb1.decreaseProductAvailability(PRODUCT_NAME)) || ( levelDb2 != null && levelDb2.decreaseProductAvailability(PRODUCT_NAME)))			 
 				System.out.println( "---> [KEYVALUE] Availability of product " + PRODUCT_NAME + " changed");
@@ -145,13 +145,13 @@ public class KeyValueConnector extends DataConnector{
 		 else{
 		 		
 		 		System.out.println( "---> [KEYVALUE] Impossible to decrease availability of product " + PRODUCT_NAME );
-				return false;
+				return 0;
 				
 		 }
 		 
 		if( (levelDb1 != null && !levelDb1.removeFromStockIndex(PRODUCT_NAME , PRODUCT_ID)) && ( levelDb2 != null && !levelDb2.removeFromStockIndex(PRODUCT_NAME, PRODUCT_ID ))){
 				System.out.println( "---> [KEYVALUE] Stock doesn't exist" );
-				return false;
+				return -1;
 		}
 	
 		int orderId = levelDb1.getMaxOrderId()+1;
@@ -163,17 +163,17 @@ public class KeyValueConnector extends DataConnector{
 				System.out.println( "---> [KEYVALUE] Error, impossible to set the Max Order ID" );
 				levelDb1.removeFromOrderIndex(CUSTOMER_ID, orderId);
 				levelDb2.removeFromOrderIndex(CUSTOMER_ID, orderId);
-				return false;
+				return -1;
 				
 			}
 			
 			System.out.println( "---> [KEYVALUE] Order correctly inserted" );
 			levelDb1.setLastOrder(CUSTOMER_ID, orderId );
 			levelDb2.setLastOrder(CUSTOMER_ID, orderId );
-			return true;
+			return 1;
 		}
 		
-		return false;
+		return -1;
 
 	}
 	
