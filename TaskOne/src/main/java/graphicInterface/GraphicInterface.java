@@ -39,7 +39,7 @@ public class GraphicInterface extends Application implements Initializable {
     public void start(Stage primaryStage) throws Exception{
 
 
-        Parent root = FXMLLoader.load(getClass().getResource( "interface.fxml" ));
+        Parent root = FXMLLoader.load(getClass().getClassLoader().getResource( "interface.fxml" ));
         System.out.println( "Loading graphic interface by FXML file" );
 
         System.out.println( "-> Linking interface elements to the logic layer" );
