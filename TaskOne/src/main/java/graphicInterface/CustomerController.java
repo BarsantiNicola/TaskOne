@@ -329,13 +329,14 @@ public class CustomerController extends InterfaceController {
                     System.out.println("--> Order correctly saved" );   
                 	//  strange passage, but without the update of the table doesn't work well
                     ordersTable.add( newOrder );
-                    productsTable.remove( product );
-                    prod.addAll(productsTable);
-                    productsTable.removeAll( productsTable );
-                    product.setProductAvailability( product.getProductAvailability()-1);
-                    if( product.getProductAvailability() > 0 ) //  we show only available products
-                    	prod.add(product);
-                    productsTable.addAll(prod);  
+                    productsTable.removeAll(productsTable);
+                    productsTable.addAll(client.getAvailableProducts());
+                   // prod.addAll(productsTable);
+                   // productsTable.removeAll( productsTable );
+                   // product.setProductAvailability( product.getProductAvailability()-1);
+                   // if( product.getProductAvailability() > 0 ) //  we show only available products
+                    //	prod.add(product);
+                    //productsTable.addAll(prod);  
                     closePopups();
                     return;
 

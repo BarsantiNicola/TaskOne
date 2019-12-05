@@ -491,6 +491,90 @@ public class KValueDatabase {
 		
 	}
 	
+	public boolean addProductAvailability( String PRODUCT_NAME ) {
+		
+		String PRODUCT_KEY = "product:" + PRODUCT_NAME;
+    	
+    	if( !isAuthoritative( PRODUCT_KEY )) return false;
+		
+    	if( levelDb == null )
+    		if( !updateConnection()) {
+    			System.out.println( "----> [KEYVALUE][" + id + "] Unable to create the connection" );
+    			return false;
+    		}
+    	
+    	Product prod = getProduct( PRODUCT_NAME );
+    	if( prod == null ) {
+			System.out.println( "----> [KEYVALUE][" + id + "] Error, the product doesn't exist" );
+			return false;
+    	}
+    	prod.setProductAvailability(prod.getProductAvailability()+1);
+
+		System.out.println( "----> [KEYVALUE][" + id + "] Change availability of product " + PRODUCT_NAME +"[" +(prod.getProductAvailability()-1) + "->"  + prod.getProductAvailability() + "]");
+    	
+		try {
+			
+	    	levelDb.delete( PRODUCT_KEY.getBytes());
+			levelDb.put(PRODUCT_KEY.getBytes(), gson.toJson(prod).getBytes());
+
+			return true;
+    		
+    	}catch( Exception e ) {
+    		
+    		System.out.println( "----> [KEYVALUE]["+id+"] Error, Connection rejected" );
+			try{ levelDb.close(); } catch( Exception a ) {}
+    		levelDb = null;
+    		return false;
+    		
+    	}
+		
+	}
+	
+	public boolean decreaseProductAvailability( String PRODUCT_NAME ) {
+		
+		String PRODUCT_KEY = "product:" + PRODUCT_NAME;
+    	
+    	if( !isAuthoritative( PRODUCT_KEY )) return false;
+		
+    	if( levelDb == null )
+    		if( !updateConnection()) {
+    			System.out.println( "----> [KEYVALUE][" + id + "] Unable to create the connection" );
+    			return false;
+    		}
+    	
+    	Product prod = getProduct( PRODUCT_NAME );
+    	if( prod == null ) {
+			System.out.println( "----> [KEYVALUE][" + id + "] Error, the product doesn't exist" );
+			return false;
+    	}
+    	
+    	if( prod.getProductAvailability() == 0 ) {
+			System.out.println( "----> [KEYVALUE][" + id + "] Error, enought availability of product " + PRODUCT_NAME );
+			return false;
+    	}
+    	
+    	prod.setProductAvailability(prod.getProductAvailability()-1);
+
+    	System.out.println( "----> [KEYVALUE][" + id + "] Change availability of product " + PRODUCT_NAME +"[" +(prod.getProductAvailability()+1) + "->"  + prod.getProductAvailability() + "]");
+    	
+		try {
+			
+	    	levelDb.delete( PRODUCT_KEY.getBytes());
+			levelDb.put(PRODUCT_KEY.getBytes(), gson.toJson(prod).getBytes());
+
+			return true;
+    		
+    	}catch( Exception e ) {
+    		
+    		System.out.println( "----> [KEYVALUE]["+id+"] Error, Connection rejected" );
+			try{ levelDb.close(); } catch( Exception a ) {}
+    		levelDb = null;
+    		return false;
+    		
+    	}
+		
+	}
+	
 	@SuppressWarnings("unchecked")
 	public List<String> getProductsIndex(){
 		

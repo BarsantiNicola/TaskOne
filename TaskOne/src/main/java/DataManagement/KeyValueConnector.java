@@ -139,6 +139,16 @@ public class KeyValueConnector extends DataConnector{
 	//  the function inserts a new order for a customer
 	public boolean insertOrder(String CUSTOMER_ID, int PRODUCT_ID, String PRODUCT_NAME, int PRICE) {
 		
+		 if( ( levelDb1 != null && levelDb1.decreaseProductAvailability(PRODUCT_NAME)) || ( levelDb2 != null && levelDb2.decreaseProductAvailability(PRODUCT_NAME)))			 
+				System.out.println( "---> [KEYVALUE] Availability of product " + PRODUCT_NAME + " changed");
+				
+		 else{
+		 		
+		 		System.out.println( "---> [KEYVALUE] Impossible to decrease availability of product " + PRODUCT_NAME );
+				return false;
+				
+		 }
+		 
 		if( (levelDb1 != null && !levelDb1.removeFromStockIndex(PRODUCT_NAME , PRODUCT_ID)) && ( levelDb2 != null && !levelDb2.removeFromStockIndex(PRODUCT_NAME, PRODUCT_ID ))){
 				System.out.println( "---> [KEYVALUE] Stock doesn't exist" );
 				return false;
@@ -265,14 +275,24 @@ public class KeyValueConnector extends DataConnector{
 	 //  the function inserts a new stock for the selected product
 	 public int updateProductAvailability( String PRODUCT_NAME , int STOCK_ID ) {
 		
-		if( (levelDb1 != null && levelDb1.addToStockIndex(PRODUCT_NAME, STOCK_ID)) || ( levelDb2 != null && levelDb2.addToStockIndex(PRODUCT_NAME, STOCK_ID))) {
+		 if( ( levelDb1 != null && levelDb1.addProductAvailability(PRODUCT_NAME)) || ( levelDb2 != null && levelDb2.addProductAvailability(PRODUCT_NAME)))			 
+				System.out.println( "---> [KEYVALUE] Availability of product " + PRODUCT_NAME + " changed");
+				
+		 else {
+		 		
+		 		System.out.println( "---> [KEYVALUE] Impossible to increase availability of product " + PRODUCT_NAME );
+				return -1;
+				
+		 }
+		 
+		 if( (levelDb1 != null && levelDb1.addToStockIndex(PRODUCT_NAME, STOCK_ID)) || ( levelDb2 != null && levelDb2.addToStockIndex(PRODUCT_NAME, STOCK_ID))) {
 			
-			System.out.println( "---> [KEYVALUE] Insert stock " + STOCK_ID + " for product " + PRODUCT_NAME );
-			return STOCK_ID;
+			 System.out.println( "---> [KEYVALUE] Insert stock " + STOCK_ID + " for product " + PRODUCT_NAME );
+			 return STOCK_ID;
 			
 	 	}else {
 	 		
-	 		System.out.println( "---> [KEYVALUE] Insert stock " + STOCK_ID + " for product " + PRODUCT_NAME );
+	 		System.out.println( "---> [KEYVALUE] Impossible to insert stock " + STOCK_ID + " for product " + PRODUCT_NAME );
 			return -1;
 			
 		}
