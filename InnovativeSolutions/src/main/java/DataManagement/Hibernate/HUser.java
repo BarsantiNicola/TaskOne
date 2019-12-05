@@ -307,13 +307,12 @@ public class HUser {
 			if( !HConnector.createConnection()) return false;
 		
 		EntityManager manager = null;
-		System.out.println("----> [HIBERNATE] [ADD NEW CUSTOMER " + getUsername() + " ]<----");
 		
 		try {
 			
 			manager = HConnector.FACTORY.createEntityManager();
 			manager.getTransaction().begin();
-	        manager.persist(this);
+	  manager.persist(this);
 			manager.getTransaction().commit();
 			manager.close();			
 			return true;
