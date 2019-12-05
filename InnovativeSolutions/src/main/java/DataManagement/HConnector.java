@@ -612,7 +612,7 @@ public class HConnector extends DataConnector{
     			
     			System.out.println( "---> [HIBERNATE] Unable to find an available stock for product " + productName );
     			manager.close();
-    			return -1;
+    			return 0;
     			
     			
     		}

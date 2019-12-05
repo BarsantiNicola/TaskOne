@@ -369,7 +369,8 @@ public class DataManager{
     	}else
     		giveHconsistence = HIBERNATE.insertOrder( CUSTOMER_ID , PRODUCT_ID , PRODUCT_NAME , PRICE );
     	//  for give consistence to the data we try to save the order in all databases 
- 	
+    	if( giveHconsistence == 0 ) return false;
+    	
     	if( giveKconsistence == -1 && giveHconsistence == -1 ) {
     		System.out.println( "--> Error, no database available" );
     		return false;
