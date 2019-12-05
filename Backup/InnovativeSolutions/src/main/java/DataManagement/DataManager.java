@@ -291,7 +291,7 @@ public class DataManager{
     	List<Product> ret = KEYVALUE.searchProducts( SEARCHED_STRING ); 
     	
     	if( ret.size() == 0 ) {
-        	System.out.println( "--> No value found, trying to interrogate hibernate database" );
+        	System.out.println( "--> No value founded, trying to interrogate hibernate database" );
     		ret = HIBERNATE.searchProducts( SEARCHED_STRING ); 
     	}
     	
@@ -307,7 +307,7 @@ public class DataManager{
     	System.out.println( "--> Trying to interrogate key-value database" );
     	List<Product> ret = KEYVALUE.getAvailableProducts();
     	if( ret.size() == 0 ) {
-        	System.out.println( "--> No value found, trying to interrogate hibernate database" );
+        	System.out.println( "--> No value founded, trying to interrogate hibernate database" );
     		ret = HIBERNATE.getAvailableProducts(); 
     	}
     	return ret;
@@ -323,7 +323,7 @@ public class DataManager{
     	System.out.println( "--> Trying to interrogate key-value database" );
     	List<Order> ret = KEYVALUE.searchOrders( SEARCHED_VALUE , CUSTOMER_ID ); 
     	if( ret.size() == 0 ) {
-        	System.out.println( "--> No value found, trying to interrogate hibernate database" );
+        	System.out.println( "--> No value founded, trying to interrogate hibernate database" );
     		ret = HIBERNATE.searchOrders( SEARCHED_VALUE , CUSTOMER_ID );    	
     	}
     	return ret;
@@ -339,7 +339,7 @@ public class DataManager{
     	System.out.println( "--> Trying to interrogate key-value database" );
     	List<Order> ret = KEYVALUE.getOrders( CUSTOMER_ID ); 	
     	if( ret.size() == 0 ) {
-        	System.out.println( "--> No value found, trying to interrogate hibernate database" );
+        	System.out.println( "--> No value founded, trying to interrogate hibernate database" );
     		ret = HIBERNATE.getOrders( CUSTOMER_ID );   	
     	}
     	return ret;
@@ -465,7 +465,7 @@ public class DataManager{
 		TransferData[] updates = CONSISTENCE.loadHibernateUpdates();
 		
 		if( updates != null ) {
-			System.out.println( "--> found " + updates.length + " pending updates" );
+			System.out.println( "--> Founded " + updates.length + " pending updates" );
 			for( TransferData update : updates ) 		
 				if( !makeUpdate(update)) {
 					System.out.println( "--> Failed update -> resaving" );
@@ -487,7 +487,7 @@ public class DataManager{
 		TransferData[] updates = CONSISTENCE.loadKeyvalueUpdates();
 		
 		if( updates != null ) {
-			System.out.println( "--> found " + updates.length + " pending updates" );
+			System.out.println( "--> Founded " + updates.length + " pending updates" );
 			for( TransferData update : updates ) 		
 				if( !makeUpdate(update)) {
 					System.out.println( "--> Failed update -> resaving" );

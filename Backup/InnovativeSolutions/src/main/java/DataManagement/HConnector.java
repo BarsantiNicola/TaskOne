@@ -69,11 +69,11 @@ public class HConnector extends DataConnector{
 		
 		if( user == null ) {
 			
-			System.out.println( "---> [HIBERNATE] No user found" );
+			System.out.println( "---> [HIBERNATE] No user founded" );
 			return UserType.NOUSER;
 			
 		}
-		System.out.println( "---> [HIBERNATE] User found, password control" );
+		System.out.println( "---> [HIBERNATE] User founded, password control" );
 		if( user.getPassword().compareTo( password ) == 0 ) {
 			
 			if( user instanceof HCustomer )
@@ -443,13 +443,6 @@ public class HConnector extends DataConnector{
     			
     		}
     		
-    		if( product.getProductAvailability() < 1 ) {
-    			
-    			System.out.println( "---> [HIBERNATE] The product " + PRODUCT_NAME + " doesn't have enought availability" );
-    			manager.close();
-    			return false;
-    			
-    		}
     		ret = product.decreaseAvailability( HProductStock.getMaxStock( manager , PRODUCT_NAME ) );
     		manager.close();
     		
