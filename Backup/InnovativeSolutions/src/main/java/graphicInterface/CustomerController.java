@@ -277,7 +277,7 @@ public class CustomerController extends InterfaceController {
 
         Iterator<Node> it = insertPopup.getChildren().iterator();
         Iterator<Product> productList = productsTable.iterator();
-        //ObservableList<Product> prod = FXCollections.observableArrayList();
+        ObservableList<Product> prod = FXCollections.observableArrayList();
         
         Node app;
         Product product;
